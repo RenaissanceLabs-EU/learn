@@ -1,0 +1,114 @@
+{
+  "id": "not-alone",
+  "title": "You are not alone in here",
+  "kicker": "Why struggle feels private, and what research says",
+  "track": "minds",
+  "theme": "connection",
+  "blurb": "We see our own inside and everyone else's outside. This film looks at why that makes us feel separate, and at small ways to feel connected again.",
+  "description": "Struggle feels private because we see only our own inner world and other people's outer one. The film looks at how alike our inner lives are across languages, why humans are built to connect, and the gaps in how we judge each other. It closes with a week of small reaching-out practices.",
+  "takeaways": [
+    "Many people privately feel the same thing and assume they are alone, which psychologists call pluralistic ignorance.",
+    "Common humanity, remembering that struggle is part of being human, is one of the three parts of self-compassion described by Kristin Neff.",
+    "After conversations, people tend to underestimate how much their partner liked them, a pattern called the liking gap.",
+    "Reaching out, with a check-in or a thank you, tends to be appreciated more than the person sending it expects.",
+    "Psychology has not shown one shared mind. That question belongs to philosophy and contemplative traditions."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "A room full of people"
+    },
+    {
+      "scene": "glass",
+      "title": "Why it feels so private"
+    },
+    {
+      "scene": "same",
+      "title": "How alike we are inside"
+    },
+    {
+      "scene": "built",
+      "title": "Built to connect"
+    },
+    {
+      "scene": "human",
+      "title": "Common humanity"
+    },
+    {
+      "scene": "gaps",
+      "title": "The gaps we misjudge"
+    },
+    {
+      "scene": "kind",
+      "title": "Loving-kindness"
+    },
+    {
+      "scene": "awe",
+      "title": "Awe and the small self"
+    },
+    {
+      "scene": "one",
+      "title": "Are we separate minds?"
+    },
+    {
+      "scene": "week",
+      "title": "A week of reaching out"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [],
+  "sources": [
+    {
+      "title": "Miller (2023) on pluralistic ignorance",
+      "url": ""
+    },
+    {
+      "title": "Bye et al. (2025), Sex Roles",
+      "url": ""
+    },
+    {
+      "title": "Jackson et al. (2019), Science: emotion words across 2,474 languages",
+      "url": ""
+    },
+    {
+      "title": "Zhao et al. (2024) and Jiang et al. (2026) on interpersonal brain synchrony",
+      "url": ""
+    },
+    {
+      "title": "Wang et al. (2023), Nature Human Behaviour: social isolation, loneliness and mortality",
+      "url": ""
+    },
+    {
+      "title": "Neff (2022) on the elements of self-compassion",
+      "url": ""
+    },
+    {
+      "title": "Chio et al. (2021) and Dreisoerner et al. (2020) on self-compassion and common humanity",
+      "url": ""
+    },
+    {
+      "title": "Boothby et al. (2018) on the liking gap",
+      "url": ""
+    },
+    {
+      "title": "Liu et al. (2022), Dungan et al. (2021) and Kumar & Epley (2018) on reaching out and expressing gratitude",
+      "url": ""
+    },
+    {
+      "title": "Luberto et al. (2017) on meditation and prosocial outcomes",
+      "url": ""
+    },
+    {
+      "title": "Piff et al. (2015) and Sturm et al. (2020) on awe",
+      "url": ""
+    }
+  ],
+  "level": "Beginner"
+}

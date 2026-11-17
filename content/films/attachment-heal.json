@@ -1,0 +1,122 @@
+{
+  "id": "attachment-heal",
+  "title": "Understanding your attachment style",
+  "kicker": "Your own pattern, and how to help someone you love",
+  "track": "minds",
+  "theme": "connection",
+  "blurb": "Why you spiral, withdraw or push people away, how each pattern grew, and how to practice something steadier and support someone you love.",
+  "description": "A practical companion to the research film on attachment. It helps you notice your own style (secure, anxious, avoidant or fearful), explains why it once made sense, and offers small practices for each. It also shows how to be a secure base for someone you love, and ends with a simple week of practice.",
+  "takeaways": [
+    "Your reaction to closeness is a pattern you learned, and each pattern was a sensible answer to the home you grew up in.",
+    "Secure does not mean no fear or conflict. It means you can ask for what you need and survive hearing no.",
+    "Earned security describes people with hard childhoods who became secure adults, often with at least one person who stayed.",
+    "To be a secure base, stay when someone is upset, cheer for their life, and repair after you mess up.",
+    "A small weekly practice is to notice, pause, ask, repair and receive."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "The text that doesn't come"
+    },
+    {
+      "scene": "origin",
+      "title": "Where your pattern began"
+    },
+    {
+      "scene": "recognise",
+      "title": "Which one sounds like you"
+    },
+    {
+      "scene": "secure",
+      "title": "What secure looks like"
+    },
+    {
+      "scene": "anxious",
+      "title": "If you lean anxious"
+    },
+    {
+      "scene": "avoidant",
+      "title": "If you lean avoidant"
+    },
+    {
+      "scene": "fearful",
+      "title": "If your pattern is fearful"
+    },
+    {
+      "scene": "heal",
+      "title": "Can it change?"
+    },
+    {
+      "scene": "support",
+      "title": "Being a secure base"
+    },
+    {
+      "scene": "practice",
+      "title": "A small practice"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [],
+  "sources": [
+    {
+      "title": "Bowlby (1969), Attachment and Loss",
+      "url": ""
+    },
+    {
+      "title": "Ainsworth et al. (1978), Patterns of Attachment",
+      "url": ""
+    },
+    {
+      "title": "Madigan et al. (2023), Psychological Bulletin",
+      "url": ""
+    },
+    {
+      "title": "Spangler & Grossmann (1993), Child Development",
+      "url": ""
+    },
+    {
+      "title": "Brennan, Clark & Shaver (1998), self-report measures of adult attachment",
+      "url": ""
+    },
+    {
+      "title": "Arriaga et al. (2014), Social Psychological and Personality Science",
+      "url": ""
+    },
+    {
+      "title": "Saunders et al. (2011), Attachment & Human Development",
+      "url": ""
+    },
+    {
+      "title": "Taylor et al. (2015), Psychotherapy Research",
+      "url": ""
+    },
+    {
+      "title": "Levy et al. (2018), Journal of Clinical Psychology",
+      "url": ""
+    },
+    {
+      "title": "Eubanks, Muran & Safran (2018), Psychotherapy",
+      "url": ""
+    },
+    {
+      "title": "Gillath et al. (2022), Personality and Social Psychology Review",
+      "url": ""
+    },
+    {
+      "title": "Bakermans-Kranenburg et al. (2003), Psychological Bulletin",
+      "url": ""
+    },
+    {
+      "title": "Bernard et al. (2012), Child Development",
+      "url": ""
+    }
+  ],
+  "level": "Beginner"
+}

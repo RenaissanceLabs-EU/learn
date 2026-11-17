@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inference and sampling · Learn · Renaissance Labs</title>
+<meta name="description" content="How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/inference-and-sampling/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Inference and sampling · Learn · Renaissance Labs">
+<meta property="og:description" content="How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/inference-and-sampling/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Inference and sampling · Learn · Renaissance Labs">
+<meta name="twitter:description" content="How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Inference and sampling", "description": "How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT9M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="inference-and-sampling">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · After pre-training · Lesson 15</p>
+  <h1>Inference and sampling</h1><p class="lede">How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.</p>
+  <p class="meta"><span>Intermediate</span><span>9 min read</span><span>2 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p><strong>Inference</strong> means using a trained model to produce output. Training happens once, at great expense. Inference happens every time anyone sends a prompt, so its cost adds up, and the way it works shapes everything from response speed to price.</p>
+<h2 id="two-phases-prefill-and-decode">Two phases: prefill and decode</h2>
+<p>Every request has two stages.</p>
+<p>In <strong>prefill</strong>, the model reads your whole prompt at once. All the prompt&#x27;s tokens can be processed in parallel, so the chip does large matrix multiplications and stays busy.</p>
+<p>In <strong>decode</strong>, the model writes its answer one token at a time. Each new token needs a full pass through the network, and it cannot start until the previous token exists.</p>
+<ol class="flow"><li><b>Prompt arrives</b><span>Thousands of tokens at once</span></li><li><b>Prefill</b><span>Parallel, compute-heavy</span></li><li><b>Decode</b><span>One token per pass, repeated</span></li><li><b>Stop</b><span>End token or length limit</span></li></ol>
+<h2 id="why-decoding-is-limited-by-memory-bandwidth">Why decoding is limited by memory bandwidth</h2>
+<p>During decode, each pass reads essentially every active weight from memory to produce a single token. That is a lot of data moved for very little arithmetic. In BF16, each weight takes two bytes and contributes roughly one multiply and one add, so you get about one operation per byte moved.</p>
+<p>Compare that with what a chip can do. Our GPU research lists the H100 at about 3.35 TB/s of memory bandwidth and about 989 TFLOPS of dense BF16 compute, which is several hundred operations available per byte. A single stream of decoding uses a tiny fraction of that. The chip is waiting for memory, not for arithmetic. This is the idea of the <strong>roofline</strong> in the GPU hardware film: for decoding, the memory roof is the one you hit first.</p>
+<p>It also explains why <a href="/lessons/distillation-and-quantization/">Distillation and quantization</a> help speed as well as size. Fewer bytes per weight means less to read per token.</p>
+<h2 id="the-kv-cache">The KV cache</h2>
+<p>Attention (see <a href="/lessons/attention-and-the-transformer/">Attention and the transformer</a>) compares each new token against every earlier token. Recomputing the keys and values for all earlier tokens at each step would waste enormous effort. So the model stores them: a <strong>KV cache</strong> holds the key and value vectors of every token already processed.</p>
+<p>The cache grows by one entry per token, in every layer. A rough size per token is:</p>
+<p><code>2 × layers × KV heads × head size × bytes per number</code></p>
+<div class="example"><span class="ex-t">A rough illustration</span><p>Take a model with 62 layers and 16 KV heads (the shape our research lists for one large open model), and assume a head size of 64 and BF16 storage. That gives about 250 KB per token, so a 1-million-token context would need on the order of 250 GB for one conversation.</p><p>This is an estimate from an assumed head size, but it shows why long context is a memory problem.</p></div>
+<p>The cache is also why designs differ. Grouping query heads so they share KV heads (GQA) shrinks it. Our open-models research describes DeepSeek V4 compressing the cache further: at 1 million tokens it needs about 10% of the cache of its predecessor, and one later variant stores about 890 bytes per token in fast memory.</p>
+<div class="stats"><div><b>2</b><span>numbers stored per token per layer: a key and a value</span></div><div><b>10%</b><span>of the previous model&#x27;s cache, DeepSeek V4 Pro at 1M tokens</span></div><div><b>890 B</b><span>per token in fast memory for V4.1 Flash</span></div></div>
+<h2 id="batching-and-speculation">Batching and speculation</h2>
+<p>Since decoding wastes compute, servers run many requests together. With <strong>batching</strong>, one read of the weights serves every request in the batch, so the cost per token falls. The limit is the KV cache: each request needs its own, and memory fills up. Serving systems such as vLLM, built around the PagedAttention paper, manage that memory in blocks to fit more requests.</p>
+<p><strong>Speculative decoding</strong> uses a small, fast model to guess several tokens ahead, then lets the large model check all of them in one pass. If the guesses are right, several tokens arrive for the price of one large pass; if not, the wrong ones are discarded, and the output is the same as the large model alone would have produced.</p>
+<h2 id="sampling-choosing-the-next-token">Sampling: choosing the next token</h2>
+<p>The model&#x27;s output is a probability for every token. A <strong>sampling</strong> rule turns that into a choice.</p>
+<ul><li><strong>Greedy</strong> always takes the most likely token. It is predictable and can be repetitive.</li><li><strong>Temperature</strong> rescales the probabilities before choosing. Below 1 the distribution sharpens toward the top choice. Above 1 it flattens, so unlikely tokens get a real chance. Temperature near 0 behaves like greedy.</li><li><strong>Top-k</strong> keeps only the k most likely tokens and samples among them.</li><li><strong>Top-p</strong> (nucleus sampling) keeps the smallest set of tokens whose probabilities add up to p, then samples among them. The set is small when the model is confident and larger when it is unsure.</li></ul>
+<p>Try it below. The numbers are made up for illustration: a single invented next-token distribution for one prompt.</p>
+<div class="widget" data-widget="temperature" aria-live="polite"></div>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Sampling does not change what the model knows. It changes how willing the model is to say something other than its first choice.</p></aside>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>Next, <a href="/lessons/what-open-means/">What open means</a> looks at who is allowed to download and run these models themselves. For the memory side of the story, the open-models film chapter on the KV cache and the GPU film&#x27;s roofline chapter cover the same ideas on screen.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/open-models/#t=372"><span class="play">▶</span><b>The KV cache problem</b><span>Inside the strongest open models · 6:12</span></a><a href="/films/gpu-hardware/#t=135"><span class="play">▶</span><b>Compute bound or memory bound</b><span>Where the silicon ends · 2:15</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a></li><li><a href="https://arxiv.org/abs/2305.13245" target="_blank" rel="noopener">GQA: Training Generalized Multi-Query Transformer Models</a></li><li><a href="https://arxiv.org/abs/2309.06180" target="_blank" rel="noopener">Efficient Memory Management for LLM Serving with PagedAttention</a></li><li><a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">FlashAttention</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#two-phases-prefill-and-decode">Two phases: prefill and decode</a></li><li><a href="#why-decoding-is-limited-by-memory-bandwidth">Why decoding is limited by memory bandwidth</a></li><li><a href="#the-kv-cache">The KV cache</a></li><li><a href="#batching-and-speculation">Batching and speculation</a></li><li><a href="#sampling-choosing-the-next-token">Sampling: choosing the next token</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/attention-and-the-transformer/" data-lesson="attention-and-the-transformer"><span class="lnum">03</span><span class="lbody"><b>Attention and the transformer</b><span>Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/distillation-and-quantization/" data-lesson="distillation-and-quantization"><span class="lnum">14</span><span class="lbody"><b>Distillation and quantization</b><span>Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/parameters-precision-and-memory/" data-lesson="parameters-precision-and-memory"><span class="lnum">07</span><span class="lbody"><b>Parameters, precision and memory</b><span>A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/distillation-and-quantization/"><span>Previous</span><b>Distillation and quantization</b></a><a class="next" href="/lessons/what-open-means/"><span>Next</span><b>What &quot;open&quot; means for AI models</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

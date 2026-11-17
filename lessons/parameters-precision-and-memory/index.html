@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parameters, precision and memory · Learn · Renaissance Labs</title>
+<meta name="description" content="A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/parameters-precision-and-memory/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Parameters, precision and memory · Learn · Renaissance Labs">
+<meta property="og:description" content="A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/parameters-precision-and-memory/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Parameters, precision and memory · Learn · Renaissance Labs">
+<meta name="twitter:description" content="A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Parameters, precision and memory", "description": "A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT8M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="parameters-precision-and-memory">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · Feeding the model · Lesson 7</p>
+  <h1>Parameters, precision and memory</h1><p class="lede">A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.</p>
+  <p class="meta"><span>Intermediate</span><span>8 min read</span><span>3 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>Saying a model has 70 billion parameters sounds abstract. Physically it means 70 billion numbers sitting in memory, and each number occupies a fixed number of bytes. Multiply the two and you know whether the model fits on your hardware.</p>
+<h2 id="a-parameter-is-a-stored-number">A parameter is a stored number</h2>
+<p>A <strong>parameter</strong> is one adjustable number in the model, usually a weight inside a large matrix. Training changes these numbers a little at a time. Using the model only reads them. How much space each one takes depends on its <strong>precision</strong>, the number of bits used to write it down.</p>
+<figure class="bars"><div class="bars-t">Bytes per parameter by format</div><div class="brow"><span class="bar-l">FP32</span><span class="bar-track"><i style="width:100.0%"></i></span><span class="bar-v">4</span><span class=bar-n>32 bits, the traditional default</span></div><div class="brow"><span class="bar-l">BF16</span><span class="bar-track"><i style="width:50.0%"></i></span><span class="bar-v">2</span><span class=bar-n>16 bits, common for training and serving</span></div><div class="brow"><span class="bar-l">FP8</span><span class="bar-track"><i style="width:25.0%"></i></span><span class="bar-v">1</span><span class=bar-n>8 bits</span></div><div class="brow"><span class="bar-l">4-bit (FP4, INT4)</span><span class="bar-track"><i style="width:12.5%"></i></span><span class="bar-v">0.5</span><span class=bar-n>plus a small overhead for scales</span></div></figure>
+<p><strong>BF16</strong> keeps the same range of values as FP32 but with fewer digits of detail. That trade works well for neural networks, which tolerate a little noise in each weight.</p>
+<h2 id="why-a-70b-model-does-not-fit-on-one-gpu">Why a 70B model does not fit on one GPU</h2>
+<p>At BF16, 70 billion parameters take 70 billion times 2 bytes, or 140 GB. An H100 has 80 GB of memory. The weights alone would need two chips, before counting anything else.</p>
+<p>The 2026 giants make the point harder. The frontier training dossier works out that GLM-5, at 744 billion parameters, needs about 1.5 TB in BF16, and DeepSeek-V4 Pro at 1.6 trillion needs more than 3 TB. Those are inference numbers, for weights only.</p>
+<h2 id="training-costs-far-more-than-the-weights">Training costs far more than the weights</h2>
+<p>Training keeps several extra copies of information per parameter:</p>
+<ul><li><strong>Gradients</strong>: one number per parameter saying which way to nudge it.</li><li><strong>Optimizer states</strong>: the <strong>Adam</strong> optimizer keeps two running averages per parameter (see <a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam</a>), usually in FP32.</li><li>A <strong>master copy</strong> of the weights in FP32, so that tiny updates are not lost to rounding.</li></ul>
+<p>A common mixed-precision rule of thumb adds this up to about 16 bytes per parameter: 2 for BF16 weights, 2 for gradients, 4 for the FP32 master weights, and 4 plus 4 for the two Adam averages. It is a rule of thumb, and real setups differ by optimizer and recipe. All three 2026 models in the frontier dossier use the Muon optimizer, which tracks less state than Adam but still adds terabytes.</p>
+<div class="example"><span class="ex-t">70B model, rough numbers</span><p>Inference in BF16: 70B x 2 bytes = 140 GB</p><p>Inference in 4-bit: 70B x 0.5 bytes = 35 GB (plus scales)</p><p>Training with the 16-byte rule: 70B x 16 bytes = 1,120 GB, about 1.1 TB</p></div>
+<p>Try your own sizes in the widget.</p>
+<div class="widget" data-widget="memory" aria-live="polite"></div>
+<h2 id="activations-the-other-bill">Activations: the other bill</h2>
+<p>While a model processes a batch, it stores the intermediate results of every layer, called <strong>activations</strong>, so the backward pass can use them. Activation memory grows with batch size and sequence length, not just with parameter count. Techniques such as recomputing activations instead of storing them trade extra arithmetic for less memory. This is separate from the 16-byte rule, which is why a training run needs headroom beyond it.</p>
+<h2 id="four-bits-and-block-scales">Four bits and block scales</h2>
+<p>Going from BF16 to 4 bits cuts weight memory by a factor of four, but only 16 distinct values can be represented. To keep accuracy, 4-bit formats store a <strong>block scale</strong>: a shared multiplier for each small group of values. Within the group, each number is stored as a 4-bit code and the real value is code times scale.</p>
+<div class="compare c2"><div class="col"><h4>NVFP4</h4><ul><li>Blocks of 16 values</li><li>Scale stored in FP8 (E4M3)</li><li>About 4.5 bits per value including the scale</li></ul></div><div class="col"><h4>MXFP4</h4><ul><li>Blocks of 32 values</li><li>Scale stored as a power of two (UE8M0)</li><li>Coarser scale, fewer scale bytes</li></ul></div></div>
+<p>NVIDIA&#x27;s NVFP4 training work reports a 12-billion-parameter model trained on 10 trillion tokens with close to FP8 quality, while MXFP4 needed about 36 percent more tokens to match. Block scales are why 4 bits is usable at all. The GPU hardware film covers how the hardware handles them.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Memory is set by parameters times bytes per parameter, and training multiplies the bytes. Lower precision shrinks both, which is why precision is a design choice, not a detail.</p></aside>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>When the bytes do not fit on one chip, the model must be split across many; that is the subject of <a href="/lessons/gpus-and-parallelism/">GPUs and parallelism</a>. The parallelism chapter of the frontier training film and the 4-bit chapters of the GPU hardware film show the same arithmetic on real models.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=366"><span class="play">▶</span><b>Parallelism</b><span>What it takes to train a frontier model · 6:06</span></a><a href="/films/gpu-hardware/#t=637"><span class="play">▶</span><b>4-bit weights on Hopper</b><span>Where the silicon ends · 10:37</span></a><a href="/films/gpu-hardware/#t=729"><span class="play">▶</span><b>Native NVFP4 training</b><span>Where the silicon ends · 12:09</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/2602.15763" target="_blank" rel="noopener">Frontier training dossier (GLM-5 and DeepSeek-V4 memory arithmetic)</a></li><li><a href="https://developer.nvidia.com/blog/introducing-nvfp4-for-efficient-and-accurate-low-precision-inference/" target="_blank" rel="noopener">Introducing NVFP4 for efficient and accurate low-precision inference</a></li><li><a href="https://arxiv.org/abs/2509.25149" target="_blank" rel="noopener">Pretraining Large Language Models with NVFP4</a></li><li><a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam: A Method for Stochastic Optimization</a></li><li><a href="https://arxiv.org/abs/1910.02054" target="_blank" rel="noopener">ZeRO: Memory Optimizations Toward Training Trillion Parameter Models</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#a-parameter-is-a-stored-number">A parameter is a stored number</a></li><li><a href="#why-a-70b-model-does-not-fit-on-one-gpu">Why a 70B model does not fit on one GPU</a></li><li><a href="#training-costs-far-more-than-the-weights">Training costs far more than the weights</a></li><li><a href="#activations-the-other-bill">Activations: the other bill</a></li><li><a href="#four-bits-and-block-scales">Four bits and block scales</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/scaling-laws/" data-lesson="scaling-laws"><span class="lnum">06</span><span class="lbody"><b>Scaling laws: how big, how long</b><span>Loss falls smoothly as parameters, data and compute grow. Scaling laws turn that into a budgeting tool, and also show where the tool stops working.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/gpus-and-parallelism/" data-lesson="gpus-and-parallelism"><span class="lnum">08</span><span class="lbody"><b>GPUs and parallelism</b><span>A GPU is fast only when its arithmetic units stay fed. Training a large model means splitting it across thousands of GPUs in several ways at once, and paying for the communication.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/mixture-of-experts/" data-lesson="mixture-of-experts"><span class="lnum">09</span><span class="lbody"><b>Mixture of experts</b><span>A mixture-of-experts model stores many specialist sub-networks but sends each token to only a few. It gets the capacity of a huge model at the arithmetic cost of a much smaller one.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/scaling-laws/"><span>Previous</span><b>Scaling laws: how big, how long</b></a><a class="next" href="/lessons/gpus-and-parallelism/"><span>Next</span><b>GPUs and parallelism</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

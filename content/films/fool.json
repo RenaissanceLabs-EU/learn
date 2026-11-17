@@ -1,0 +1,94 @@
+{
+  "id": "fool",
+  "title": "Make a Fool of Yourself",
+  "kicker": "Everything you want is on the other side",
+  "track": "minds",
+  "theme": "fear-shame",
+  "blurb": "Why the fear of cringe feels so big, why it is often wrong, and a week of small, deliberate foolishness.",
+  "description": "Starting from advice Austin Butler recounted, the film looks at why embarrassment feels huge in a world of views and likes. Few people watch as closely as it feels, people are kinder than we predict, and cringe is how skill is built. It ends with a dare for the week.",
+  "takeaways": [
+    "The fear of being judged is an old alarm, now ringing in a world of views, likes and seen markers.",
+    "The spotlight effect means people notice our mistakes far less than we think.",
+    "People who laughed at their own harmless mistakes were seen as warmer and more authentic.",
+    "Over a long time, people tend to regret what they never tried more than what they did.",
+    "Be foolish, never cruel: risk your own image, never someone else's dignity."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "You pressed delete"
+    },
+    {
+      "scene": "quote",
+      "title": "An underexplored emotion"
+    },
+    {
+      "scene": "guard",
+      "title": "Why it feels so big"
+    },
+    {
+      "scene": "scroll",
+      "title": "Nobody watches that closely"
+    },
+    {
+      "scene": "warm",
+      "title": "People are kinder"
+    },
+    {
+      "scene": "price",
+      "title": "The price of safety"
+    },
+    {
+      "scene": "cringe",
+      "title": "Cringe builds skill"
+    },
+    {
+      "scene": "free",
+      "title": "Not a brand to protect"
+    },
+    {
+      "scene": "dare",
+      "title": "A dare for the week"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [],
+  "sources": [
+    {
+      "title": "Austin Butler on Subway Takes with Kareem Rahma (quoted advice)",
+      "url": ""
+    },
+    {
+      "title": "Gilovich, Medvec and Savitsky (2000), the spotlight effect",
+      "url": ""
+    },
+    {
+      "title": "Goksel et al. (2026), laughing at harmless mistakes",
+      "url": ""
+    },
+    {
+      "title": "Liu et al. (2022), reaching out and being appreciated",
+      "url": ""
+    },
+    {
+      "title": "Flynn and Lake (2008), underestimating help requests",
+      "url": ""
+    },
+    {
+      "title": "Gilovich and Medvec (1994), regret of action and inaction, with later replications",
+      "url": ""
+    },
+    {
+      "title": "Baumeister and Leary (1995), the need to belong",
+      "url": ""
+    }
+  ],
+  "level": "Beginner"
+}

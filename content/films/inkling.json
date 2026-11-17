@@ -1,0 +1,104 @@
+{
+  "id": "inkling",
+  "title": "Inkling 2 Small: training in 4-bit",
+  "kicker": "What was disclosed, what it cost, and a plan",
+  "track": "machines",
+  "theme": "training",
+  "blurb": "A look at how Inkling 2 Small was trained in native 4-bit, what the run probably cost, and how a smaller team could climb to the same recipe.",
+  "description": "Thinking Machines released Inkling 2 Small on November 5, a 594 billion parameter mixture of experts model trained natively in 4-bit. The film pieces together what was disclosed, estimates compute and cost, and turns it into a staged plan for 4-bit pre-training and post-training. Facts, estimates and guesses are labeled.",
+  "takeaways": [
+    "The first pre-training phase, 8.4 trillion tokens, took 68 hours on GB300 racks, running in NVFP4 (a 4-bit format with block scales).",
+    "Public NVFP4 recipes keep sensitive layers in higher precision and use stochastic rounding on gradients only.",
+    "The joint reinforcement learning run used 2,048 GPUs for nine days, likely more GPU hours than all of pre-training.",
+    "The lab's own cost is not disclosed, so the film's roughly 10 to 60 million dollar total is an estimate, not a reported figure.",
+    "A team should climb a ladder of small 4-bit experiments with clear gates before attempting a large run."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "Intro"
+    },
+    {
+      "scene": "model",
+      "title": "The model"
+    },
+    {
+      "scene": "phases",
+      "title": "Pre-training phases"
+    },
+    {
+      "scene": "compute",
+      "title": "Compute arithmetic"
+    },
+    {
+      "scene": "format",
+      "title": "Why 4-bit"
+    },
+    {
+      "scene": "recipe",
+      "title": "The public NVFP4 recipe"
+    },
+    {
+      "scene": "unknown",
+      "title": "What is not disclosed"
+    },
+    {
+      "scene": "rl",
+      "title": "The joint RL run"
+    },
+    {
+      "scene": "infra",
+      "title": "RL infrastructure"
+    },
+    {
+      "scene": "safety",
+      "title": "Alignment and an incident"
+    },
+    {
+      "scene": "cost",
+      "title": "Cost estimates"
+    },
+    {
+      "scene": "plan",
+      "title": "Pre-training plan"
+    },
+    {
+      "scene": "plan2",
+      "title": "Post-training plan"
+    },
+    {
+      "scene": "takeaways",
+      "title": "Takeaways"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [
+    "parameters-precision-and-memory",
+    "mixture-of-experts",
+    "preference-tuning-and-rl",
+    "scaling-laws",
+    "distillation-and-quantization"
+  ],
+  "sources": [
+    {
+      "title": "Inkling 2 Small announcement (Thinking Machines)",
+      "url": "https://thinkingmachines.ai/news/inkling-2-small/"
+    },
+    {
+      "title": "Pretraining Large Language Models with NVFP4 (NVIDIA)",
+      "url": "https://arxiv.org/abs/2509.25149"
+    },
+    {
+      "title": "Study of 4-bit training outliers in small models (Dong et al., Feb 2026)",
+      "url": "https://arxiv.org/abs/2602.02047"
+    },
+    {
+      "title": "Inkling 2 Small model card, Tinker pricing and StableReinforce docs, and A safe path to open weights (Thinking Machines)",
+      "url": ""
+    }
+  ],
+  "level": "Advanced"
+}

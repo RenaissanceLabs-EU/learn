@@ -1,0 +1,104 @@
+{
+  "id": "frontier-training",
+  "title": "What it takes to train a frontier model",
+  "kicker": "Data, chips, failures and cost",
+  "track": "machines",
+  "theme": "training",
+  "blurb": "A tour of what goes into training a 2026 frontier model: data, scaling, chips, parallelism, failures, post-training and cost.",
+  "description": "A frontier model is a file of numbers, but producing it takes tens of trillions of tokens, tens of thousands of chips and a great deal of engineering. Using only 2026 reports (GLM-5, DeepSeek-V4, Kimi K2.5, a Meta fault-tolerance paper and Epoch AI data), the film follows data, scaling, hardware, failures, post-training and cost, and flags what is an estimate.",
+  "takeaways": [
+    "Pre-training reads tens of trillions of tokens, and most raw web text is filtered out before it is used.",
+    "A common rule of thumb puts training compute at about six times the active parameters times the tokens.",
+    "At 100,000 GPUs a failure arrives roughly every 18 minutes, so fault tolerance matters as much as raw speed.",
+    "Post-training now runs on huge fleets of sandboxed environments, and reward design is part of the job.",
+    "None of the three reports gives GPU hours or dollar costs, so cost can only be estimated from the buildout."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "Intro"
+    },
+    {
+      "scene": "recipe",
+      "title": "The five ingredients"
+    },
+    {
+      "scene": "data",
+      "title": "Data"
+    },
+    {
+      "scene": "scaling",
+      "title": "Scaling and active parameters"
+    },
+    {
+      "scene": "hardware",
+      "title": "Chips and power"
+    },
+    {
+      "scene": "parallel",
+      "title": "Parallelism"
+    },
+    {
+      "scene": "failures",
+      "title": "When things break"
+    },
+    {
+      "scene": "moe",
+      "title": "Mixture of experts"
+    },
+    {
+      "scene": "post",
+      "title": "Post-training"
+    },
+    {
+      "scene": "eval",
+      "title": "Evaluation"
+    },
+    {
+      "scene": "cost",
+      "title": "Cost"
+    },
+    {
+      "scene": "takeaways",
+      "title": "What it takes"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [
+    "pretraining-data",
+    "scaling-laws",
+    "gpus-and-parallelism",
+    "when-training-breaks",
+    "mixture-of-experts"
+  ],
+  "sources": [
+    {
+      "title": "GLM-5: from Vibe Coding to Agentic Engineering (Z.ai, 2026)",
+      "url": "https://arxiv.org/abs/2602.15763"
+    },
+    {
+      "title": "DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence (2026)",
+      "url": "https://arxiv.org/abs/2606.19348"
+    },
+    {
+      "title": "Kimi K2.5: Visual Agentic Intelligence (2026)",
+      "url": "https://arxiv.org/abs/2602.02276"
+    },
+    {
+      "title": "Training LLMs with Fault Tolerant HSDP on 100,000 GPUs (Salpekar et al., 2026)",
+      "url": "https://arxiv.org/abs/2602.00277"
+    },
+    {
+      "title": "Exploring Silent Data Corruption as a Reliability Challenge in LLM Training (2026)",
+      "url": "https://arxiv.org/abs/2604.00726"
+    },
+    {
+      "title": "Epoch AI data insights: frontier data center power, largest data center compute, AI data center cost breakdown, AI share of US GDP (2026)",
+      "url": ""
+    }
+  ],
+  "level": "Intermediate"
+}

@@ -1,0 +1,150 @@
+{
+ "id": "shame",
+ "title": "The other side of embarrassment",
+ "kicker": "What shame is and how to move through it",
+ "track": "minds",
+ "theme": "fear-shame",
+ "blurb": "What embarrassment, guilt and shame are for, why the alarm is often wrong, and small safe steps through it.",
+ "description": "Embarrassment is part of our need to belong, but its alarm often overestimates how closely others watch and how harshly they judge. The film separates embarrassment, guilt and shame, shows what avoidance costs, and offers a short self-compassion practice and a week of small, safe steps.",
+ "takeaways": [
+  "Embarrassment works as a kind of nonverbal apology, a sign that you care about the relationship.",
+  "Guilt says I did something wrong, while shame says I am something wrong, and shame tends to push toward hiding.",
+  "The spotlight effect means we overestimate how many people notice our mistakes.",
+  "People often think better of us than we expect, and are more willing to help than we predict.",
+  "Name it, remember it is human, speak to yourself like a friend, and tell one safe person."
+ ],
+ "chapters": [
+  {
+   "scene": "hook",
+   "title": "Your face went hot"
+  },
+  {
+   "scene": "alarm",
+   "title": "What embarrassment is for"
+  },
+  {
+   "scene": "kinds",
+   "title": "Embarrassment, guilt and shame"
+  },
+  {
+   "scene": "spotlight",
+   "title": "The spotlight effect"
+  },
+  {
+   "scene": "signal",
+   "title": "What people think"
+  },
+  {
+   "scene": "cost",
+   "title": "The price of avoidance"
+  },
+  {
+   "scene": "other",
+   "title": "The other side"
+  },
+  {
+   "scene": "accept",
+   "title": "Staying with shame kindly"
+  },
+  {
+   "scene": "truth",
+   "title": "The deep truth"
+  },
+  {
+   "scene": "week",
+   "title": "A week of small steps"
+  },
+  {
+   "scene": "close",
+   "title": "Closing"
+  },
+  {
+   "scene": "sources",
+   "title": "Sources"
+  }
+ ],
+ "lessons": [],
+ "sources": [
+  {
+   "title": "Baumeister and Leary (1995), the need to belong",
+   "url": ""
+  },
+  {
+   "title": "Keltner and Buswell (1997), embarrassment",
+   "url": ""
+  },
+  {
+   "title": "Tangney et al. (1992), shame, guilt and maladjustment",
+   "url": ""
+  },
+  {
+   "title": "Cândea et al. (2018), shame, guilt and anxiety symptoms, meta-analysis",
+   "url": ""
+  },
+  {
+   "title": "Landers et al. (2024), guilt, shame and reparative motivation",
+   "url": ""
+  },
+  {
+   "title": "Gilovich, Medvec and Savitsky (2000), the spotlight effect",
+   "url": ""
+  },
+  {
+   "title": "Gilovich et al. (2002), illusion of transparency and the variability of ups and downs",
+   "url": ""
+  },
+  {
+   "title": "Macrae et al. (2016), reducing the spotlight effect",
+   "url": ""
+  },
+  {
+   "title": "Feinberg et al. (2012), the virtue of embarrassment",
+   "url": ""
+  },
+  {
+   "title": "Goksel et al. (2026), laughing at harmless mistakes",
+   "url": ""
+  },
+  {
+   "title": "Flynn and Lake (2008), underestimating help requests",
+   "url": ""
+  },
+  {
+   "title": "Zhao et al. (2022), helpers and askers",
+   "url": ""
+  },
+  {
+   "title": "Burmeister et al. (2018), shame, guilt and knowledge hiding",
+   "url": ""
+  },
+  {
+   "title": "Brown et al. (2024), psychological safety and shame in clinical training",
+   "url": ""
+  },
+  {
+   "title": "Gilovich and Medvec (1994), Yeung et al. (2022), Richardson et al. (2023), regret of action and inaction",
+   "url": ""
+  },
+  {
+   "title": "Carl et al. (2019), virtual reality exposure meta-analysis",
+   "url": ""
+  },
+  {
+   "title": "Wen et al. (2024), web-based therapy with a shame component",
+   "url": ""
+  },
+  {
+   "title": "Norder et al. (2022), treatments for internalized shame, scoping review",
+   "url": ""
+  },
+  {
+   "title": "Fink-Lamotte et al. (2023), self-compassion and induced shame",
+   "url": ""
+  },
+  {
+   "title": "Callow et al. (2021), self-compassion and external shame",
+   "url": ""
+  }
+ ],
+ "level": "Beginner"
+}

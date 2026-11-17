@@ -1,0 +1,80 @@
+{
+  "id": "entropy",
+  "title": "Entropy: order and surprise",
+  "kicker": "One idea in physics, brains and language models",
+  "track": "bridge",
+  "theme": "mind-machine",
+  "blurb": "Shannon's entropy, followed through physics, the entropic brain hypothesis and the training loss of a language model.",
+  "description": "Entropy is the average surprise of a source. The film builds the idea from coin flips, then follows it into physics, the free energy principle, the entropic brain hypothesis and criticality. It ends with language models, where training loss is a cross entropy, and with the limits of the idea.",
+  "takeaways": [
+    "Information is surprise: a one in eight event carries three bits, and entropy is the average of that surprise.",
+    "Training loss for a language model is a cross entropy, equal to the entropy of language plus the divergence from the data.",
+    "Scaling curves flatten because the loss approaches an irreducible entropy of text.",
+    "Temperature reshapes the next-token distribution, trading off exploiting what the model knows against exploring.",
+    "The entropic brain is a hypothesis, and entropy is a property of a signal, not a measure of consciousness."
+  ],
+  "chapters": [
+    {
+      "scene": "e1",
+      "title": "Surprise"
+    },
+    {
+      "scene": "e2",
+      "title": "The toolkit"
+    },
+    {
+      "scene": "e3",
+      "title": "Physics"
+    },
+    {
+      "scene": "e4",
+      "title": "The prediction machine"
+    },
+    {
+      "scene": "e5",
+      "title": "The entropic brain"
+    },
+    {
+      "scene": "e6",
+      "title": "Criticality"
+    },
+    {
+      "scene": "e7",
+      "title": "Entropy is not enough"
+    },
+    {
+      "scene": "e8",
+      "title": "Entropy in language models"
+    },
+    {
+      "scene": "e9",
+      "title": "Order and surprise"
+    }
+  ],
+  "lessons": [
+    "what-is-a-language-model",
+    "how-a-model-learns",
+    "scaling-laws",
+    "inference-and-sampling",
+    "preference-tuning-and-rl"
+  ],
+  "sources": [
+    {
+      "title": "Scaling Laws for Neural Language Models (Kaplan et al.)",
+      "url": "https://arxiv.org/abs/2001.08361"
+    },
+    {
+      "title": "Carhart-Harris et al. 2014, The entropic brain: a theory of conscious states informed by neuroimaging research with psychedelic drugs",
+      "url": ""
+    },
+    {
+      "title": "Friston, the free energy principle",
+      "url": ""
+    },
+    {
+      "title": "Shannon, A Mathematical Theory of Communication",
+      "url": ""
+    }
+  ],
+  "level": "Intermediate"
+}

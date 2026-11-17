@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tokens: how text becomes numbers · Learn · Renaissance Labs</title>
+<meta name="description" content="Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/tokens/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Tokens: how text becomes numbers · Learn · Renaissance Labs">
+<meta property="og:description" content="Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/tokens/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tokens: how text becomes numbers · Learn · Renaissance Labs">
+<meta name="twitter:description" content="Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Tokens: how text becomes numbers", "description": "Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.", "educationalLevel": "Beginner", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT7M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="tokens">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · The basics · Lesson 2</p>
+  <h1>Tokens: how text becomes numbers</h1><p class="lede">Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.</p>
+  <p class="meta"><span>Beginner</span><span>7 min read</span><span>2 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>A neural network only does arithmetic on numbers, so text has to be turned into numbers before a model can touch it. The first step is to cut the text into pieces. Each piece gets an integer ID, and that ID later becomes a list of numbers the model can work with. The pieces are called <strong>tokens</strong>, and the program that cuts text into them is the <strong>tokenizer</strong>.</p>
+<h2 id="why-not-words-and-why-not-letters">Why not words, and why not letters</h2>
+<p>Splitting on whole words sounds natural, but it breaks quickly. A word list large enough to cover every name, typo, code identifier and language would be enormous, and any word not on the list would be unreadable. Splitting into single characters or bytes fixes that, because every text can be spelled out. But the sequences get very long, and the model has to spend effort re-learning that &quot;t&quot;, &quot;h&quot;, &quot;e&quot; belong together.</p>
+<p><strong>Subword tokenization</strong> sits in between. Common words stay whole. Rare words are built from reusable pieces. &quot;Unbelievable&quot; might become &quot;un&quot;, &quot;believ&quot;, &quot;able&quot;. A word the tokenizer has never met can still be spelled out from smaller pieces, so nothing is ever unreadable.</p>
+<h2 id="how-the-pieces-are-chosen">How the pieces are chosen</h2>
+<p>The most common method is <strong>byte-pair encoding</strong>, or BPE (<a href="https://arxiv.org/abs/1508.07909" target="_blank" rel="noopener">Sennrich et al.</a> adapted it for neural models). The idea fits in a few lines. Start with single characters, count which neighbouring pair appears most often in a large text sample, and merge that pair into a new piece. Repeat until the vocabulary reaches a chosen size.</p>
+<ol class="flow"><li><b>Characters</b><span>Start with one piece per character</span></li><li><b>Count pairs</b><span>Find the most frequent neighbours</span></li><li><b>Merge</b><span>Make that pair a single new piece</span></li><li><b>Repeat</b><span>Stop at the target vocabulary size</span></li></ol>
+<div class="example"><span class="ex-t">A toy run</span><p>Text sample: &quot;low low low lower lowest&quot;</p><p>Round 1: &quot;l&quot; + &quot;o&quot; is the most common pair, so &quot;lo&quot; becomes a piece.</p><p>Round 2: &quot;lo&quot; + &quot;w&quot; is next, so &quot;low&quot; becomes a piece.</p><p>Now &quot;low&quot; is one token, and &quot;lower&quot; is &quot;low&quot; + &quot;er&quot; once &quot;er&quot; is merged.</p></div>
+<p>Real tokenizers work on bytes rather than characters, so any string, including emoji and unusual scripts, can be represented. Below is a small tokenizer you can type into. It is a toy that follows the same spirit, not the tokenizer of any real model, so the exact pieces will differ from what a production model produces.</p>
+<div class="widget" data-widget="tokenizer" aria-live="polite"></div>
+<h2 id="vocabulary-size-is-a-trade-off">Vocabulary size is a trade-off</h2>
+<p>The number of distinct tokens is the <strong>vocabulary size</strong>. Recent open models use vocabularies of well over 100,000 entries. DeepSeek-V4 uses a 128K vocabulary and Kimi K3 uses 160K.</p>
+<div class="compare c2"><div class="col"><h4>Smaller vocabulary</h4><ul><li>Text becomes more tokens</li><li>Each token is cheaper to represent</li><li>Fewer rare tokens that are seen too seldom to learn well</li></ul></div><div class="col"><h4>Larger vocabulary</h4><ul><li>Text becomes fewer tokens</li><li>Larger embedding table and output layer</li><li>Shorter sequences mean less work per document</li></ul></div></div>
+<p>Neither end is free. Larger vocabularies shorten sequences but add parameters, and some tokens end up so rare that the model barely learns them.</p>
+<h2 id="why-tokens-cost-money-and-context">Why tokens cost money and context</h2>
+<p>Everything a model does is counted in tokens: how long your prompt may be, how long the answer may be, how much a request costs, how fast it runs. A common rule of thumb for English is that a token is roughly three quarters of a word, but that is only an average and varies with the text.</p>
+<p>Because the cost of attention and memory grows with the number of tokens (see <a href="/lessons/attention-and-the-transformer/">Attention and the transformer</a>), a tokenizer that produces fewer tokens for the same text is directly cheaper to run.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>The same sentence can be many tokens or few, depending on the tokenizer and the language. Tokens, not characters or words, are the unit of cost and of context.</p></aside>
+<h2 id="languages-are-not-treated-equally">Languages are not treated equally</h2>
+<p>A tokenizer learns its merges from the text it was trained on. If that text was mostly English, English words get long, efficient pieces. Languages that were rare in the sample are split into more and smaller pieces, so the same meaning costs more tokens. That means higher cost, less room in the context window, and often slightly worse results for those languages. A larger multilingual share in the tokenizer&#x27;s training text, and a bigger vocabulary, both help narrow the gap. DeepSeek-V4&#x27;s report lists a larger multilingual corpus among its data choices.</p>
+<h2 id="why-spelling-and-arithmetic-are-awkward">Why spelling and arithmetic are awkward</h2>
+<p>The model never sees letters. If &quot;strawberry&quot; arrives as two or three tokens, counting its letters means recalling spelling from training rather than looking at it. Numbers have the same problem. A long number may be cut into chunks that do not line up with digits or place value, so column arithmetic is harder than it looks. These are side effects of the tokenizer, not signs that the model cannot learn the task.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>Next, <a href="/lessons/attention-and-the-transformer/">Attention and the transformer</a> shows what the model does with a sequence of tokens. To see how many tokens real training runs use, read <a href="/lessons/pretraining-data/">Pretraining data</a> and watch the data chapters of the frontier training and open models films.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=87"><span class="play">▶</span><b>Data</b><span>What it takes to train a frontier model · 1:27</span></a><a href="/films/open-models/#t=559"><span class="play">▶</span><b>Data</b><span>Inside the strongest open models · 9:19</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/1508.07909" target="_blank" rel="noopener">Neural Machine Translation of Rare Words with Subword Units (BPE)</a></li><li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#why-not-words-and-why-not-letters">Why not words, and why not letters</a></li><li><a href="#how-the-pieces-are-chosen">How the pieces are chosen</a></li><li><a href="#vocabulary-size-is-a-trade-off">Vocabulary size is a trade-off</a></li><li><a href="#why-tokens-cost-money-and-context">Why tokens cost money and context</a></li><li><a href="#languages-are-not-treated-equally">Languages are not treated equally</a></li><li><a href="#why-spelling-and-arithmetic-are-awkward">Why spelling and arithmetic are awkward</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/what-is-a-language-model/" data-lesson="what-is-a-language-model"><span class="lnum">01</span><span class="lbody"><b>What a language model actually is</b><span>A language model is a function that predicts the next piece of text. Everything else, from chat to code, is built on top of that one trick.</span><span class="lmeta">Beginner · 6 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/attention-and-the-transformer/" data-lesson="attention-and-the-transformer"><span class="lnum">03</span><span class="lbody"><b>Attention and the transformer</b><span>Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/what-is-a-language-model/"><span>Previous</span><b>What a language model actually is</b></a><a class="next" href="/lessons/attention-and-the-transformer/"><span>Next</span><b>Attention and the transformer</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

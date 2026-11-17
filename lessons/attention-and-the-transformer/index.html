@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Attention and the transformer · Learn · Renaissance Labs</title>
+<meta name="description" content="Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/attention-and-the-transformer/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Attention and the transformer · Learn · Renaissance Labs">
+<meta property="og:description" content="Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/attention-and-the-transformer/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Attention and the transformer · Learn · Renaissance Labs">
+<meta name="twitter:description" content="Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Attention and the transformer", "description": "Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT9M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="attention-and-the-transformer">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · The basics · Lesson 3</p>
+  <h1>Attention and the transformer</h1><p class="lede">Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.</p>
+  <p class="meta"><span>Intermediate</span><span>9 min read</span><span>2 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>After <a href="/lessons/tokens/">tokenization</a>, a model holds a row of integer IDs. The <strong>transformer</strong>, introduced in the paper <a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a>, is the machine that turns that row into a prediction for the next token. Its central idea is <strong>attention</strong>.</p>
+<h2 id="embeddings-a-list-of-numbers-per-token">Embeddings: a list of numbers per token</h2>
+<p>Each token ID is looked up in a table and replaced by a list of numbers called an <strong>embedding</strong>. These lists are learned during training. Tokens that are used in similar ways end up with similar lists. At this point each token still knows nothing about its neighbours: &quot;bank&quot; has the same embedding in &quot;river bank&quot; and &quot;bank loan&quot;.</p>
+<h2 id="attention-which-earlier-words-matter">Attention: which earlier words matter</h2>
+<p>Meaning depends on context. In &quot;The trophy did not fit in the suitcase because it was too big&quot;, the word &quot;it&quot; refers to the trophy. To process &quot;it&quot;, the model needs to look back and find &quot;trophy&quot;.</p>
+<p>Attention does exactly that. For each token, it scores every earlier token for relevance, turns the scores into weights that add up to one, and mixes the earlier tokens&#x27; information according to those weights. A token with a high weight contributes a lot; one with a low weight is nearly ignored.</p>
+<p>Try it below. The sentence is fixed, and the weights are illustrative: they show the kind of pattern attention can learn, not numbers from a real model.</p>
+<div class="widget" data-widget="attention" aria-live="polite"></div>
+<h2 id="query-key-and-value">Query, key and value</h2>
+<p>The scoring uses three vectors made from each token&#x27;s current representation, by three learned transformations.</p>
+<ul><li>The <strong>query</strong> says what this token is looking for.</li><li>The <strong>key</strong> says what this token offers to others.</li><li>The <strong>value</strong> is the information it passes on if it is chosen.</li></ul>
+<p>A token&#x27;s query is compared with the keys of earlier tokens. A good match gives a high score. The softmax function converts all the scores into weights, and the output is the weighted sum of the values. Nothing here is hand-written. The three transformations are learned like every other parameter.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Attention is a learned, soft lookup. Each token asks a question, every earlier token advertises what it holds, and the best matches contribute most.</p></aside>
+<h2 id="many-heads-many-layers">Many heads, many layers</h2>
+<p>One attention pattern is not enough. A sentence has grammar, reference, position and topic all at once. So the model runs many attention calculations side by side, called <strong>heads</strong>, each with its own learned transformations. One head might track the subject of a verb, another the closest noun. Their outputs are combined.</p>
+<p>The whole block, attention followed by a small feed-forward network, is then <strong>stacked</strong> many times. The open models in our films have between 43 and 93 layers. Early layers tend to capture local patterns, later ones more abstract relationships. After the last layer, the final token&#x27;s representation is turned into a probability for every token in the vocabulary.</p>
+<ol class="flow"><li><b>Tokens</b><span>Integer IDs from the tokenizer</span></li><li><b>Embeddings</b><span>A learned list of numbers each</span></li><li><b>Attention + feed-forward</b><span>Repeated in every layer</span></li><li><b>Output</b><span>A probability for each possible next token</span></li></ol>
+<h2 id="why-attention-replaced-recurrence">Why attention replaced recurrence</h2>
+<p>Earlier language models, called recurrent networks, read a sentence one token at a time and carried a running summary forward. That has two problems. Training cannot be parallelised across positions, because step ten needs step nine. And information from far back gets squeezed through the summary and tends to fade.</p>
+<p>Attention lets every position look at every earlier position directly, and all positions can be computed at the same moment. During training, when the whole text is known in advance, that suits GPUs well. This parallelism is a large part of why transformers could be scaled up so far.</p>
+<div class="compare c2"><div class="col"><h4>Recurrent</h4><ul><li>One token after another</li><li>Past is compressed into a running summary</li><li>Hard to use many chips at once</li></ul></div><div class="col"><h4>Attention</h4><ul><li>All positions at once during training</li><li>Direct access to any earlier token</li><li>Cost grows with context length</li></ul></div></div>
+<h2 id="the-cost-of-long-context">The cost of long context</h2>
+<p>Because every token attends to all earlier tokens, the work for a full sequence grows roughly with the square of its length in standard attention. Double the context and the attention work roughly quadruples. At generation time, the model also keeps the keys and values of every earlier token so it does not recompute them. This store is the <strong>KV cache</strong>, and at a million tokens it becomes a memory bottleneck.</p>
+<p>Much recent engineering targets this. <a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">FlashAttention</a> makes exact attention faster by organising memory access. Grouped-query attention (<a href="https://arxiv.org/abs/2305.13245" target="_blank" rel="noopener">GQA</a>) shares keys and values across heads to shrink the cache. Sliding windows limit how far back a layer looks: MiMo-V2.6-Pro uses a 128-token window in most layers. DeepSeek-V4 compresses its keys and values, and reports that at one million tokens its Pro model needs 27% of the compute and 10% of the cache of its predecessor.</p>
+<div class="stats"><div><b>27%</b><span>of single-token compute, DeepSeek-V4-Pro vs V3.2 at 1M context</span></div><div><b>10%</b><span>of the KV cache, same comparison</span></div></div>
+<p>The open models film covers these variants in its KV cache chapter; the details are beyond this lesson.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>Next, <a href="/lessons/how-a-model-learns/">How a model learns</a> explains how the learned transformations in every layer get their values. For attention variants and the KV cache at scale, watch the KV cache chapter of the open models film, and for the overall recipe, the second chapter of the frontier training film.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/open-models/#t=372"><span class="play">▶</span><b>The KV cache problem</b><span>Inside the strongest open models · 6:12</span></a><a href="/films/frontier-training/#t=45"><span class="play">▶</span><b>The five ingredients</b><span>What it takes to train a frontier model · 0:45</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a></li><li><a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">FlashAttention</a></li><li><a href="https://arxiv.org/abs/2305.13245" target="_blank" rel="noopener">GQA: Training Generalized Multi-Query Transformer Models</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#embeddings-a-list-of-numbers-per-token">Embeddings: a list of numbers per token</a></li><li><a href="#attention-which-earlier-words-matter">Attention: which earlier words matter</a></li><li><a href="#query-key-and-value">Query, key and value</a></li><li><a href="#many-heads-many-layers">Many heads, many layers</a></li><li><a href="#why-attention-replaced-recurrence">Why attention replaced recurrence</a></li><li><a href="#the-cost-of-long-context">The cost of long context</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/tokens/" data-lesson="tokens"><span class="lnum">02</span><span class="lbody"><b>Tokens: how text becomes numbers</b><span>Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.</span><span class="lmeta">Beginner · 7 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/how-a-model-learns/" data-lesson="how-a-model-learns"><span class="lnum">04</span><span class="lbody"><b>How a model learns</b><span>Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/tokens/"><span>Previous</span><b>Tokens: how text becomes numbers</b></a><a class="next" href="/lessons/how-a-model-learns/"><span>Next</span><b>How a model learns</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

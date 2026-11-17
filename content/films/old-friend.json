@@ -1,0 +1,86 @@
+{
+ "id": "old-friend",
+ "title": "Hello, old friend: living with fear",
+ "kicker": "A kinder way to treat your fear",
+ "track": "minds",
+ "theme": "fear-shame",
+ "blurb": "Fear is an old companion trying to keep you safe. A gentle film about neither obeying it nor fighting it.",
+ "description": "A short, storybook-style film that treats fear as a small, loyal companion with one job: keeping you alive. It describes the two usual responses, obeying and fighting, and offers a third way: let fear come along, kneel to it as you would to a frightened child, and walk through the door together.",
+ "takeaways": [
+  "Fear's job is protection, and it cannot tell a cliff from a job interview.",
+  "Obeying fear shrinks life one room at a time, and ignoring it tends to make it louder.",
+  "Putting a feeling into words has been found to quiet the brain's alarm response.",
+  "Fear does not have to leave for you to move; it can come with you, just not drive.",
+  "Try a hand on your chest and a sentence you would say to a child in the dark."
+ ],
+ "chapters": [
+  {
+   "scene": "born",
+   "title": "Born with a companion"
+  },
+  {
+   "scene": "job",
+   "title": "Fear's only job"
+  },
+  {
+   "scene": "two",
+   "title": "Obeying or fighting"
+  },
+  {
+   "scene": "third",
+   "title": "A third way"
+  },
+  {
+   "scene": "with",
+   "title": "For I am with you"
+  },
+  {
+   "scene": "turn",
+   "title": "Kneeling to your fear"
+  },
+  {
+   "scene": "through",
+   "title": "Through the door together"
+  },
+  {
+   "scene": "close",
+   "title": "Hello, old friend"
+  },
+  {
+   "scene": "sources",
+   "title": "Sources"
+  }
+ ],
+ "lessons": [],
+ "sources": [
+  {
+   "title": "Frank Herbert (1965), Dune, lines from the Litany Against Fear",
+   "url": ""
+  },
+  {
+   "title": "Lieberman et al. (2007), putting feelings into words and amygdala response",
+   "url": ""
+  },
+  {
+   "title": "Coan, Schaefer and Davidson (2006), hand-holding and the neural response to threat",
+   "url": ""
+  },
+  {
+   "title": "Coan et al. (2017), partner hand-holding follow-up study",
+   "url": ""
+  },
+  {
+   "title": "Gross (2002), emotion regulation and suppression",
+   "url": ""
+  },
+  {
+   "title": "Craske et al. (2014), inhibitory learning approach to exposure therapy",
+   "url": ""
+  },
+  {
+   "title": "Isaiah 41:10; Qur'an 20:46; the Gospels (translations vary)",
+   "url": ""
+  }
+ ],
+ "level": "Beginner"
+}

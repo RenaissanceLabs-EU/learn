@@ -1,0 +1,110 @@
+{
+  "id": "burnout",
+  "title": "Running on empty: understanding burnout",
+  "kicker": "What it is, why it happens, five steps back",
+  "track": "minds",
+  "theme": "recovery",
+  "blurb": "If you wake up already tired, you may not be lazy. Burnout has a shape that research describes, and five steps that help you come back.",
+  "description": "Burnout is what happens after a long time under more pressure than you can recover from. The film explains its three parts and why it arises when work takes more than it gives back. It then walks through five steps: stop the drain, change the load, change the voice in your head, rebuild the basics and lean on other people.",
+  "takeaways": [
+    "Researchers describe burnout as exhaustion, cynicism and feeling less effective, after long pressure without enough recovery.",
+    "In the demands and resources model, burnout is usually a mismatch: too much going out and too little coming in, for too long.",
+    "Programs aimed at the organization, such as workload and teamwork, tended to work better than programs aimed at the individual.",
+    "Psychological detachment, leaving work in your head as well as in your evenings, is the most studied recovery skill.",
+    "Withdrawing usually makes burnout heavier, and telling one person the real answer is a way to start."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "You used to care"
+    },
+    {
+      "scene": "what",
+      "title": "What burnout is"
+    },
+    {
+      "scene": "why",
+      "title": "Why it happens"
+    },
+    {
+      "scene": "rest",
+      "title": "Step 1: Stop the drain"
+    },
+    {
+      "scene": "load",
+      "title": "Step 2: Change the load"
+    },
+    {
+      "scene": "mind",
+      "title": "Step 3: Your inner voice"
+    },
+    {
+      "scene": "body",
+      "title": "Step 4: Rebuild basics"
+    },
+    {
+      "scene": "people",
+      "title": "Step 5: Other people"
+    },
+    {
+      "scene": "week",
+      "title": "A week to begin"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [],
+  "sources": [
+    {
+      "title": "Maslach, Schaufeli & Leiter (2001), Annual Review of Psychology",
+      "url": ""
+    },
+    {
+      "title": "Koutsimani et al. (2019), Frontiers in Psychology: burnout and depression",
+      "url": ""
+    },
+    {
+      "title": "Demerouti et al. (2001), Journal of Applied Psychology: the job demands-resources model",
+      "url": ""
+    },
+    {
+      "title": "Gynning et al. (2025), International Journal of Nursing Studies Advances",
+      "url": ""
+    },
+    {
+      "title": "Sonnentag & Fritz (2015), Journal of Organizational Behavior",
+      "url": ""
+    },
+    {
+      "title": "Karabinski et al. (2021), Journal of Occupational Health Psychology",
+      "url": ""
+    },
+    {
+      "title": "Speth et al. (2023), European Psychologist",
+      "url": ""
+    },
+    {
+      "title": "Panagioti et al. (2017), JAMA Internal Medicine",
+      "url": ""
+    },
+    {
+      "title": "Hashem et al. (2020), Mindfulness",
+      "url": ""
+    },
+    {
+      "title": "Ghasemi (2022), Psychotherapy Research",
+      "url": ""
+    },
+    {
+      "title": "Han et al. (2025), Healthcare",
+      "url": ""
+    }
+  ],
+  "level": "Beginner"
+}

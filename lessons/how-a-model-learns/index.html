@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How a model learns · Learn · Renaissance Labs</title>
+<meta name="description" content="Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/how-a-model-learns/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="How a model learns · Learn · Renaissance Labs">
+<meta property="og:description" content="Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/how-a-model-learns/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How a model learns · Learn · Renaissance Labs">
+<meta name="twitter:description" content="Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "How a model learns", "description": "Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT9M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="how-a-model-learns">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · The basics · Lesson 4</p>
+  <h1>How a model learns</h1><p class="lede">Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.</p>
+  <p class="meta"><span>Intermediate</span><span>9 min read</span><span>2 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>Before training, a model&#x27;s parameters are random numbers, and its predictions are noise. After training, the same architecture writes fluent text. Nothing changes in between except the values of those parameters. This lesson is about how they get adjusted.</p>
+<ol class="flow"><li><b>Take a batch</b><span>Chunks of real text</span></li><li><b>Predict</b><span>Probabilities for each next token</span></li><li><b>Measure loss</b><span>How surprised was the model?</span></li><li><b>Update</b><span>Nudge every parameter slightly</span></li></ol>
+<h2 id="loss-how-surprised-was-the-model">Loss: how surprised was the model</h2>
+<p>For every position in the text, the model gives a probability to the token that actually came next. The <strong>loss</strong> turns that into one number. In <strong>cross-entropy</strong> loss, it is the negative logarithm of the probability given to the right answer. In plain words: how surprised was the model by what really happened.</p>
+<div class="example"><span class="ex-t">Surprise in numbers</span><p>The real next token was &quot;Paris&quot;.</p><p>Model gave it 90%: loss = -ln(0.9) = 0.11</p><p>Model gave it 50%: loss = -ln(0.5) = 0.69</p><p>Model gave it 1%: loss = -ln(0.01) = 4.6</p><p>Confident and right costs little. Confident and wrong costs a lot.</p></div>
+<p>The training loss is the average over all positions in a batch. Lower is better, and it falls quickly at first and then slowly.</p>
+<h2 id="gradient-descent">Gradient descent</h2>
+<p>The loss depends on every parameter. The <strong>gradient</strong> is the set of numbers that says, for each parameter, how the loss would change if that parameter were nudged up a little. <strong>Gradient descent</strong> moves each parameter a small step in the direction that lowers the loss. Repeat that many times and the loss goes down.</p>
+<p>Picture standing on a hilly landscape in fog, feeling the slope under your feet and stepping downhill. The landscape here has billions of dimensions, but the rule is the same.</p>
+<h2 id="backpropagation-honestly">Backpropagation, honestly</h2>
+<p>How do we get the gradient for billions of parameters? <strong>Backpropagation</strong> applies the chain rule of calculus layer by layer. The forward pass computes the prediction and the loss. The backward pass starts at the loss and works back through each layer, passing along how much each intermediate value contributed to the error, and records the gradient for each parameter on the way. It costs about as much as a small multiple of the forward pass, which is why training is far more expensive than using a model. You do not need to do it by hand, because software frameworks derive it automatically.</p>
+<h2 id="learning-rate-warmup-and-batch-size">Learning rate, warmup and batch size</h2>
+<p>The <strong>learning rate</strong> sets the size of each step. Too small and training crawls. Too large and the loss bounces or blows up. Early in training the model is fragile, so the rate usually starts near zero and rises over the first steps, a period called <strong>warmup</strong>, then decays over the run. These schedules are tuned carefully, and large runs sometimes suffer sudden loss spikes that need special handling (see <a href="/lessons/when-training-breaks/">When training breaks</a>).</p>
+<p>A step is not computed from one example. It uses a <strong>batch</strong> of many sequences, and the gradient is averaged over them. Bigger batches give a less noisy gradient and use more chips efficiently. Frontier runs use huge batches: DeepSeek-V4-Pro&#x27;s batch reaches 94.4 million tokens.</p>
+<h2 id="optimizers-adam-and-after">Optimizers: Adam and after</h2>
+<p>Plain gradient descent uses the raw gradient. An <strong>optimizer</strong> improves on that. The most widely used is <a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam</a>, which keeps a running average of each parameter&#x27;s recent gradients and their size, so every parameter gets a step scaled to its own history. Many recent open models use a newer family called Muon for most weights, with Adam-style updates for embeddings and norms. DeepSeek-V4, Kimi and GLM-5 reports describe variants of it.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Training does not store facts. It repeatedly shifts billions of numbers so that real text becomes slightly less surprising.</p></aside>
+<h2 id="epochs-tokens-and-checkpoints">Epochs, tokens and checkpoints</h2>
+<p>Smaller machine learning tasks count progress in <strong>epochs</strong>: one pass over the whole dataset. For language models, the dataset is so large that it is usually seen about once, so people count <strong>tokens seen</strong> instead. GLM-5 trained on 28.5 trillion tokens across all stages. A common rule of thumb for compute is about six times the active parameters times the tokens, which for GLM-5 gives roughly 7e24 operations (our own arithmetic, shown in the film).</p>
+<p>A <strong>checkpoint</strong> is a saved snapshot of the parameters, usually together with the optimizer&#x27;s running averages and the position in the data. Runs last for weeks or months on machines that fail, so checkpoints are what let a job resume after a crash, and they are what you can later fine-tune, evaluate or release.</p>
+<div class="stats"><div><b>94.4M</b><span>tokens in DeepSeek-V4-Pro&#x27;s largest batch</span></div><div><b>28.5T</b><span>tokens seen by GLM-5 across all stages</span></div></div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>What the model learns from depends on what it reads, so <a href="/lessons/pretraining-data/">Pretraining data</a> is the natural next step. For how model size, data and compute trade off, see the scaling chapter of the frontier training film, and the overall recipe in its second chapter.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=45"><span class="play">▶</span><b>The five ingredients</b><span>What it takes to train a frontier model · 0:45</span></a><a href="/films/frontier-training/#t=186"><span class="play">▶</span><b>Scaling and active parameters</b><span>What it takes to train a frontier model · 3:06</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam: A Method for Stochastic Optimization</a></li><li><a href="https://arxiv.org/abs/2001.08361" target="_blank" rel="noopener">Scaling Laws for Neural Language Models</a></li><li><a href="https://arxiv.org/abs/1706.03762" target="_blank" rel="noopener">Attention Is All You Need</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#loss-how-surprised-was-the-model">Loss: how surprised was the model</a></li><li><a href="#gradient-descent">Gradient descent</a></li><li><a href="#backpropagation-honestly">Backpropagation, honestly</a></li><li><a href="#learning-rate-warmup-and-batch-size">Learning rate, warmup and batch size</a></li><li><a href="#optimizers-adam-and-after">Optimizers: Adam and after</a></li><li><a href="#epochs-tokens-and-checkpoints">Epochs, tokens and checkpoints</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/attention-and-the-transformer/" data-lesson="attention-and-the-transformer"><span class="lnum">03</span><span class="lbody"><b>Attention and the transformer</b><span>Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/pretraining-data/" data-lesson="pretraining-data"><span class="lnum">05</span><span class="lbody"><b>Pretraining data</b><span>Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/attention-and-the-transformer/"><span>Previous</span><b>Attention and the transformer</b></a><a class="next" href="/lessons/pretraining-data/"><span>Next</span><b>Pretraining data</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

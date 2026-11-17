@@ -1,0 +1,130 @@
+{
+  "id": "attachment",
+  "title": "A secure base: the four patterns of attachment",
+  "kicker": "What attachment research says about healing",
+  "track": "minds",
+  "theme": "connection",
+  "blurb": "Attachment is a tendency, not destiny. A look at the four patterns and what the research says actually helps people grow more secure.",
+  "description": "From Bowlby and Ainsworth to adult relationships, this film walks through how attachment forms, the four infant patterns, and the two dimensions researchers use for adults. It reports the strong evidence, the modest evidence and the studies that disagree, then ends with what seems to help.",
+  "takeaways": [
+    "Attachment in adults is better described by two dimensions, anxiety and avoidance, than by four boxes.",
+    "Attachment security is moderately stable over time, and the research finds no significant stability across gaps longer than fifteen years.",
+    "Responsiveness, noticing and answering another person's signals, is the ingredient that keeps showing up in programs that help.",
+    "Well-known programs have shown small or no effects in some trials, so effects are generally small to moderate.",
+    "Your history shaped you. It did not sentence you."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "Who would you call?"
+    },
+    {
+      "scene": "bowlby",
+      "title": "Bowlby and Ainsworth"
+    },
+    {
+      "scene": "patterns",
+      "title": "The four infant patterns"
+    },
+    {
+      "scene": "adult",
+      "title": "Anxiety and avoidance"
+    },
+    {
+      "scene": "notdestiny",
+      "title": "Is it destiny?"
+    },
+    {
+      "scene": "ingredient",
+      "title": "What shifts it"
+    },
+    {
+      "scene": "anxious",
+      "title": "If you lean anxious"
+    },
+    {
+      "scene": "avoidant",
+      "title": "If you lean avoidant"
+    },
+    {
+      "scene": "disorg",
+      "title": "If fearful or disorganized"
+    },
+    {
+      "scene": "healing",
+      "title": "How healing happens"
+    },
+    {
+      "scene": "toolkit",
+      "title": "A five-part toolkit"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [],
+  "sources": [
+    {
+      "title": "Madigan et al. (2023), Psychological Bulletin: global distribution of infant attachment patterns",
+      "url": ""
+    },
+    {
+      "title": "Spangler & Grossmann (1993), Child Development",
+      "url": ""
+    },
+    {
+      "title": "Zhang et al. (2022), Journal of Personality and Social Psychology",
+      "url": ""
+    },
+    {
+      "title": "Pinquart et al. (2013), Attachment & Human Development: stability of attachment",
+      "url": ""
+    },
+    {
+      "title": "van IJzendoorn (1995), Psychological Bulletin",
+      "url": ""
+    },
+    {
+      "title": "Bakermans-Kranenburg et al. (2003), Psychological Bulletin: sensitivity interventions",
+      "url": ""
+    },
+    {
+      "title": "Bernard et al. (2012), Child Development: Attachment and Biobehavioral Catch-up",
+      "url": ""
+    },
+    {
+      "title": "Facompré et al. (2017), Development & Psychopathology",
+      "url": ""
+    },
+    {
+      "title": "Taylor et al. (2015), Psychotherapy Research: attachment and therapy",
+      "url": ""
+    },
+    {
+      "title": "Saunders et al. (2011), Attachment & Human Development: earned security",
+      "url": ""
+    },
+    {
+      "title": "Coan et al. (2006, 2017): holding hands and the threat response",
+      "url": ""
+    },
+    {
+      "title": "Rathgeber et al. (2019), Journal of Marital and Family Therapy: emotionally focused couple therapy",
+      "url": ""
+    },
+    {
+      "title": "Eubanks et al. (2018), Psychotherapy: repairing ruptures in the therapeutic alliance",
+      "url": ""
+    },
+    {
+      "title": "Gillath et al. (2022), Personality and Social Psychology Review: security priming",
+      "url": ""
+    }
+  ],
+  "level": "Intermediate"
+}

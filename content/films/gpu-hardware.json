@@ -1,0 +1,119 @@
+{
+  "id": "gpu-hardware",
+  "title": "Where the silicon ends",
+  "kicker": "What a GPU limits and what software can change",
+  "track": "machines",
+  "theme": "hardware",
+  "blurb": "Why Hopper cannot run 4-bit math at full speed and Blackwell can, and which GPU limits are carved in silicon rather than code.",
+  "description": "Hopper has no 4-bit tensor cores and Blackwell does. The film separates what is fixed in silicon from what software can still change. It covers how a GPU runs work, the roofline model, dense tensor formats for NVIDIA and AMD, 4-bit weights on Hopper, native NVFP4 training and the CUDA and ROCm software layer.",
+  "takeaways": [
+    "A tensor core is fixed hardware, reached only through instructions that list the number formats it supports.",
+    "Decoding one token at a time is memory bound, while large-batch training is compute bound, and a number format affects each differently.",
+    "Four-bit weights on Hopper cut memory traffic about four times, but the multiply still runs in 16 bits.",
+    "On Blackwell B200, dense 4-bit peak is twice 8-bit, and on B300 it is three times.",
+    "Software can change how many bytes move and how close you get to the roofline, but it cannot raise the roofline."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "Intro"
+    },
+    {
+      "scene": "exec",
+      "title": "How a GPU runs work"
+    },
+    {
+      "scene": "roofline",
+      "title": "Compute bound or memory bound"
+    },
+    {
+      "scene": "fixed",
+      "title": "What fixed silicon means"
+    },
+    {
+      "scene": "tricks",
+      "title": "Why tricks fall short"
+    },
+    {
+      "scene": "nvidia",
+      "title": "NVIDIA generations"
+    },
+    {
+      "scene": "amd",
+      "title": "AMD generations"
+    },
+    {
+      "scene": "limits",
+      "title": "Hardware limits and software"
+    },
+    {
+      "scene": "fourbit",
+      "title": "4-bit weights on Hopper"
+    },
+    {
+      "scene": "nvfp4",
+      "title": "Native NVFP4 training"
+    },
+    {
+      "scene": "blockscale",
+      "title": "Block scales and FP8"
+    },
+    {
+      "scene": "software",
+      "title": "The software layer"
+    },
+    {
+      "scene": "takeaways",
+      "title": "Recap"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [
+    "gpus-and-parallelism",
+    "parameters-precision-and-memory",
+    "distillation-and-quantization",
+    "inference-and-sampling"
+  ],
+  "sources": [
+    {
+      "title": "Volta architecture whitepaper (NVIDIA)",
+      "url": "https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf"
+    },
+    {
+      "title": "NVIDIA Hopper architecture in depth",
+      "url": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/"
+    },
+    {
+      "title": "NVIDIA PTX instruction set manual (wgmma.mma_async)",
+      "url": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html"
+    },
+    {
+      "title": "Pretraining Large Language Models with NVFP4 (NVIDIA)",
+      "url": "https://arxiv.org/abs/2509.25149"
+    },
+    {
+      "title": "MARLIN: Mixed-Precision Auto-Regressive Parallel Inference on Large Language Models",
+      "url": "https://arxiv.org/abs/2408.11743"
+    },
+    {
+      "title": "Introducing Machete: a mixed-input GEMM kernel (Red Hat)",
+      "url": "https://developers.redhat.com/articles/2024/10/14/introducing-machete-mixed-input-gemm-kernel"
+    },
+    {
+      "title": "DeepSeek-V3 technical report",
+      "url": "https://arxiv.org/abs/2412.19437"
+    },
+    {
+      "title": "NVIDIA GB300 NVL72",
+      "url": "https://www.nvidia.com/en-us/data-center/gb300-nvl72/"
+    },
+    {
+      "title": "AMD HIP: what is HIP",
+      "url": "https://rocm.docs.amd.com/projects/HIP/en/latest/what_is_hip.html"
+    }
+  ],
+  "level": "Advanced"
+}

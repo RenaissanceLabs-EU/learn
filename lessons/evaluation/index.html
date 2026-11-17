@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evaluation · Learn · Renaissance Labs</title>
+<meta name="description" content="How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/evaluation/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Evaluation · Learn · Renaissance Labs">
+<meta property="og:description" content="How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/evaluation/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Evaluation · Learn · Renaissance Labs">
+<meta name="twitter:description" content="How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Evaluation", "description": "How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT8M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="evaluation">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · After pre-training · Lesson 13</p>
+  <h1>Evaluation</h1><p class="lede">How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.</p>
+  <p class="meta"><span>Intermediate</span><span>8 min read</span><span>3 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>Training produces a model. Evaluation tells you what you actually got. It sounds like the easy part, and it is among the hardest, because a language model can do an open-ended range of things and any test samples only a few of them.</p>
+<h2 id="what-a-benchmark-measures">What a benchmark measures</h2>
+<p>A <strong>benchmark</strong> is a fixed set of tasks with a way to score the answers. MMLU, for example, is a large collection of multiple-choice questions across many school and professional subjects, scored by accuracy. Coding benchmarks give the model a task and run the resulting code against tests. Agent benchmarks give it a computer-like environment and check whether the job got done.</p>
+<p>The frontier training film shows what current reports look like. DeepSeek V4 Pro, in its maximum reasoning mode, reports 80.6 on SWE-bench Verified and 67.9 on Terminal Bench 2.0. The test setup is itself an engineering system: those agent tests allow up to 500 steps and 512,000 tokens of context.</p>
+<p>A benchmark score answers one narrow question: how does this model do on these tasks, under this setup? Changing the prompt, the number of attempts or the reasoning budget can change the result, so a number without its setup is only half a fact.</p>
+<h2 id="contamination-and-saturation">Contamination and saturation</h2>
+<p>Two problems age every benchmark.</p>
+<p><strong>Contamination</strong> means the test questions, or their answers, were in the training data. A model that has seen the answer key looks smarter than it is. Web-scale data makes this hard to rule out, since public benchmarks are copied all over the internet.</p>
+<p><strong>Saturation</strong> means models score so close to the maximum that the test no longer separates them. When most strong models land in the high nineties, a one-point gap is noise. Benchmark makers respond by building harder tests, and the cycle repeats.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Any public benchmark is a target. Once a number matters, people train toward it, deliberately or not, and the number stops meaning what it did.</p></aside>
+<h2 id="human-preference-arenas">Human preference arenas</h2>
+<p>Some leaderboards skip fixed questions. In an <strong>arena</strong>, a person types any prompt, receives answers from two anonymous models, and picks the better one. Many such votes are turned into a rating on the Elo scale, the same system used in chess.</p>
+<p>This captures what benchmarks miss, such as tone and usefulness on real requests. It also rewards what people like at a glance, which can include length and confident formatting. And it can disagree with other rankings: in the open models film&#x27;s snapshot of an arena text leaderboard, only one open-weights model sits in the top 15 (rank 11), roughly 35 Elo behind first place, even though several open models rank higher on agent-heavy indexes.</p>
+<h2 id="llm-as-judge">LLM as judge</h2>
+<p>Reading thousands of answers is slow, so teams often ask a strong model to grade them. The MT-Bench paper found that such judges agree with human preferences a lot of the time, which makes them useful. It also catalogued biases: a judge can favour longer answers, favour the answer shown first, and favour text written by its own model family. Careful setups randomise answer order, use written rubrics, and check the judge against human ratings now and then.</p>
+<h2 id="composite-indices">Composite indices</h2>
+<p>A single number is easier to read than ten. The <strong>Artificial Analysis Intelligence Index</strong>, version 4.3.2, is a weighted average of 10 evaluations grouped into four categories (agents, coding, general capability and scientific reasoning) at 25% each.</p>
+<figure class="bars"><div class="bars-t">Open-weights models on Intelligence Index v4.3.2</div><div class="brow"><span class="bar-l">MiMo-V2.6-Pro</span><span class="bar-track"><i style="width:100.0%"></i></span><span class="bar-v">46</span><span class=bar-n>Xiaomi</span></div><div class="brow"><span class="bar-l">DeepSeek V4.1 Flash (Max)</span><span class="bar-track"><i style="width:97.8%"></i></span><span class="bar-v">45</span><span class=bar-n>DeepSeek</span></div><div class="brow"><span class="bar-l">GLM-5.3 (Max)</span><span class="bar-track"><i style="width:97.8%"></i></span><span class="bar-v">45</span><span class=bar-n>Z.ai</span></div><div class="brow"><span class="bar-l">Qwen3.8 27B (xhigh)</span><span class="bar-track"><i style="width:73.9%"></i></span><span class="bar-v">34</span><span class=bar-n>Alibaba</span></div></figure>
+<p>The catch is that the index gets harder over versions. The open models film notes that Nemotron 3 Ultra scored 47.7 at the index&#x27;s launch in June 2026 and scores 23 on v4.3.2. Scores are only comparable inside one version. GLM-5&#x27;s report of 50 against 42 for its predecessor, an average gain of about 20%, was on version 4.0.</p>
+<h2 id="private-held-out-evals">Private held-out evals</h2>
+<p>Because public tests leak and saturate, serious teams keep <strong>held-out</strong> evaluations: questions that were never published and never used for training or tuning. Their job is to answer one question honestly, how does the model do on something it cannot have memorised? Teams also read real transcripts, because benchmarks and rewards can both be gamed, and a model that scores well can still fail in strange ways.</p>
+<h2 id="evaluating-your-own-use-case">Evaluating your own use case</h2>
+<p>For a particular application, public rankings are only a starting list. A practical approach:</p>
+<ol><li>Collect 50 to 200 real examples of the task, including awkward ones.</li><li>Write down what a good answer looks like, ideally as a checklist.</li><li>Score with a check where possible (a test, an exact match) and a judge where not, and read a sample by hand.</li><li>Keep the set private, and rerun it whenever the model, the prompt or the settings change.</li></ol>
+<p>Those sizes are a rule of thumb. The point is that a small set that resembles your real traffic tells you more than a famous leaderboard that does not.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p><a href="/lessons/preference-tuning-and-rl/">Preference tuning and RL</a> shows how rewards, which are a kind of evaluation inside training, can also be gamed. For what makes a model&#x27;s weights usable by others, see <a href="/lessons/what-open-means/">What open means</a>. The Eval chapter of the frontier training film and the Board and Arena chapters of the open models film show the numbers in context.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=719"><span class="play">▶</span><b>Evaluation</b><span>What it takes to train a frontier model · 11:59</span></a><a href="/films/open-models/#t=25"><span class="play">▶</span><b>How strength is measured</b><span>Inside the strongest open models · 0:25</span></a><a href="/films/open-models/#t=750"><span class="play">▶</span><b>The Arena view</b><span>Inside the strongest open models · 12:30</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/2009.03300" target="_blank" rel="noopener">Measuring Massive Multitask Language Understanding (MMLU)</a></li><li><a href="https://arxiv.org/abs/2306.05685" target="_blank" rel="noopener">Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena</a></li><li><a href="https://arxiv.org/abs/2110.14168" target="_blank" rel="noopener">Training Verifiers to Solve Math Word Problems</a></li><li><a href="https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index" target="_blank" rel="noopener">Artificial Analysis Intelligence Index</a></li><li><a href="https://arxiv.org/abs/2602.15763" target="_blank" rel="noopener">GLM-5: from Vibe Coding to Agentic Engineering</a></li><li><a href="https://arxiv.org/abs/2606.19348" target="_blank" rel="noopener">DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-a-benchmark-measures">What a benchmark measures</a></li><li><a href="#contamination-and-saturation">Contamination and saturation</a></li><li><a href="#human-preference-arenas">Human preference arenas</a></li><li><a href="#llm-as-judge">LLM as judge</a></li><li><a href="#composite-indices">Composite indices</a></li><li><a href="#private-held-out-evals">Private held-out evals</a></li><li><a href="#evaluating-your-own-use-case">Evaluating your own use case</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/preference-tuning-and-rl/" data-lesson="preference-tuning-and-rl"><span class="lnum">12</span><span class="lbody"><b>Preference tuning and reinforcement learning</b><span>How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/what-open-means/" data-lesson="what-open-means"><span class="lnum">16</span><span class="lbody"><b>What &quot;open&quot; means for AI models</b><span>&quot;Open&quot; can mean downloadable weights, public code, released data or a full training recipe. These are different things, with different freedoms, and few releases include all four.</span><span class="lmeta">Beginner · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/distillation-and-quantization/" data-lesson="distillation-and-quantization"><span class="lnum">14</span><span class="lbody"><b>Distillation and quantization</b><span>Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/preference-tuning-and-rl/"><span>Previous</span><b>Preference tuning and reinforcement learning</b></a><a class="next" href="/lessons/distillation-and-quantization/"><span>Next</span><b>Distillation and quantization</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

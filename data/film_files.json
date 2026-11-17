@@ -1,0 +1,23 @@
+{
+ "frontier-training": "frontier-training-video/out/what-it-takes-to-train-a-frontier-model.mp4",
+ "gpu-hardware": "gpu-hardware-video/out/where-the-silicon-ends-gpu-hardware-limits.mp4",
+ "inkling": "inkling-video/out/inkling-2-small-training-cost-and-4bit-plan.mp4",
+ "open-models": "open-models-video/out/inside-the-strongest-open-models.mp4",
+ "cluster-agents": "cluster-agents-video/out/running-agents-safely-on-a-cluster.mp4",
+ "entropy": "entropy-video/out/entropy-mind-and-machine.mp4",
+ "intelligence": "intelligence-video/out/what-is-intelligence.mp4",
+ "memory": "memory-video/out/memory-is-an-experience.mp4",
+ "present": "present-video/out/the-only-place-experience-happens.mp4",
+ "future": "future-video/out/the-future-is-a-story.mp4",
+ "fear": "fear-video/out/fear-not.mp4",
+ "old-friend": "old-friend-video/out/hello-old-friend.mp4",
+ "shame": "shame-video/out/the-other-side-of-embarrassment.mp4",
+ "fool": "fool-video/out/make-a-fool-of-yourself.mp4",
+ "envy": "envy-video/out/envy-is-a-compass.mp4",
+ "attachment": "attachment-video/out/a-secure-base-attachment.mp4",
+ "attachment-heal": "attachment-heal-video/out/understanding-attachment-and-healing.mp4",
+ "not-alone": "not-alone-video/out/you-are-not-alone-in-here.mp4",
+ "burnout": "burnout-video/out/running-on-empty-burnout.mp4",
+ "emotion-regulation": "emotion-regulation-video/out/emotional-regulation-skill.mp4",
+ "act-first": "act-first-video/out/act-first-do-what-you-say.mp4"
+}

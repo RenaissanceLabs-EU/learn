@@ -1,0 +1,128 @@
+{
+  "id": "open-models",
+  "title": "Inside the strongest open models",
+  "kicker": "Architecture, data, recipes and what matters",
+  "track": "machines",
+  "theme": "open-ecosystem",
+  "blurb": "Ten leading open-weights models compared: sparse experts, compressed attention, stability, data, and why post-training seems to decide the score.",
+  "description": "The best open-weights model scores 46 on the Artificial Analysis Intelligence Index (v4.3.2) and the best closed model 58. The film compares ten open models: mixture of experts, long-context attention, training stability, data, and reinforcement learning. Its reading is that agentic post-training explains more of the gap than size or token count.",
+  "takeaways": [
+    "Index scores only compare within one version, because the benchmark gets harder with each release.",
+    "Nearly every top open model is a sparse mixture of experts, so only a small share of weights is used per token.",
+    "Compressed and hybrid attention keep the KV cache manageable at a million tokens of context.",
+    "Active parameters and training tokens predict score only weakly across these ten models, while agentic reinforcement learning stands out.",
+    "On Arena, which measures human preference, only one open model reaches the top fifteen."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "Intro"
+    },
+    {
+      "scene": "boards",
+      "title": "How strength is measured"
+    },
+    {
+      "scene": "board",
+      "title": "The top ten"
+    },
+    {
+      "scene": "prof1",
+      "title": "MiMo and DeepSeek"
+    },
+    {
+      "scene": "prof2",
+      "title": "GLM and Step"
+    },
+    {
+      "scene": "prof3",
+      "title": "Muse Spark, Kimi, Qwen"
+    },
+    {
+      "scene": "prof4",
+      "title": "The rest of the list"
+    },
+    {
+      "scene": "moe",
+      "title": "Sparse experts"
+    },
+    {
+      "scene": "kv",
+      "title": "The KV cache problem"
+    },
+    {
+      "scene": "hybrid",
+      "title": "Hybrid attention"
+    },
+    {
+      "scene": "mhc",
+      "title": "Residual stream fixes"
+    },
+    {
+      "scene": "stab",
+      "title": "Training stability"
+    },
+    {
+      "scene": "data",
+      "title": "Data"
+    },
+    {
+      "scene": "post",
+      "title": "Post-training"
+    },
+    {
+      "scene": "rl",
+      "title": "Reinforcement learning at scale"
+    },
+    {
+      "scene": "drivers",
+      "title": "What predicts the score"
+    },
+    {
+      "scene": "arena",
+      "title": "The Arena view"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    }
+  ],
+  "lessons": [
+    "mixture-of-experts",
+    "what-open-means",
+    "evaluation",
+    "preference-tuning-and-rl",
+    "attention-and-the-transformer"
+  ],
+  "sources": [
+    {
+      "title": "MiMo-V2.6 technical report (Xiaomi)",
+      "url": "https://arxiv.org/abs/2610.11959"
+    },
+    {
+      "title": "DeepSeek-V4 technical report",
+      "url": "https://arxiv.org/abs/2606.19348"
+    },
+    {
+      "title": "DeepSeek-V4.1-Flash",
+      "url": "https://arxiv.org/abs/2609.19969"
+    },
+    {
+      "title": "GLM-5 technical report (Z.ai)",
+      "url": "https://arxiv.org/abs/2602.15763"
+    },
+    {
+      "title": "Kimi K3 technical report (Moonshot)",
+      "url": "https://arxiv.org/abs/2607.24653"
+    },
+    {
+      "title": "Artificial Analysis Intelligence Index and open-weights model listings",
+      "url": "https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index"
+    },
+    {
+      "title": "Arena text leaderboard via the benchlm.ai aggregator",
+      "url": ""
+    }
+  ],
+  "level": "Intermediate"
+}

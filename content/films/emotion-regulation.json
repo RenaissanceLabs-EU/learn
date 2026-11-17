@@ -1,0 +1,110 @@
+{
+  "id": "emotion-regulation",
+  "title": "How to feel and still choose",
+  "kicker": "Emotional regulation as a skill you can learn",
+  "track": "minds",
+  "theme": "recovery",
+  "blurb": "Emotional regulation is not feeling less. It is a skill, built mostly with other people, and five practices can strengthen it.",
+  "description": "Emotional regulation is the set of attempts we make to influence which emotions we have, when, and how we feel and show them. The film explains where the skill comes from and why a missing lesson can be learned at any age. It then offers five practices: name it, settle the body, change the meaning, plan for the hot moment and do it together.",
+  "takeaways": [
+    "Regulation is not feeling less or staying calm. It is letting the emotion be there while you choose what to do next.",
+    "The skill grows mostly with other people: children learn to calm themselves after a caregiver does it for them, again and again.",
+    "Reappraisal tends to lower both the feeling and its expression, while suppression lowers the expression but not the feeling.",
+    "Putting a feeling into words reduced amygdala activity in a brain imaging study.",
+    "An if-then plan, decided when you are calm, helps in the moment when you will not think clearly."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "Already replied"
+    },
+    {
+      "scene": "what",
+      "title": "What regulation is"
+    },
+    {
+      "scene": "origin",
+      "title": "Where the skill comes from"
+    },
+    {
+      "scene": "moments",
+      "title": "A map of an emotion"
+    },
+    {
+      "scene": "name",
+      "title": "Step 1: Name it"
+    },
+    {
+      "scene": "body",
+      "title": "Step 2: Settle the body"
+    },
+    {
+      "scene": "think",
+      "title": "Step 3: Change the meaning"
+    },
+    {
+      "scene": "plan",
+      "title": "Step 4: Plan ahead"
+    },
+    {
+      "scene": "people",
+      "title": "Step 5: Do it together"
+    },
+    {
+      "scene": "week",
+      "title": "A week of practice"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [],
+  "sources": [
+    {
+      "title": "Gross (2002), Psychophysiology: emotion regulation",
+      "url": ""
+    },
+    {
+      "title": "McRae & Gross (2020), Emotion",
+      "url": ""
+    },
+    {
+      "title": "Clamor et al. (2026), Psychological Bulletin",
+      "url": ""
+    },
+    {
+      "title": "Kim et al. (2025), Emotion",
+      "url": ""
+    },
+    {
+      "title": "Edler et al. (2024), Psychological Bulletin",
+      "url": ""
+    },
+    {
+      "title": "Sakiris et al. (2019), Clinical Psychology Review",
+      "url": ""
+    },
+    {
+      "title": "Antuña-Camblor et al. (2024), Clinical Psychology & Psychotherapy",
+      "url": ""
+    },
+    {
+      "title": "Lieberman et al. (2007), Psychological Science: putting feelings into words",
+      "url": ""
+    },
+    {
+      "title": "Zaccaro et al. (2018), Frontiers in Human Neuroscience: slow breathing",
+      "url": ""
+    },
+    {
+      "title": "Fincham et al. (2023), Scientific Reports",
+      "url": ""
+    }
+  ],
+  "level": "Beginner"
+}

@@ -1,0 +1,106 @@
+{
+ "id": "fear",
+ "title": "Fear not: the oldest advice in the world",
+ "kicker": "The Litany Against Fear and what traditions say",
+ "track": "minds",
+ "theme": "fear-shame",
+ "blurb": "Fear narrows the mind, and the oldest advice for it is company, staying with it, and opening the thing you avoid.",
+ "description": "Starting from the Litany Against Fear in Dune, the film follows the words fear not through many traditions and finds a shared shape: the answer to fear is company, not strength. It then shows why staying lets the wave pass, and ends with a small five-step practice for the week.",
+ "takeaways": [
+  "Under threat the brain shifts toward fast survival circuits, which is why fear can crowd out clear thinking.",
+  "Across many traditions the words fear not are followed by a promise of company: I am with you.",
+  "Having someone you love hold your hand has been found to weaken the brain's threat response.",
+  "Running from fear teaches the brain that running was needed; staying teaches that you can cope.",
+  "A small practice helps: name the fear, breathe out, tell one person, open one thing, then look at what remains."
+ ],
+ "chapters": [
+  {
+   "scene": "hook",
+   "title": "The unopened message"
+  },
+  {
+   "scene": "litany",
+   "title": "The Litany Against Fear"
+  },
+  {
+   "scene": "mind",
+   "title": "Fear as mind-killer"
+  },
+  {
+   "scene": "ancient",
+   "title": "Fear not across traditions"
+  },
+  {
+   "scene": "with",
+   "title": "The answer is company"
+  },
+  {
+   "scene": "through",
+   "title": "Fear is a wave"
+  },
+  {
+   "scene": "remain",
+   "title": "Where the fear has gone"
+  },
+  {
+   "scene": "dare",
+   "title": "A litany of your own"
+  },
+  {
+   "scene": "close",
+   "title": "Closing"
+  },
+  {
+   "scene": "sources",
+   "title": "Sources"
+  }
+ ],
+ "lessons": [],
+ "sources": [
+  {
+   "title": "Frank Herbert (1965), Dune, the Litany Against Fear",
+   "url": ""
+  },
+  {
+   "title": "Arnsten (2009), stress signalling pathways and prefrontal function",
+   "url": ""
+  },
+  {
+   "title": "Robertson et al. (2023), negative words and headline clicks",
+   "url": ""
+  },
+  {
+   "title": "Coan, Schaefer and Davidson (2006), hand-holding and the neural response to threat",
+   "url": ""
+  },
+  {
+   "title": "Coan et al. (2017), partner hand-holding follow-up study",
+   "url": ""
+  },
+  {
+   "title": "Craske et al. (2014), inhibitory learning approach to exposure therapy",
+   "url": ""
+  },
+  {
+   "title": "LaFreniere and Newman (2020), worries that did not come true",
+   "url": ""
+  },
+  {
+   "title": "Schwob et al. (2026), randomized trial in generalized anxiety",
+   "url": ""
+  },
+  {
+   "title": "Isaiah 41:10; Qur'an 20:46; Bhagavad Gita 16:1; 1 John 4:18 (translations vary)",
+   "url": ""
+  },
+  {
+   "title": "The abhaya mudra and the Mool Mantar of the Guru Granth Sahib",
+   "url": ""
+  },
+  {
+   "title": "Rabbi Nachman of Breslov, Likutey Moharan II:48",
+   "url": ""
+  }
+ ],
+ "level": "Beginner"
+}

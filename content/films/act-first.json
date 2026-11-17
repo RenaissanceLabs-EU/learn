@@ -1,0 +1,41 @@
+{
+  "id": "act-first",
+  "title": "Act first, and do what you say",
+  "kicker": "Small actions, self-trust and kind follow-through",
+  "track": "minds",
+  "theme": "recovery",
+  "blurb": "Motivation often follows action. A smaller, kinder way to close the gap between what you say you will do and what you do.",
+  "description": "The gap between saying and doing is one of the most common human experiences, and it says nothing about your worth. The film looks at why motivation often follows action, why keeping your word is really about self-trust, and four rules: promise less, shrink the action, plan when and where, and forgive the gaps.",
+  "takeaways": [
+    "Waiting to feel ready is a trap: in behavioral activation, people schedule small, meaningful actions before they feel like doing them.",
+    "Shrink the action until you are almost certain to do it, because finishing small things builds confidence.",
+    "An if-then plan decides the when and where in advance, so you are not negotiating with yourself in the moment.",
+    "The twenty-one-day habit rule is a myth: in one study, reaching a stable habit took anywhere from eighteen to 254 days.",
+    "After a slip, self-compassion was linked with more motivation to improve, not less."
+  ],
+  "chapters": [
+    {"scene": "hook", "title": "I'll start Monday"},
+    {"scene": "motivation", "title": "Motivation follows action"},
+    {"scene": "trust", "title": "Saying what you do"},
+    {"scene": "shrink", "title": "Shrink the action"},
+    {"scene": "plan", "title": "If-then plans"},
+    {"scene": "habit", "title": "Habits take time"},
+    {"scene": "slip", "title": "When you slip"},
+    {"scene": "agency", "title": "What high agency looks like"},
+    {"scene": "week", "title": "A week to begin"},
+    {"scene": "close", "title": "Closing"},
+    {"scene": "sources", "title": "Sources"}
+  ],
+  "lessons": [],
+  "sources": [
+    {"title": "Dimidjian et al. (2006), Journal of Consulting and Clinical Psychology: behavioral activation", "url": ""},
+    {"title": "Richards et al. (2016), The Lancet: the COBRA trial", "url": ""},
+    {"title": "Byars-Winston et al. (2017), Journal of Counseling Psychology", "url": ""},
+    {"title": "Gollwitzer & Sheeran (2006), Advances in Experimental Social Psychology: implementation intentions", "url": ""},
+    {"title": "Toli, Webb & Hardy (2016), British Journal of Clinical Psychology", "url": ""},
+    {"title": "Lally et al. (2010), European Journal of Social Psychology: how long habits take to form", "url": ""},
+    {"title": "Keller et al. (2021), British Journal of Health Psychology", "url": ""},
+    {"title": "Breines & Chen (2012), Personality and Social Psychology Bulletin: self-compassion and motivation", "url": ""}
+  ],
+  "level": "Beginner"
+}

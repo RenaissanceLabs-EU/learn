@@ -1,0 +1,86 @@
+{
+  "id": "envy",
+  "title": "Envy is a compass",
+  "kicker": "What the sting of comparison points at",
+  "track": "minds",
+  "theme": "fear-shame",
+  "blurb": "Envy is not proof that you are a bad friend. It is precise, and it points at what you still want.",
+  "description": "You do not envy everything, only the things you want. This film looks at why other people's good news can make you sink, the two kinds of envy researchers describe, and a way to read the feeling instead of hiding it. It ends with a small dare for one week.",
+  "takeaways": [
+    "Envy is precise: it does not point at what is impressive, it points at what you want.",
+    "Researchers describe two kinds, one that pulls the other person down and one that pulls you up.",
+    "Ask what exactly stung, and whether you want the thing or want to be seen having it.",
+    "Studies of good news find that an enthusiastic response builds trust and closeness between people.",
+    "A small step toward the thing, even twenty minutes, tells the compass you are listening."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "11:47 pm"
+    },
+    {
+      "scene": "line",
+      "title": "Envy is precise"
+    },
+    {
+      "scene": "machine",
+      "title": "Why it is so loud"
+    },
+    {
+      "scene": "two",
+      "title": "The two kinds of envy"
+    },
+    {
+      "scene": "read",
+      "title": "How to read it"
+    },
+    {
+      "scene": "proof",
+      "title": "Why not me? Not yet"
+    },
+    {
+      "scene": "back",
+      "title": "What you get back"
+    },
+    {
+      "scene": "dare",
+      "title": "A dare for this week"
+    },
+    {
+      "scene": "close",
+      "title": "Closing"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [],
+  "sources": [
+    {
+      "title": "Van de Ven, Zeelenberg & Pieters (2009, 2011) on benign and malicious envy",
+      "url": ""
+    },
+    {
+      "title": "Jordan et al. (2011) and Ip et al. (2025) on underestimating others' hard feelings",
+      "url": ""
+    },
+    {
+      "title": "Blatz (2026) on what we envy",
+      "url": ""
+    },
+    {
+      "title": "Schaubroeck & Lam (2004) on envy toward similar others",
+      "url": ""
+    },
+    {
+      "title": "Reis et al. (2010) and Gable et al. (2004) on responding to good news",
+      "url": ""
+    },
+    {
+      "title": "Meier & Johnson (2022) on social comparison and envy on social media",
+      "url": ""
+    }
+  ],
+  "level": "Beginner"
+}

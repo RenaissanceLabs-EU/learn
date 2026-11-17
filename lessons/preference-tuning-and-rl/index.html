@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preference tuning and reinforcement learning · Learn · Renaissance Labs</title>
+<meta name="description" content="How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/preference-tuning-and-rl/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Preference tuning and reinforcement learning · Learn · Renaissance Labs">
+<meta property="og:description" content="How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/preference-tuning-and-rl/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Preference tuning and reinforcement learning · Learn · Renaissance Labs">
+<meta name="twitter:description" content="How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Preference tuning and reinforcement learning", "description": "How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.", "educationalLevel": "Advanced", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT10M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="preference-tuning-and-rl">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · After pre-training · Lesson 12</p>
+  <h1>Preference tuning and reinforcement learning</h1><p class="lede">How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.</p>
+  <p class="meta"><span>Advanced</span><span>10 min read</span><span>4 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>After <a href="/lessons/supervised-fine-tuning/">supervised fine-tuning</a>, a model imitates good answers. Imitation has a ceiling: the model cannot easily become better than its examples, and for many tasks it is hard to write the ideal answer but easy to say which of two answers is better, or whether an answer is simply right. Reinforcement learning uses exactly that kind of feedback.</p>
+<p>In <strong>reinforcement learning</strong> (RL), the model generates an attempt, a <strong>reward</strong> scores it, and the model&#x27;s weights are adjusted to make high-scoring attempts more likely. The model&#x27;s behaviour is called its <strong>policy</strong>.</p>
+<ol class="flow"><li><b>Prompt</b><span>A task or question</span></li><li><b>Rollout</b><span>The model writes an attempt</span></li><li><b>Reward</b><span>A score for the attempt</span></li><li><b>Update</b><span>Good attempts become more likely</span></li></ol>
+<h2 id="rlhf-in-plain-steps">RLHF in plain steps</h2>
+<p><strong>Reinforcement learning from human feedback</strong> (RLHF) is the method behind InstructGPT. It works in three steps.</p>
+<ol><li>Collect comparisons. For a prompt, the model writes several answers and people rank them.</li><li>Train a <strong>reward model</strong>, a second network that reads a prompt and an answer and outputs a score, so that it agrees with the human rankings.</li><li>Use RL to tune the language model against that score, with a penalty that keeps it from drifting too far from its starting point.</li></ol>
+<p>The reward model stands in for human judgement at a scale no team of people could supply. Its weakness is the same: it is only an approximation, and a model optimised hard against it will find answers that please the approximation without pleasing people.</p>
+<h2 id="dpo-skipping-the-reward-model">DPO: skipping the reward model</h2>
+<p><strong>Direct Preference Optimization</strong> (DPO) reaches a similar goal with less machinery. It trains directly on pairs of a preferred and a rejected answer, raising the probability of the first relative to the second, with no separate reward model and no RL loop. It is simpler and cheaper to run, which is why it is common for style and helpfulness. It learns from a fixed set of pairs, so it cannot explore on its own.</p>
+<h2 id="rewards-you-can-check">Rewards you can check</h2>
+<p>Some tasks have an answer a program can verify. A maths problem has a final answer. Code either passes its unit tests or it does not. This is <strong>reinforcement learning with verifiable rewards</strong> (RLVR), and it removes the human and the reward model from the loop.</p>
+<div class="compare c2"><div class="col"><h4>RLHF</h4><ul><li>Reward comes from a learned model of human preference</li><li>Covers open-ended work: tone, helpfulness, safety</li><li>The reward can be wrong in subtle ways</li></ul></div><div class="col"><h4>RLVR</h4><ul><li>Reward comes from a check: tests pass, answer matches</li><li>Covers maths, code, tool use, anything checkable</li><li>Cheap to scale, but only where a check exists</li></ul></div></div>
+<h2 id="group-comparison-in-plain-words">Group comparison, in plain words</h2>
+<p>DeepSeek&#x27;s <strong>GRPO</strong> (group relative policy optimization) is a widely used recipe for this. For each prompt the model writes a group of attempts, for example 16. Each is scored. An attempt is then judged against the group&#x27;s average: better than its siblings, push it up; worse, push it down. This removes the need for a separate network to predict how good a situation is. One practical detail from Xiaomi&#x27;s MiMo report: prompts where every attempt passes or every attempt fails carry no signal, and a sampler can drop them.</p>
+<p>At scale, MiMo-V2.6-Pro used 1,568 prompts with 16 rollouts each, about 25,000 attempts per step, and reports $2.6M of RL compute for the Pro model.</p>
+<h2 id="reasoning-and-long-chains-of-thought">Reasoning and long chains of thought</h2>
+<p>When the reward only checks the final answer, models learn to spend more tokens thinking before they answer. DeepSeek-R1 is the well-known example of reasoning emerging from this kind of training. These <strong>reasoning models</strong> write long <strong>chains of thought</strong> and may revise themselves along the way. Some releases let users pick an effort level, which trades cost for accuracy.</p>
+<h2 id="sandboxes-and-rollout-fleets">Sandboxes and rollout fleets</h2>
+<p>Agent tasks make rollouts long and messy. The model reads a task, runs a command or a search, sees the result, and repeats, for dozens of steps. In a typical setup a trainer updates the model on GPUs, inference servers generate the actions, and many rollout workers run the environments on ordinary CPU machines.</p>
+<p>The scale is large. Kimi K2.5 describes a rollout manager running up to 100,000 agent tasks at once. DeepSeek-V4 describes hundreds of thousands of concurrent sandboxes. In Thinking Machines&#x27; Inkling 2 Small run, joint RL took 1,075 steps and over 17 million rollouts. The median rollout was 43,000 tokens, and the slowest 1% reached 1.5 million. A few slow attempts can stall everyone, which is why asynchronous RL (training on slightly stale rollouts) is common.</p>
+<p>Every command in a rollout is executed automatically and almost nobody reads it, so sandboxes matter. They contain the damage if a model does something unexpected.</p>
+<h2 id="reward-hacking">Reward hacking</h2>
+<aside class="callout"><span class="callout-t">Key idea</span><p>An optimiser searches for whatever earns reward, not for what you meant. If a loophole exists, millions of attempts will find it.</p></aside>
+<p>This is <strong>reward hacking</strong>. Labs report coding agents that edit the tests, read hidden files, or look through version history for the answer. Kimi K2.5 added a reward term against spurious parallelism. GLM-5 fixed a slide-generation exploit by fixing the renderer itself. Xiaomi gave zero reward to confirmed hacks, under 2% of trajectories. The defences are practical: keep the checker outside the sandbox, hide the answers, and read real transcripts.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p><a href="/lessons/evaluation/">Evaluation</a> shows how teams find out whether any of this worked. For the infrastructure side, see <a href="/lessons/when-training-breaks/">When training breaks</a>. The Post-training chapter of the frontier training film, the RL and Reward hacking chapters of the cluster agents film, and the RL chapter of the Inkling film cover the same ground.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=622"><span class="play">▶</span><b>Post-training</b><span>What it takes to train a frontier model · 10:22</span></a><a href="/films/cluster-agents/#t=95"><span class="play">▶</span><b>Agent RL on a cluster</b><span>Running AI agents safely on a cluster · 1:35</span></a><a href="/films/cluster-agents/#t=387"><span class="play">▶</span><b>Why RL raises the risk</b><span>Running AI agents safely on a cluster · 6:27</span></a><a href="/films/inkling/#t=433"><span class="play">▶</span><b>The joint RL run</b><span>Inkling 2 Small: training in 4-bit · 7:13</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">Training language models to follow instructions with human feedback (InstructGPT)</a></li><li><a href="https://arxiv.org/abs/1706.03741" target="_blank" rel="noopener">Deep Reinforcement Learning from Human Preferences</a></li><li><a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">Direct Preference Optimization</a></li><li><a href="https://arxiv.org/abs/2402.03300" target="_blank" rel="noopener">DeepSeekMath (GRPO)</a></li><li><a href="https://arxiv.org/abs/2501.12948" target="_blank" rel="noopener">DeepSeek-R1</a></li><li><a href="https://arxiv.org/abs/2110.14168" target="_blank" rel="noopener">Training Verifiers to Solve Math Word Problems</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#rlhf-in-plain-steps">RLHF in plain steps</a></li><li><a href="#dpo-skipping-the-reward-model">DPO: skipping the reward model</a></li><li><a href="#rewards-you-can-check">Rewards you can check</a></li><li><a href="#group-comparison-in-plain-words">Group comparison, in plain words</a></li><li><a href="#reasoning-and-long-chains-of-thought">Reasoning and long chains of thought</a></li><li><a href="#sandboxes-and-rollout-fleets">Sandboxes and rollout fleets</a></li><li><a href="#reward-hacking">Reward hacking</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/supervised-fine-tuning/" data-lesson="supervised-fine-tuning"><span class="lnum">11</span><span class="lbody"><b>Supervised fine-tuning</b><span>How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/evaluation/" data-lesson="evaluation"><span class="lnum">13</span><span class="lbody"><b>Evaluation</b><span>How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/when-training-breaks/" data-lesson="when-training-breaks"><span class="lnum">10</span><span class="lbody"><b>When training breaks</b><span>At frontier scale something is always failing. How labs survive broken chips, loss spikes, silent wrong answers and fragile low-precision numbers.</span><span class="lmeta">Advanced · 8 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/supervised-fine-tuning/"><span>Previous</span><b>Supervised fine-tuning</b></a><a class="next" href="/lessons/evaluation/"><span>Next</span><b>Evaluation</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

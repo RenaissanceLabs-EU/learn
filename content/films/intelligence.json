@@ -1,0 +1,58 @@
+{
+  "id": "intelligence",
+  "title": "What is intelligence?",
+  "kicker": "Compression, direction and two kinds of mind",
+  "track": "bridge",
+  "theme": "mind-machine",
+  "blurb": "A short essay in film: intelligence as finding and keeping the right pattern, and how brains and language models share that shape.",
+  "description": "The film asks what a mind does that a rock does not. Its answer is that a mind finds patterns, compresses the world, keeps what matters and updates from error. It then looks at direction and honesty, compares a human brain with a language model, and ends with a mind that models itself.",
+  "takeaways": [
+    "Predicting and compressing are two views of the same act, because the better you predict, the less you have to remember.",
+    "Compression is never neutral: what a mind keeps depends on what it wants.",
+    "The real test of intelligence is a problem it has never seen, where memory has no entry.",
+    "A language model trained to predict text is trained to compress it, and what it carries is that compression.",
+    "Both humans and models can fail at updating, one by resisting change and the other by giving way to pressure."
+  ],
+  "chapters": [
+    {
+      "scene": "s1",
+      "title": "The question"
+    },
+    {
+      "scene": "s2",
+      "title": "Finding the pattern"
+    },
+    {
+      "scene": "s3",
+      "title": "What you keep"
+    },
+    {
+      "scene": "s4",
+      "title": "The unseen problem"
+    },
+    {
+      "scene": "s5",
+      "title": "The loop"
+    },
+    {
+      "scene": "s6",
+      "title": "Direction"
+    },
+    {
+      "scene": "s7",
+      "title": "Two minds"
+    },
+    {
+      "scene": "s8",
+      "title": "Turning inward"
+    }
+  ],
+  "lessons": [
+    "what-is-a-language-model",
+    "how-a-model-learns",
+    "preference-tuning-and-rl",
+    "evaluation"
+  ],
+  "sources": [],
+  "level": "Beginner"
+}

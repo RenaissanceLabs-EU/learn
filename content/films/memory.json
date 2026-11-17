@@ -1,0 +1,134 @@
+{
+ "id": "memory",
+ "title": "Memory is an experience",
+ "kicker": "Why remembering is rebuilding, not replaying",
+ "track": "minds",
+ "theme": "memory-time",
+ "blurb": "Each time you remember, you rebuild the memory in the present, which means the way you see the past can change.",
+ "description": "A memory is not a file you open. It is rebuilt each time you recall it, from old pieces and present understanding. The film walks through the evidence, from Bartlett to reconsolidation, and shows how distance and warmth can shift what we see, without inventing what happened.",
+ "takeaways": [
+  "Remembering is rebuilding: the pieces are old, but the scene is assembled new each time.",
+  "A single word in a question can reshape what people remember, which is how memory normally works.",
+  "When a memory is recalled it briefly becomes open to updating, though scientists are still mapping when and how.",
+  "Reinterpreting is not inventing: the events stay the same, and understanding someone is not excusing them.",
+  "Confidence is not accuracy, so the aim is a truer story held with curiosity, not one that only feels good."
+ ],
+ "chapters": [
+  {
+   "scene": "hook",
+   "title": "Intro"
+  },
+  {
+   "scene": "rebuild",
+   "title": "Remembering is rebuilding"
+  },
+  {
+   "scene": "loftus",
+   "title": "One word changes memory"
+  },
+  {
+   "scene": "reconsolidation",
+   "title": "Memories reopen when recalled"
+  },
+  {
+   "scene": "retelling",
+   "title": "Retelling shapes memory"
+  },
+  {
+   "scene": "lens",
+   "title": "Two readings of one moment"
+  },
+  {
+   "scene": "wise",
+   "title": "Wise feedback"
+  },
+  {
+   "scene": "heart",
+   "title": "Shifting the lens"
+  },
+  {
+   "scene": "honest",
+   "title": "A word of care"
+  },
+  {
+   "scene": "practice",
+   "title": "A gentle practice"
+  },
+  {
+   "scene": "close",
+   "title": "Closing"
+  },
+  {
+   "scene": "sources",
+   "title": "Sources"
+  }
+ ],
+ "lessons": [],
+ "sources": [
+  {
+   "title": "Bartlett (1932), Remembering (the War of the Ghosts study)",
+   "url": ""
+  },
+  {
+   "title": "Tulving (2002), episodic memory and mental time travel",
+   "url": ""
+  },
+  {
+   "title": "Schacter and Addis (2007), remembering the past and imagining the future",
+   "url": ""
+  },
+  {
+   "title": "Hassabis et al. (2007), PNAS, hippocampal amnesia and imagining new scenes",
+   "url": ""
+  },
+  {
+   "title": "Loftus and Palmer (1974), reconstruction of automobile destruction",
+   "url": ""
+  },
+  {
+   "title": "Nader, Schafe and LeDoux (2000), Nature, reconsolidation of fear memory",
+   "url": ""
+  },
+  {
+   "title": "Schiller et al. (2010), Nature, preventing the return of fear in humans",
+   "url": ""
+  },
+  {
+   "title": "Bower (1981), mood and memory",
+   "url": ""
+  },
+  {
+   "title": "Tversky and Marsh (2000), biased retellings of events",
+   "url": ""
+  },
+  {
+   "title": "Weiss (1980), sentiment override",
+   "url": ""
+  },
+  {
+   "title": "Crick and Dodge (1994), hostile attribution bias",
+   "url": ""
+  },
+  {
+   "title": "Yeager et al. (2014), wise feedback, Journal of Experimental Psychology: General",
+   "url": ""
+  },
+  {
+   "title": "Kross, Ayduk and Mischel (2005), self-distancing",
+   "url": ""
+  },
+  {
+   "title": "Klimecki et al. (2013) and Singer and Klimecki (2014), empathy and compassion training",
+   "url": ""
+  },
+  {
+   "title": "Hutcherson, Seppala and Gross (2008), loving-kindness meditation",
+   "url": ""
+  },
+  {
+   "title": "Talarico and Rubin (2003), flashbulb memories of September 11",
+   "url": ""
+  }
+ ],
+ "level": "Beginner"
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Distillation and quantization · Learn · Renaissance Labs</title>
+<meta name="description" content="Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/distillation-and-quantization/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Distillation and quantization · Learn · Renaissance Labs">
+<meta property="og:description" content="Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/distillation-and-quantization/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Distillation and quantization · Learn · Renaissance Labs">
+<meta name="twitter:description" content="Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Distillation and quantization", "description": "Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT8M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="distillation-and-quantization">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · After pre-training · Lesson 14</p>
+  <h1>Distillation and quantization</h1><p class="lede">Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.</p>
+  <p class="meta"><span>Intermediate</span><span>8 min read</span><span>5 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>A trained model is expensive to run mostly because it is big. There are two direct ways to shrink the bill. You can build a smaller model that behaves like the large one, which is <strong>distillation</strong>. Or you can keep the model as it is and store each number with fewer bits, which is <strong>quantization</strong>. They attack different things, and modern models often use both.</p>
+<h2 id="distillation-a-student-that-imitates-a-teacher">Distillation: a student that imitates a teacher</h2>
+<p>In distillation, a large, strong <strong>teacher</strong> model is used to train a smaller <strong>student</strong>. The idea comes from Hinton and colleagues in 2015.</p>
+<p>The key observation is about what the teacher&#x27;s output contains. When a model predicts the next token, it produces a full probability distribution, not just a winner. If the right answer is &quot;cat&quot;, a good teacher may give &quot;dog&quot; a small but real probability and &quot;carburettor&quot; almost none. That pattern of near-misses says something about how the world is organised. A plain training label (&quot;the answer was cat&quot;) throws it away. The teacher&#x27;s probabilities, called <strong>soft targets</strong>, keep it.</p>
+<p>So the student is trained to match the teacher&#x27;s distribution, not only the single correct token. Each example then carries more information, and a small model can learn a surprising amount from it.</p>
+<ol class="flow"><li><b>Teacher</b><span>Large model, already trained</span></li><li><b>Soft targets</b><span>Its probabilities for every next token</span></li><li><b>Student</b><span>Smaller model trained to match them</span></li><li><b>Result</b><span>Cheaper model, close but not equal</span></li></ol>
+<p>There is also a practical variant that is now common in language models. In <strong>on-policy distillation</strong>, the student writes its own answers and the teacher scores them, instead of the student only reading text the teacher wrote. Our open-models research notes that several recent open models use it to merge skills from several specialist teachers (for example math, code and agent behaviour) into one student. It is a post-training step, covered alongside <a href="/lessons/supervised-fine-tuning/">Supervised fine-tuning</a>.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Distillation changes the model. The student is a different, smaller network that has learned to behave like the teacher. It will not match the teacher everywhere.</p></aside>
+<h2 id="quantization-same-model-fewer-bits">Quantization: same model, fewer bits</h2>
+<p>Recall from <a href="/lessons/parameters-precision-and-memory/">Parameters, precision and memory</a> that every weight is a number stored in some format. Quantization stores each weight in a coarser format. The network is the same; its numbers are just rounded.</p>
+<p>The saving is direct. Going from 16 bits to 8 halves the bytes per weight, and going to 4 bits quarters them. Because generating text is mostly limited by how fast weights can be read from memory (see <a href="/lessons/inference-and-sampling/">Inference and sampling</a>), fewer bytes often means faster tokens as well as a smaller footprint.</p>
+<div class="compare c2"><div class="col"><h4>Post-training quantization</h4><ul><li>Take a finished model and convert its weights</li><li>Cheap: no further training, or very little</li><li>Works well at 8 bits; harder as bits drop</li></ul></div><div class="col"><h4>Quantization-aware training</h4><ul><li>Simulate low precision while training</li><li>The model learns to work around the rounding</li><li>Costs training compute, but holds up better at 4 bits</li></ul></div></div>
+<p><strong>Post-training quantization</strong> is the easy route, and 8-bit conversion of weights has been shown to work with little loss when a few unusually large outlier values are handled carefully (the LLM.int8 paper). <strong>Quantization-aware training</strong> builds the rounding into training so the model adapts. Our research notes record this in current open models: some use FP4 quantization-aware training for their expert layers, and one trains with MXFP4 or MXFP8 quantization-aware training from the start of fine-tuning.</p>
+<h2 id="formats-and-block-scales">Formats and block scales</h2>
+<p>The common formats are INT8 (8-bit integers), FP8 (8-bit floating point) and 4-bit floating point. A 4-bit float has only sixteen possible values, so on its own it is far too coarse. The fix is a <strong>block scale</strong>: a group of values shares one scale factor, which stretches the tiny set of values to fit that group&#x27;s range.</p>
+<p>In NVIDIA&#x27;s NVFP4 format, each value has a sign, two exponent bits and one mantissa bit. Every block of sixteen values shares an 8-bit floating-point scale, and the whole tensor has one extra scale on top.</p>
+<div class="stats"><div><b>16</b><span>values per block scale in NVFP4</span></div><div><b>4 bits</b><span>per value, a quarter of 16-bit</span></div><div><b>8 bits</b><span>per block scale, in floating point</span></div></div>
+<h2 id="what-is-lost-and-what-is-not">What is lost, and what is not</h2>
+<p>Rounding adds error. Usually the error is small enough that benchmark scores barely move, but it is not zero, and it tends to show up first in rare cases: unusual inputs, long chains of reasoning, and layers with large outlier values. That is why careful recipes keep some parts in higher precision. NVIDIA&#x27;s NVFP4 training recipe, for example, keeps the first two and last eight blocks of its 12-billion-parameter model in BF16.</p>
+<p>What quantization does not touch is the architecture, the knowledge layout, and (for weight-only schemes) the way the model is used. What distillation does not preserve is the teacher&#x27;s full capability; the student is smaller, so something is given up.</p>
+<h2 id="why-hopper-and-blackwell-differ">Why Hopper and Blackwell differ</h2>
+<p>Hardware decides which of these are fast. According to our GPU research, Hopper&#x27;s matrix instructions accept 16-bit formats, FP8 and 8-bit integers, but not 4-bit values and not block scales. So on Hopper, 4-bit is a storage and bandwidth format: weights are unpacked to 16 bits in registers before the multiply. That still helps when decoding is memory-bound. Blackwell data-centre chips add native 4-bit and block-scaled formats, and NVIDIA reports 4-bit peak throughput of 2x FP8 on GB200 and 3x on GB300 (dense).</p>
+<div class="example"><span class="ex-t">The four-bit trap on Hopper</span><p>A 4-bit weight stored as NVFP4 can be unpacked into BF16 without any loss.</p><p>But the product of a 4-bit value and its block scale can need more significant bits than FP8 can hold.</p><p>So you cannot simply feed NVFP4 into Hopper&#x27;s 8-bit units and stay exact.</p></div>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p><a href="/lessons/inference-and-sampling/">Inference and sampling</a> explains why cheaper weights speed up generation. For the hardware side, the GPU hardware film chapters on 4-bit, NVFP4 and block scales go through the formats in detail, and the Inkling chapter on number format shows a lab training natively in 4-bit.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/gpu-hardware/#t=637"><span class="play">▶</span><b>4-bit weights on Hopper</b><span>Where the silicon ends · 10:37</span></a><a href="/films/gpu-hardware/#t=729"><span class="play">▶</span><b>Native NVFP4 training</b><span>Where the silicon ends · 12:09</span></a><a href="/films/gpu-hardware/#t=793"><span class="play">▶</span><b>Block scales and FP8</b><span>Where the silicon ends · 13:13</span></a><a href="/films/inkling/#t=236"><span class="play">▶</span><b>Why 4-bit</b><span>Inkling 2 Small: training in 4-bit · 3:56</span></a><a href="/films/open-models/#t=614"><span class="play">▶</span><b>Post-training</b><span>Inside the strongest open models · 10:14</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/1503.02531" target="_blank" rel="noopener">Distilling the Knowledge in a Neural Network</a></li><li><a href="https://arxiv.org/abs/2208.07339" target="_blank" rel="noopener">LLM.int8(): 8-bit Matrix Multiplication for Transformers at Scale</a></li><li><a href="https://arxiv.org/abs/2305.14314" target="_blank" rel="noopener">QLoRA</a></li><li><a href="https://arxiv.org/abs/2509.25149" target="_blank" rel="noopener">Pretraining Large Language Models with NVFP4 (NVIDIA)</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#distillation-a-student-that-imitates-a-teacher">Distillation: a student that imitates a teacher</a></li><li><a href="#quantization-same-model-fewer-bits">Quantization: same model, fewer bits</a></li><li><a href="#formats-and-block-scales">Formats and block scales</a></li><li><a href="#what-is-lost-and-what-is-not">What is lost, and what is not</a></li><li><a href="#why-hopper-and-blackwell-differ">Why Hopper and Blackwell differ</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/parameters-precision-and-memory/" data-lesson="parameters-precision-and-memory"><span class="lnum">07</span><span class="lbody"><b>Parameters, precision and memory</b><span>A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/inference-and-sampling/" data-lesson="inference-and-sampling"><span class="lnum">15</span><span class="lbody"><b>Inference and sampling</b><span>How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/supervised-fine-tuning/" data-lesson="supervised-fine-tuning"><span class="lnum">11</span><span class="lbody"><b>Supervised fine-tuning</b><span>How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/evaluation/"><span>Previous</span><b>Evaluation</b></a><a class="next" href="/lessons/inference-and-sampling/"><span>Next</span><b>Inference and sampling</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

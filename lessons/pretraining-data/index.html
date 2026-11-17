@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pretraining data · Learn · Renaissance Labs</title>
+<meta name="description" content="Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/pretraining-data/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Pretraining data · Learn · Renaissance Labs">
+<meta property="og:description" content="Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/pretraining-data/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pretraining data · Learn · Renaissance Labs">
+<meta name="twitter:description" content="Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Pretraining data", "description": "Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT9M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="pretraining-data">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · Feeding the model · Lesson 5</p>
+  <h1>Pretraining data</h1><p class="lede">Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.</p>
+  <p class="meta"><span>Intermediate</span><span>9 min read</span><span>2 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>A model can only learn from what it reads. For a frontier model, that is somewhere between 27 and 48 trillion tokens of text, code and now images and audio. How that pile is collected, cleaned and mixed has a large effect on the result, and labs publish less about it than about the architecture.</p>
+<figure class="bars"><div class="bars-t">Pretraining tokens, in trillions (as reported)</div><div class="brow"><span class="bar-l">GLM-5</span><span class="bar-track"><i style="width:59.4%"></i></span><span class="bar-v">28.5</span><span class=bar-n>all stages</span></div><div class="brow"><span class="bar-l">MiMo-V2.6-Pro</span><span class="bar-track"><i style="width:62.5%"></i></span><span class="bar-v">30</span><span class=bar-n>27T text plus 3T omni</span></div><div class="brow"><span class="bar-l">DeepSeek-V4-Pro</span><span class="bar-track"><i style="width:68.8%"></i></span><span class="bar-v">33</span><span class=bar-n>a summary figure, check the paper</span></div><div class="brow"><span class="bar-l">Inkling</span><span class="bar-track"><i style="width:93.8%"></i></span><span class="bar-v">45</span><span class=bar-n>secondary source</span></div><div class="brow"><span class="bar-l">MiMo-V2.6-Flash</span><span class="bar-track"><i style="width:100.0%"></i></span><span class="bar-v">48</span><span class=bar-n>26T text plus 22T omni</span></div></figure>
+<h2 id="where-the-text-comes-from">Where the text comes from</h2>
+<p>The largest source is the web. Crawlers collect billions of pages, and the raw HTML is turned into text by <strong>extraction</strong>: removing menus, ads and boilerplate and keeping the main content. Open projects such as <a href="https://arxiv.org/abs/2406.17557" target="_blank" rel="noopener">FineWeb</a> show this pipeline in public. Beyond the web, labs use books, scientific papers, code repositories and, for multimodal models, images, video and speech transcripts. The mixes are only partly disclosed.</p>
+<ol class="flow"><li><b>Crawl</b><span>Collect billions of pages</span></li><li><b>Extract</b><span>Pull the main text from the HTML</span></li><li><b>Filter</b><span>Keep what looks useful</span></li><li><b>Deduplicate</b><span>Remove near copies</span></li><li><b>Mix</b><span>Choose proportions by source</span></li></ol>
+<h2 id="quality-filtering">Quality filtering</h2>
+<p>Most of the raw web is poor: spam, machine-generated pages, navigation lists. Filtering keeps a small fraction. Typical tools are simple rules (length, symbols, repeated lines) and trained <strong>classifiers</strong> that score how much a page looks like text a person would want to learn from.</p>
+<p>GLM-5&#x27;s report describes several: an embedding-based quality classifier, a second one for world knowledge, and a language model that scores math and science for educational value. DeepSeek-V4 removes batches of templated, auto-generated web text, partly to avoid <strong>model collapse</strong>, where a model trained on machine output loses variety.</p>
+<h2 id="deduplication">Deduplication</h2>
+<p>The web repeats itself. Pages are copied, quoted and scraped. If a passage appears a thousand times, the model sees it a thousand times, wastes capacity on it and may memorise it. <strong>Deduplication</strong> removes exact and near-exact copies, often with fuzzy matching that catches small edits. GLM-5 reports that its fuzzy deduplication of code produced about 28% more unique tokens than its earlier approach.</p>
+<h2 id="mixing-code-math-and-languages">Mixing code, math and languages</h2>
+<p>Data is not one pile. The proportions of web, code, math, books and languages are tuned like any other design choice. Code and math are widely used as a core of the mixture, and DeepSeek-V4 reports a larger multilingual corpus and a focus on long documents such as papers and reports. The mix also changes over the run. Training often ends with stages that raise the share of high-quality data, longer contexts and agent-style data. DeepSeek-V4 trains at 4K, then 16K, 64K and finally 1M tokens of context. GLM-5 adds roughly 10 million issue and pull-request pairs, about 160 billion unique tokens of software engineering data, in mid-training.</p>
+<h2 id="synthetic-data">Synthetic data</h2>
+<p><strong>Synthetic data</strong> is text generated by models, then filtered or checked. It is most useful where answers can be verified, such as code with tests and math with known answers. One reported family, K2 Horizon, is said to use about 10T synthetic tokens in about 20T (a secondary-source figure, so treat it as uncertain). The risk is the one above: unfiltered machine text can narrow what the model learns.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Data work is mostly subtraction. The skill is deciding what to throw away, what to keep once, and what to show more than once.</p></aside>
+<h2 id="when-data-runs-short">When data runs short</h2>
+<p>If good text is finite, what happens when a run wants more tokens than exist? The paper <a href="https://arxiv.org/abs/2305.16264" target="_blank" rel="noopener">Scaling Data-Constrained Language Models</a> studied repeating data. Its finding, as commonly summarised, is that a few repetitions (around four passes) behave almost like fresh data, while many more give steadily smaller gains. That is why mixes use unique data first and repeat the best slices.</p>
+<h2 id="contamination-licensing-and-openness">Contamination, licensing and openness</h2>
+<p><strong>Contamination</strong> means benchmark questions leaked into training data, which inflates scores. Labs try to remove them, but with trillions of tokens it is hard to guarantee, so one evaluation score is weak evidence on its own.</p>
+<p>Licensing is unsettled. Many models publish weights while keeping data undisclosed: Beam 1.0 is Apache 2.0 but its training data is not disclosed. Meta describes Muse Spark Open&#x27;s data as public sources, crawls, third parties and its own products. Open weights and open data are different things, a theme taken up in the last lesson of the course.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>For what a model does with this data, revisit <a href="/lessons/how-a-model-learns/">How a model learns</a>. Later lessons cover scaling laws and what &quot;open&quot; means. The data chapters of the frontier training and open models films show the same material in motion.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=87"><span class="play">▶</span><b>Data</b><span>What it takes to train a frontier model · 1:27</span></a><a href="/films/open-models/#t=559"><span class="play">▶</span><b>Data</b><span>Inside the strongest open models · 9:19</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/2406.17557" target="_blank" rel="noopener">FineWeb</a></li><li><a href="https://arxiv.org/abs/2305.16264" target="_blank" rel="noopener">Scaling Data-Constrained Language Models</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#where-the-text-comes-from">Where the text comes from</a></li><li><a href="#quality-filtering">Quality filtering</a></li><li><a href="#deduplication">Deduplication</a></li><li><a href="#mixing-code-math-and-languages">Mixing code, math and languages</a></li><li><a href="#synthetic-data">Synthetic data</a></li><li><a href="#when-data-runs-short">When data runs short</a></li><li><a href="#contamination-licensing-and-openness">Contamination, licensing and openness</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/how-a-model-learns/" data-lesson="how-a-model-learns"><span class="lnum">04</span><span class="lbody"><b>How a model learns</b><span>Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/tokens/" data-lesson="tokens"><span class="lnum">02</span><span class="lbody"><b>Tokens: how text becomes numbers</b><span>Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.</span><span class="lmeta">Beginner · 7 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/how-a-model-learns/"><span>Previous</span><b>How a model learns</b></a><a class="next" href="/lessons/scaling-laws/"><span>Next</span><b>Scaling laws: how big, how long</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

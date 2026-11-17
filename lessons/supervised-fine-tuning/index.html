@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supervised fine-tuning · Learn · Renaissance Labs</title>
+<meta name="description" content="How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/supervised-fine-tuning/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Supervised fine-tuning · Learn · Renaissance Labs">
+<meta property="og:description" content="How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/supervised-fine-tuning/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Supervised fine-tuning · Learn · Renaissance Labs">
+<meta name="twitter:description" content="How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Supervised fine-tuning", "description": "How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT8M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="supervised-fine-tuning">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · After pre-training · Lesson 11</p>
+  <h1>Supervised fine-tuning</h1><p class="lede">How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.</p>
+  <p class="meta"><span>Intermediate</span><span>8 min read</span><span>2 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>A freshly pre-trained model is a powerful text predictor, but it is not yet an assistant. Ask it &quot;What is the capital of France?&quot; and it may continue with &quot;What is the capital of Germany?&quot;, because lists of quiz questions are common in its training text. It is completing a document, not answering you.</p>
+<p><strong>Supervised fine-tuning</strong>, usually shortened to <strong>SFT</strong>, closes that gap. The model is trained further on examples of the behaviour we want: a request followed by a good reply. The training signal is the same one used in pre-training, predict the next token, only the text is now different.</p>
+<h2 id="instruction-data">Instruction data</h2>
+<p>An <strong>instruction dataset</strong> is a collection of pairs. Each has a prompt (a question, a task, a conversation so far) and a target response written to be the ideal answer. The responses come from people, from other models, or from a mix, with humans reviewing the results. The frontier training film describes it the same way: examples of good answers, written by people or by other models.</p>
+<p>Early work showed how far this goes. The FLAN paper fine-tuned a model on many tasks phrased as instructions and found it handled tasks it had never seen. InstructGPT, which combined SFT with later stages, made a much smaller model preferable to people over a far larger one that had not been tuned.</p>
+<ol class="flow"><li><b>Pre-trained model</b><span>Predicts any text</span></li><li><b>Instruction pairs</b><span>Prompts with ideal replies</span></li><li><b>SFT</b><span>Next-token training on the replies</span></li><li><b>Assistant</b><span>Answers instead of continuing</span></li></ol>
+<h2 id="chat-templates">Chat templates</h2>
+<p>A conversation has roles: a system message, the user, the assistant. The model only sees a flat stream of tokens, so those roles are marked with special tokens. The recipe for doing this is the <strong>chat template</strong>.</p>
+<div class="example"><span class="ex-t">A chat, as the model sees it</span><p>&lt;system&gt; You are a helpful assistant.</p><p>&lt;user&gt; What is the capital of France?</p><p>&lt;assistant&gt; The capital of France is Paris.&lt;end&gt;</p></div>
+<p>Real templates differ between model families, and the marker names above are only illustrative. Using the wrong template at inference time is a classic cause of strangely bad behaviour, because the model never saw that format during tuning. The final end marker matters too: it teaches the model when to stop.</p>
+<h2 id="loss-on-responses-only">Loss on responses only</h2>
+<p>During SFT the model reads the whole conversation, but the loss is usually computed only on the assistant&#x27;s tokens. The prompt tokens are <strong>masked</strong>: they are fed in as context but contribute nothing to the error. The reason is simple. We want the model to learn how to answer, not to get better at imitating the user&#x27;s phrasing.</p>
+<h2 id="quality-beats-quantity">Quality beats quantity</h2>
+<p>Pre-training needs trillions of tokens. SFT works with far less, often thousands to hundreds of thousands of examples, which is a rule of thumb rather than a law. What matters is what the examples demonstrate.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>SFT mostly teaches a format and a style of behaviour: how to answer, how long, in what tone, when to refuse. A few thousand excellent examples usually do more than a million careless ones.</p></aside>
+<p>Wrong answers, inconsistent tone and padding in the data are all copied faithfully. A model trained on confident but wrong replies learns to be confidently wrong.</p>
+<h2 id="training-only-a-small-part-lora">Training only a small part: LoRA</h2>
+<p>Updating every weight of a large model needs memory for the weights, the gradients and the optimizer&#x27;s state, all at once. <strong>Parameter-efficient fine-tuning</strong> avoids this by training a small number of added parameters and leaving the original weights frozen.</p>
+<p>The best-known method is <strong>LoRA</strong> (low-rank adaptation). Instead of changing a large weight matrix directly, LoRA learns a small correction built from two thin matrices whose product has the same shape as the original. Only the thin matrices are trained. The result is a small file that can be switched on or off, and training needs much less memory. QLoRA adds one more step: the frozen base model is stored in 4-bit form, so even a large model can be tuned on a single high-memory GPU.</p>
+<h2 id="what-sft-can-and-cannot-teach">What SFT can and cannot teach</h2>
+<p>SFT is good at style, format, tool-call syntax, domain vocabulary and following instructions. It can surface knowledge the model already holds.</p>
+<p>It is poor at adding large amounts of new knowledge reliably. It also cannot teach a model to be better than the examples it sees: if every demonstration is a human-written answer, the model is pushed toward imitating that level. Telling a good answer from a slightly better one is the job of the next stage, covered in <a href="/lessons/preference-tuning-and-rl/">Preference tuning and RL</a>.</p>
+<h2 id="catastrophic-forgetting">Catastrophic forgetting</h2>
+<p><strong>Catastrophic forgetting</strong> is the tendency of a network to lose earlier skills when it is trained hard on something narrow. A model tuned only on legal summaries may get worse at arithmetic or at another language. Practical defences include a low learning rate, short training, mixing general examples back in, and LoRA, since the frozen base weights cannot be overwritten.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>Continue with <a href="/lessons/preference-tuning-and-rl/">Preference tuning and RL</a> to see how models are pushed past what examples alone can show. For the mechanics of training itself, see <a href="/lessons/how-a-model-learns/">How a model learns</a>. The Post-training chapter of the frontier training film places SFT within the full pipeline.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=622"><span class="play">▶</span><b>Post-training</b><span>What it takes to train a frontier model · 10:22</span></a><a href="/films/open-models/#t=614"><span class="play">▶</span><b>Post-training</b><span>Inside the strongest open models · 10:14</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://arxiv.org/abs/2109.01652" target="_blank" rel="noopener">Finetuned Language Models Are Zero-Shot Learners (FLAN)</a></li><li><a href="https://arxiv.org/abs/2203.02155" target="_blank" rel="noopener">Training language models to follow instructions with human feedback (InstructGPT)</a></li><li><a href="https://arxiv.org/abs/2106.09685" target="_blank" rel="noopener">LoRA: Low-Rank Adaptation of Large Language Models</a></li><li><a href="https://arxiv.org/abs/2305.14314" target="_blank" rel="noopener">QLoRA: Efficient Finetuning of Quantized LLMs</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#instruction-data">Instruction data</a></li><li><a href="#chat-templates">Chat templates</a></li><li><a href="#loss-on-responses-only">Loss on responses only</a></li><li><a href="#quality-beats-quantity">Quality beats quantity</a></li><li><a href="#training-only-a-small-part-lora">Training only a small part: LoRA</a></li><li><a href="#what-sft-can-and-cannot-teach">What SFT can and cannot teach</a></li><li><a href="#catastrophic-forgetting">Catastrophic forgetting</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/what-is-a-language-model/" data-lesson="what-is-a-language-model"><span class="lnum">01</span><span class="lbody"><b>What a language model actually is</b><span>A language model is a function that predicts the next piece of text. Everything else, from chat to code, is built on top of that one trick.</span><span class="lmeta">Beginner · 6 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/how-a-model-learns/" data-lesson="how-a-model-learns"><span class="lnum">04</span><span class="lbody"><b>How a model learns</b><span>Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/preference-tuning-and-rl/" data-lesson="preference-tuning-and-rl"><span class="lnum">12</span><span class="lbody"><b>Preference tuning and reinforcement learning</b><span>How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/when-training-breaks/"><span>Previous</span><b>When training breaks</b></a><a class="next" href="/lessons/preference-tuning-and-rl/"><span>Next</span><b>Preference tuning and reinforcement learning</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

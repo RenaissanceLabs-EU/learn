@@ -1,0 +1,122 @@
+{
+ "id": "present",
+ "title": "The only place experience happens",
+ "kicker": "The present moment, honestly",
+ "track": "minds",
+ "theme": "memory-time",
+ "blurb": "What the present moment is, why minds wander, and what the evidence says about mindfulness and awe.",
+ "description": "Third film in a small series on time. It asks what the present actually is: a short window your brain assembles and attention steers. You meet the gorilla nobody sees, the cold-water experiment, the mind that wanders, and an honest account of what mindfulness and awe can do.",
+ "takeaways": [
+  "Minds wander nearly half the time, and what matters most is whether the wandering is pleasant and interesting.",
+  "The experienced present is assembled by the brain, and attention decides a great deal about what makes it in.",
+  "Memory keeps the worst moment and the ending, so the remembering self and the experiencing self disagree.",
+  "Mindfulness programs show small to moderate benefits, and have not been shown to beat other active treatments.",
+  "Awe can make time feel more available, and a minute of really looking is a cheap way into the present."
+ ],
+ "chapters": [
+  {
+   "scene": "hook",
+   "title": "Where were you?"
+  },
+  {
+   "scene": "augustine",
+   "title": "Augustine's three presents"
+  },
+  {
+   "scene": "window",
+   "title": "What is the present?"
+  },
+  {
+   "scene": "attention",
+   "title": "The gorilla and attention"
+  },
+  {
+   "scene": "selves",
+   "title": "Two selves"
+  },
+  {
+   "scene": "alone",
+   "title": "Why sitting alone is hard"
+  },
+  {
+   "scene": "wandering",
+   "title": "The wandering mind"
+  },
+  {
+   "scene": "practice",
+   "title": "What mindfulness evidence says"
+  },
+  {
+   "scene": "awe",
+   "title": "Awe"
+  },
+  {
+   "scene": "nature",
+   "title": "The nature of experience"
+  },
+  {
+   "scene": "close",
+   "title": "Closing"
+  },
+  {
+   "scene": "sources",
+   "title": "Sources"
+  }
+ ],
+ "lessons": [],
+ "sources": [
+  {
+   "title": "Killingsworth and Gilbert (2010), Science, a wandering mind is an unhappy mind",
+   "url": ""
+  },
+  {
+   "title": "Augustine, Confessions, Book XI",
+   "url": ""
+  },
+  {
+   "title": "William James (1890), The Principles of Psychology",
+   "url": ""
+  },
+  {
+   "title": "Simons and Chabris (1999), Perception, gorillas in our midst",
+   "url": ""
+  },
+  {
+   "title": "Kahneman, Fredrickson, Schreiber and Redelmeier (1993), Psychological Science, cold-water trials",
+   "url": ""
+  },
+  {
+   "title": "Wilson et al. (2014), Science, just think",
+   "url": ""
+  },
+  {
+   "title": "Fox et al. (2014), Frontiers in Psychology, critique of the just-think studies",
+   "url": ""
+  },
+  {
+   "title": "Franklin et al. (2013), Frontiers in Psychology, mind wandering and mood",
+   "url": ""
+  },
+  {
+   "title": "Gross et al. (2024), Emotion, mind wandering and valence",
+   "url": ""
+  },
+  {
+   "title": "Goyal et al. (2014), JAMA Internal Medicine, meditation programs review",
+   "url": ""
+  },
+  {
+   "title": "Galante et al. (2023), Nature Mental Health, mindfulness programs in community adults",
+   "url": ""
+  },
+  {
+   "title": "Rudd, Vohs and Aaker (2012), Psychological Science, awe and time",
+   "url": ""
+  },
+  {
+   "title": "Wittgenstein, Tractatus Logico-Philosophicus, 6.4311",
+   "url": ""
+  }
+ ],
+ "level": "Beginner"
+}

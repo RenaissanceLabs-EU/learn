@@ -1,0 +1,44 @@
+# Renaissance Labs · Learn
+
+> Films and lessons on how language models are trained and how human minds work. Free, sourced, in plain language.
+
+## Course
+- [What a language model actually is](https://learn.renaissancelabs.eu/lessons/what-is-a-language-model/): A language model is a function that predicts the next piece of text. Everything else, from chat to code, is built on top of that one trick.
+- [Tokens: how text becomes numbers](https://learn.renaissancelabs.eu/lessons/tokens/): Models read and write tokens, not words. Tokens decide what you pay for, how much fits in context, and why models stumble on spelling and arithmetic.
+- [Attention and the transformer](https://learn.renaissancelabs.eu/lessons/attention-and-the-transformer/): Attention lets each token look back at earlier tokens and decide which ones matter. Stacked many times, it is the core of every modern language model.
+- [How a model learns](https://learn.renaissancelabs.eu/lessons/how-a-model-learns/): Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.
+- [Pretraining data](https://learn.renaissancelabs.eu/lessons/pretraining-data/): Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.
+- [Scaling laws: how big, how long](https://learn.renaissancelabs.eu/lessons/scaling-laws/): Loss falls smoothly as parameters, data and compute grow. Scaling laws turn that into a budgeting tool, and also show where the tool stops working.
+- [Parameters, precision and memory](https://learn.renaissancelabs.eu/lessons/parameters-precision-and-memory/): A parameter is a stored number, and every number costs bytes. Precision, gradients and optimizer state decide whether a model fits on one chip or needs a cluster.
+- [GPUs and parallelism](https://learn.renaissancelabs.eu/lessons/gpus-and-parallelism/): A GPU is fast only when its arithmetic units stay fed. Training a large model means splitting it across thousands of GPUs in several ways at once, and paying for the communication.
+- [Mixture of experts](https://learn.renaissancelabs.eu/lessons/mixture-of-experts/): A mixture-of-experts model stores many specialist sub-networks but sends each token to only a few. It gets the capacity of a huge model at the arithmetic cost of a much smaller one.
+- [When training breaks](https://learn.renaissancelabs.eu/lessons/when-training-breaks/): At frontier scale something is always failing. How labs survive broken chips, loss spikes, silent wrong answers and fragile low-precision numbers.
+- [Supervised fine-tuning](https://learn.renaissancelabs.eu/lessons/supervised-fine-tuning/): How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.
+- [Preference tuning and reinforcement learning](https://learn.renaissancelabs.eu/lessons/preference-tuning-and-rl/): How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.
+- [Evaluation](https://learn.renaissancelabs.eu/lessons/evaluation/): How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.
+- [Distillation and quantization](https://learn.renaissancelabs.eu/lessons/distillation-and-quantization/): Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.
+- [Inference and sampling](https://learn.renaissancelabs.eu/lessons/inference-and-sampling/): How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.
+- [What "open" means for AI models](https://learn.renaissancelabs.eu/lessons/what-open-means/): "Open" can mean downloadable weights, public code, released data or a full training recipe. These are different things, with different freedoms, and few releases include all four.
+
+## Films
+- [Envy is a compass](https://learn.renaissancelabs.eu/films/envy/): Envy is not proof that you are a bad friend. It is precise, and it points at what you still want.
+- [The other side of embarrassment](https://learn.renaissancelabs.eu/films/shame/): What embarrassment, guilt and shame are for, why the alarm is often wrong, and small safe steps through it.
+- [What is intelligence?](https://learn.renaissancelabs.eu/films/intelligence/): A short essay in film: intelligence as finding and keeping the right pattern, and how brains and language models share that shape.
+- [Fear not: the oldest advice in the world](https://learn.renaissancelabs.eu/films/fear/): Fear narrows the mind, and the oldest advice for it is company, staying with it, and opening the thing you avoid.
+- [A secure base: the four patterns of attachment](https://learn.renaissancelabs.eu/films/attachment/): Attachment is a tendency, not destiny. A look at the four patterns and what the research says actually helps people grow more secure.
+- [Where the silicon ends](https://learn.renaissancelabs.eu/films/gpu-hardware/): Why Hopper cannot run 4-bit math at full speed and Blackwell can, and which GPU limits are carved in silicon rather than code.
+- [Memory is an experience](https://learn.renaissancelabs.eu/films/memory/): Each time you remember, you rebuild the memory in the present, which means the way you see the past can change.
+- [Running on empty: understanding burnout](https://learn.renaissancelabs.eu/films/burnout/): If you wake up already tired, you may not be lazy. Burnout has a shape that research describes, and five steps that help you come back.
+- [Understanding your attachment style](https://learn.renaissancelabs.eu/films/attachment-heal/): Why you spiral, withdraw or push people away, how each pattern grew, and how to practice something steadier and support someone you love.
+- [What it takes to train a frontier model](https://learn.renaissancelabs.eu/films/frontier-training/): A tour of what goes into training a 2026 frontier model: data, scaling, chips, parallelism, failures, post-training and cost.
+- [The only place experience happens](https://learn.renaissancelabs.eu/films/present/): What the present moment is, why minds wander, and what the evidence says about mindfulness and awe.
+- [Inkling 2 Small: training in 4-bit](https://learn.renaissancelabs.eu/films/inkling/): A look at how Inkling 2 Small was trained in native 4-bit, what the run probably cost, and how a smaller team could climb to the same recipe.
+- [You are not alone in here](https://learn.renaissancelabs.eu/films/not-alone/): We see our own inside and everyone else's outside. This film looks at why that makes us feel separate, and at small ways to feel connected again.
+- [Hello, old friend: living with fear](https://learn.renaissancelabs.eu/films/old-friend/): Fear is an old companion trying to keep you safe. A gentle film about neither obeying it nor fighting it.
+- [How to feel and still choose](https://learn.renaissancelabs.eu/films/emotion-regulation/): Emotional regulation is not feeling less. It is a skill, built mostly with other people, and five practices can strengthen it.
+- [Entropy: order and surprise](https://learn.renaissancelabs.eu/films/entropy/): Shannon's entropy, followed through physics, the entropic brain hypothesis and the training loss of a language model.
+- [Act first, and do what you say](https://learn.renaissancelabs.eu/films/act-first/): Motivation often follows action. A smaller, kinder way to close the gap between what you say you will do and what you do.
+- [Inside the strongest open models](https://learn.renaissancelabs.eu/films/open-models/): Ten leading open-weights models compared: sparse experts, compressed attention, stability, data, and why post-training seems to decide the score.
+- [Running AI agents safely on a cluster](https://learn.renaissancelabs.eu/films/cluster-agents/): How to let a learning agent use the real internet without letting it do real damage: sandboxes, egress proxies, logging and staged rollouts.
+- [Make a Fool of Yourself](https://learn.renaissancelabs.eu/films/fool/): Why the fear of cringe feels so big, why it is often wrong, and a week of small, deliberate foolishness.
+- [The future is a story you tell today](https://learn.renaissancelabs.eu/films/future/): How the brain builds the future from memory, where it goes wrong, and four gentle questions that make the story kinder.

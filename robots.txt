@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://learn.renaissancelabs.eu/sitemap.xml

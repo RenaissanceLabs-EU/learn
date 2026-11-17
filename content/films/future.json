@@ -1,0 +1,130 @@
+{
+ "id": "future",
+ "title": "The future is a story you tell today",
+ "kicker": "Why we mispredict our own happiness",
+ "track": "minds",
+ "theme": "memory-time",
+ "blurb": "How the brain builds the future from memory, where it goes wrong, and four gentle questions that make the story kinder.",
+ "description": "Second film in a small series on time. The brain simulates the future by remixing the past, and the simulation errs in predictable ways: we overestimate how long bad things hurt and how long plans take. The film ends with practical tools, including honest planning, if-then plans and kindness to your future self.",
+ "takeaways": [
+  "We imagine the future with the same brain systems we use for memory, so it is built from pieces of the past.",
+  "People tend to overestimate how long a setback will hurt, because they forget their own mental immune system.",
+  "Asking how long a task took last time removes much of the planning fallacy.",
+  "In studies of people with generalized anxiety, most worries did not come true, and when they did, people coped better than expected.",
+  "Picturing the obstacle alongside the wish, then making a small if-then plan, works better than fantasizing about success."
+ ],
+ "chapters": [
+  {
+   "scene": "hook",
+   "title": "Something strange"
+  },
+  {
+   "scene": "simulator",
+   "title": "The brain as simulator"
+  },
+  {
+   "scene": "forecast",
+   "title": "Predicting our feelings"
+  },
+  {
+   "scene": "california",
+   "title": "The California illusion"
+  },
+  {
+   "scene": "planning",
+   "title": "The planning fallacy"
+  },
+  {
+   "scene": "worry",
+   "title": "Worry"
+  },
+  {
+   "scene": "dream",
+   "title": "Why daydreaming is not enough"
+  },
+  {
+   "scene": "futureself",
+   "title": "Meeting your future self"
+  },
+  {
+   "scene": "wisdom",
+   "title": "Four gentle questions"
+  },
+  {
+   "scene": "close",
+   "title": "Closing"
+  },
+  {
+   "scene": "sources",
+   "title": "Sources"
+  }
+ ],
+ "lessons": [],
+ "sources": [
+  {
+   "title": "Gilbert and Wilson (2007), Science, prospection",
+   "url": ""
+  },
+  {
+   "title": "Hassabis et al. (2007), PNAS, patients with hippocampal amnesia cannot imagine new experiences",
+   "url": ""
+  },
+  {
+   "title": "Schacter and Addis (2007), constructive memory and the future",
+   "url": ""
+  },
+  {
+   "title": "Gilbert et al. (1998), Journal of Personality and Social Psychology, immune neglect",
+   "url": ""
+  },
+  {
+   "title": "Wilson et al. (2000), Journal of Personality and Social Psychology, focalism",
+   "url": ""
+  },
+  {
+   "title": "Schkade and Kahneman (1998), Psychological Science, does living in California make people happy",
+   "url": ""
+  },
+  {
+   "title": "Buehler, Griffin and Ross (1994), Journal of Personality and Social Psychology, the planning fallacy",
+   "url": ""
+  },
+  {
+   "title": "LaFreniere and Newman (2019), Behavior Therapy, worries that did not come true",
+   "url": ""
+  },
+  {
+   "title": "Schwob et al. (2026), Journal of Anxiety Disorders, randomized trial in generalized anxiety",
+   "url": ""
+  },
+  {
+   "title": "Oettingen and Mayer (2002), Journal of Personality and Social Psychology, positive fantasies and expectations",
+   "url": ""
+  },
+  {
+   "title": "Gollwitzer and Sheeran (2006), implementation intentions meta-analysis",
+   "url": ""
+  },
+  {
+   "title": "Pronin, Olivola and Kennedy (2008), Personality and Social Psychology Bulletin, future selves as others",
+   "url": ""
+  },
+  {
+   "title": "Hershfield et al. (2011), Journal of Marketing Research, age-progressed avatars",
+   "url": ""
+  },
+  {
+   "title": "Robalino et al. (2023), Behavioral Science and Policy, field test with savers",
+   "url": ""
+  },
+  {
+   "title": "Seneca, Letters to Lucilius 13",
+   "url": ""
+  },
+  {
+   "title": "Augustine, Confessions, Book XI",
+   "url": ""
+  }
+ ],
+ "level": "Beginner"
+}

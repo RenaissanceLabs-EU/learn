@@ -1,0 +1,94 @@
+{
+  "id": "cluster-agents",
+  "title": "Running AI agents safely on a cluster",
+  "kicker": "RL rollouts with internet access",
+  "track": "machines",
+  "theme": "safety",
+  "blurb": "How to let a learning agent use the real internet without letting it do real damage: sandboxes, egress proxies, logging and staged rollouts.",
+  "description": "Reinforcement learning agents learn by acting, often with a terminal and the internet. The film explains how a research cluster works, what an RL rollout looks like, eight concrete failure modes, and a safety design: strong sandboxes, default-deny networking through a proxy, logging outside the box, canary tokens, a kill switch and a staged rollout.",
+  "takeaways": [
+    "On a cluster your job runs as you, and the machine is shared, so you are responsible for what your agents do.",
+    "A sandbox is only as safe as what is mounted in it, so a good rollout sandbox starts empty.",
+    "Never give one rollout private data, untrusted content and a way to send information out at the same time.",
+    "Training searches for whatever earns reward, so loopholes in the checker will be found and must be closed.",
+    "Move up from no network to a frozen web mirror to a small allowlist only after the lower stage has run clean."
+  ],
+  "chapters": [
+    {
+      "scene": "hook",
+      "title": "Intro"
+    },
+    {
+      "scene": "cluster",
+      "title": "How a cluster works"
+    },
+    {
+      "scene": "rl",
+      "title": "Agent RL on a cluster"
+    },
+    {
+      "scene": "sandbox",
+      "title": "Sandboxes"
+    },
+    {
+      "scene": "internet",
+      "title": "The internet question"
+    },
+    {
+      "scene": "risks",
+      "title": "Eight failure modes"
+    },
+    {
+      "scene": "rlrisk",
+      "title": "Why RL raises the risk"
+    },
+    {
+      "scene": "network",
+      "title": "Network design"
+    },
+    {
+      "scene": "watch",
+      "title": "Logging and monitoring"
+    },
+    {
+      "scene": "ladder",
+      "title": "Staged rollout"
+    },
+    {
+      "scene": "culture",
+      "title": "Mindset and checklist"
+    },
+    {
+      "scene": "sources",
+      "title": "Sources"
+    }
+  ],
+  "lessons": [
+    "preference-tuning-and-rl",
+    "when-training-breaks",
+    "gpus-and-parallelism"
+  ],
+  "sources": [
+    {
+      "title": "Simon Willison on the lethal trifecta for AI agents",
+      "url": ""
+    },
+    {
+      "title": "OWASP Top 10 for LLM Applications",
+      "url": ""
+    },
+    {
+      "title": "MacDiarmid et al. 2025, Natural emergent misalignment from reward hacking in production RL (Anthropic)",
+      "url": ""
+    },
+    {
+      "title": "Baker et al. 2025, monitoring reasoning models for misbehavior (OpenAI)",
+      "url": ""
+    },
+    {
+      "title": "Documentation for Slurm, Apptainer, gVisor and Firecracker, and Linux kernel docs",
+      "url": ""
+    }
+  ],
+  "level": "Intermediate"
+}
