@@ -36,11 +36,17 @@ Confident and right costs little. Confident and wrong costs a lot.
 
 The training loss is the average over all positions in a batch. Lower is better, and it falls quickly at first and then slowly.
 
+:::widget nexttoken
+
 ## Gradient descent
 
 The loss depends on every parameter. The **gradient** is the set of numbers that says, for each parameter, how the loss would change if that parameter were nudged up a little. **Gradient descent** moves each parameter a small step in the direction that lowers the loss. Repeat that many times and the loss goes down.
 
 Picture standing on a hilly landscape in fog, feeling the slope under your feet and stepping downhill. The landscape here has billions of dimensions, but the rule is the same.
+
+Try it yourself. Choose a start, pick an optimizer and change the learning rate until the walk breaks.
+
+:::widget gradient
 
 ## Backpropagation, honestly
 
@@ -51,6 +57,8 @@ How do we get the gradient for billions of parameters? **Backpropagation** appli
 The **learning rate** sets the size of each step. Too small and training crawls. Too large and the loss bounces or blows up. Early in training the model is fragile, so the rate usually starts near zero and rises over the first steps, a period called **warmup**, then decays over the run. These schedules are tuned carefully, and large runs sometimes suffer sudden loss spikes that need special handling (see [When training breaks](/lessons/when-training-breaks/)).
 
 A step is not computed from one example. It uses a **batch** of many sequences, and the gradient is averaged over them. Bigger batches give a less noisy gradient and use more chips efficiently. Frontier runs use huge batches: DeepSeek-V4-Pro's batch reaches 94.4 million tokens.
+
+:::widget schedule
 
 ## Optimizers: Adam and after
 

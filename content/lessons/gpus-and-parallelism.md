@@ -75,6 +75,8 @@ Parallelism does not remove cost, it moves it. The aim is to overlap communicati
 
 Scale also brings failure. A fault-tolerance study of a 100,000-GPU job estimates a failure about every 18 minutes, which is why [When training breaks](/lessons/when-training-breaks/) is its own lesson.
 
+For a concrete run, see [Base training, end to end](/lessons/base-training/): a 9B model on 128 GPU dies with tensor parallelism 8 and context parallelism up to 16.
+
 ## Where to go next
 
 [Mixture of experts](/lessons/mixture-of-experts/) explains the architecture that expert parallelism serves, and [When training breaks](/lessons/when-training-breaks/) covers what happens when thousands of chips run for months. The GPU hardware film (how a GPU runs work, compute versus memory bound) and the frontier training film (chips and power, parallelism) show these ideas on real hardware.

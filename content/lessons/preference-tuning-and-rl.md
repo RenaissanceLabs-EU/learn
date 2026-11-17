@@ -41,6 +41,8 @@ The reward model stands in for human judgement at a scale no team of people coul
 
 **Direct Preference Optimization** (DPO) reaches a similar goal with less machinery. It trains directly on pairs of a preferred and a rejected answer, raising the probability of the first relative to the second, with no separate reward model and no RL loop. It is simpler and cheaper to run, which is why it is common for style and helpfulness. It learns from a fixed set of pairs, so it cannot explore on its own.
 
+:::widget dpo
+
 ## Rewards you can check
 
 Some tasks have an answer a program can verify. A maths problem has a final answer. Code either passes its unit tests or it does not. This is **reinforcement learning with verifiable rewards** (RLVR), and it removes the human and the reward model from the loop.
@@ -61,6 +63,10 @@ Some tasks have an answer a program can verify. A maths problem has a final answ
 DeepSeek's **GRPO** (group relative policy optimization) is a widely used recipe for this. For each prompt the model writes a group of attempts, for example 16. Each is scored. An attempt is then judged against the group's average: better than its siblings, push it up; worse, push it down. This removes the need for a separate network to predict how good a situation is. One practical detail from Xiaomi's MiMo report: prompts where every attempt passes or every attempt fails carry no signal, and a sampler can drop them.
 
 At scale, MiMo-V2.6-Pro used 1,568 prompts with 16 rollouts each, about 25,000 attempts per step, and reports $2.6M of RL compute for the Pro model.
+
+:::widget grpo
+
+The full path from base model to a model trained this way is followed step by step in [Post-training, end to end](/lessons/post-training/).
 
 ## Reasoning and long chains of thought
 

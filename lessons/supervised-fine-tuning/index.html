@@ -24,6 +24,7 @@
 <link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/styles.css?v=2026-11-17">
 <script src="/widgets.js?v=2026-11-17" defer></script>
+<script src="/widgets2.js?v=2026-11-17" defer></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "Supervised fine-tuning", "description": "How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT8M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
 </head>
 <body class="">
@@ -62,6 +63,10 @@
 <p>Real templates differ between model families, and the marker names above are only illustrative. Using the wrong template at inference time is a classic cause of strangely bad behaviour, because the model never saw that format during tuning. The final end marker matters too: it teaches the model when to stop.</p>
 <h2 id="loss-on-responses-only">Loss on responses only</h2>
 <p>During SFT the model reads the whole conversation, but the loss is usually computed only on the assistant&#x27;s tokens. The prompt tokens are <strong>masked</strong>: they are fed in as context but contribute nothing to the error. The reason is simple. We want the model to learn how to answer, not to get better at imitating the user&#x27;s phrasing.</p>
+<p>The picture below shows one conversation in three modes, and which tokens count toward the loss.</p>
+<div class="widget" data-widget="chatmask" aria-live="polite"></div>
+<p>Batches are built by <strong>packing</strong> many short conversations into each long sequence, so no compute is wasted on padding.</p>
+<div class="widget" data-widget="packing" aria-live="polite"></div>
 <h2 id="quality-beats-quantity">Quality beats quantity</h2>
 <p>Pre-training needs trillions of tokens. SFT works with far less, often thousands to hundreds of thousands of examples, which is a rule of thumb rather than a law. What matters is what the examples demonstrate.</p>
 <aside class="callout"><span class="callout-t">Key idea</span><p>SFT mostly teaches a format and a style of behaviour: how to answer, how long, in what tone, when to refuse. A few thousand excellent examples usually do more than a million careless ones.</p></aside>

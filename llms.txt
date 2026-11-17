@@ -19,6 +19,8 @@
 - [Distillation and quantization](https://learn.renaissancelabs.eu/lessons/distillation-and-quantization/): Two ways to make a model cheaper to run: teach a small model to imitate a big one, or store the same weights in fewer bits. What each one keeps, and what it costs.
 - [Inference and sampling](https://learn.renaissancelabs.eu/lessons/inference-and-sampling/): How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.
 - [What "open" means for AI models](https://learn.renaissancelabs.eu/lessons/what-open-means/): "Open" can mean downloadable weights, public code, released data or a full training recipe. These are different things, with different freedoms, and few releases include all four.
+- [How a base model is trained, end to end](https://learn.renaissancelabs.eu/lessons/base-training/): Every step from raw text to a base model, followed through one real model, the OpenEuroLLM 9B that sits under Agora, with interactive demos of the loss, the optimizer, the schedule and long context.
+- [How a base model becomes an assistant, end to end](https://learn.renaissancelabs.eu/lessons/post-training/): Seven stages of post-training followed through one real model, Agora 9B, with its data, recipes, costs and scores, and interactive demos of loss masking, preference tuning, weight merging and reinforcement learning.
 
 ## Notes
 - [In practice there is a difference](https://learn.renaissancelabs.eu/notes/theory-and-practice/): Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.

@@ -47,6 +47,14 @@ Real templates differ between model families, and the marker names above are onl
 
 During SFT the model reads the whole conversation, but the loss is usually computed only on the assistant's tokens. The prompt tokens are **masked**: they are fed in as context but contribute nothing to the error. The reason is simple. We want the model to learn how to answer, not to get better at imitating the user's phrasing.
 
+The picture below shows one conversation in three modes, and which tokens count toward the loss.
+
+:::widget chatmask
+
+Batches are built by **packing** many short conversations into each long sequence, so no compute is wasted on padding.
+
+:::widget packing
+
 ## Quality beats quantity
 
 Pre-training needs trillions of tokens. SFT works with far less, often thousands to hundreds of thousands of examples, which is a rule of thumb rather than a law. What matters is what the examples demonstrate.

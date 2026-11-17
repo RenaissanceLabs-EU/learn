@@ -133,5 +133,5 @@
     run();
   };
 
-  $$('.widget').forEach(function (r) { var f = W[r.dataset.widget]; if (f) { try { f(r); } catch (e) { r.textContent = ''; } } });
+  window.LW = { W: W, $: $, $$: $$, el: el, esc: esc, fmt: fmt };
 })();

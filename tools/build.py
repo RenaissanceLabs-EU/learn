@@ -18,12 +18,13 @@ CFG = json.load(open("data/site.json"))
 MEDIA = CFG.get("media_base", "/media/").rstrip("/") + "/"
 BUILD = CFG.get("built", datetime.date.today().isoformat())
 
-PARTS = ["The basics", "Feeding the model", "The machine room", "After pre-training"]
+PARTS = ["The basics", "Feeding the model", "The machine room", "After pre-training", "End to end"]
 PART_BLURB = {
     "The basics": "What a model is, how it reads text, and how it learns.",
     "Feeding the model": "Data, scale and the memory a model needs.",
     "The machine room": "Chips, parallelism and what goes wrong at scale.",
     "After pre-training": "Turning a text predictor into something useful, and running it.",
+    "End to end": "Two long guides that follow one real model, Agora 9B, from raw text to a working assistant.",
 }
 THEMES = {
     "training": ("How a model is trained", "Data, scale, cost and the engineering behind a frontier run."),
@@ -588,7 +589,7 @@ def lesson_page(l, lessons, films):
           "isPartOf": {"@type": "Course", "name": "How language models learn", "url": SITE + "/models/"},
           "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": BUILD}
     page(f"/lessons/{l['id']}/", f"{l['title']} · Learn · Renaissance Labs", l["summary"], c, jsonld=ld, image="models",
-         extra='<script src="/widgets.js?v=' + BUILD + '" defer></script>\n')
+         extra='<script src="/widgets.js?v=' + BUILD + '" defer></script>\n<script src="/widgets2.js?v=' + BUILD + '" defer></script>\n')
 
 
 def film_page(f, films, lessons):

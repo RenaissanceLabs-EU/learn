@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How a base model is trained, end to end · Learn · Renaissance Labs</title>
+<meta name="description" content="Every step from raw text to a base model, followed through one real model, the OpenEuroLLM 9B that sits under Agora, with interactive demos of the loss, the optimizer, the schedule and long context.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/lessons/base-training/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="How a base model is trained, end to end · Learn · Renaissance Labs">
+<meta property="og:description" content="Every step from raw text to a base model, followed through one real model, the OpenEuroLLM 9B that sits under Agora, with interactive demos of the loss, the optimizer, the schedule and long context.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/lessons/base-training/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How a base model is trained, end to end · Learn · Renaissance Labs">
+<meta name="twitter:description" content="Every step from raw text to a base model, followed through one real model, the OpenEuroLLM 9B that sits under Agora, with interactive demos of the loss, the optimizer, the schedule and long context.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/models.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script src="/widgets.js?v=2026-11-17" defer></script>
+<script src="/widgets2.js?v=2026-11-17" defer></script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "LearningResource", "name": "How a base model is trained, end to end", "description": "Every step from raw text to a base model, followed through one real model, the OpenEuroLLM 9B that sits under Agora, with interactive demos of the loss, the optimizer, the schedule and long context.", "educationalLevel": "Intermediate", "learningResourceType": "lesson", "inLanguage": "en", "isAccessibleForFree": true, "timeRequired": "PT18M", "isPartOf": {"@type": "Course", "name": "How language models learn", "url": "https://learn.renaissancelabs.eu/models/"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": "2026-11-17"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/notes/">Notes</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson" data-lesson="base-training">
+<header class="lesson-h"><div class="wrap">
+  <p class="crumb"><a href="/models/">Models</a> · End to end · Lesson 17</p>
+  <h1>How a base model is trained, end to end</h1><p class="lede">Every step from raw text to a base model, followed through one real model, the OpenEuroLLM 9B that sits under Agora, with interactive demos of the loss, the optimizer, the schedule and long context.</p>
+  <p class="meta"><span>Intermediate</span><span>18 min read</span><span>4 film chapters</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>A <strong>base model</strong> is what you get when a network has read an enormous amount of text and learned to predict what comes next. It is not yet an assistant. Ask it a question and it may continue with another question, because lists of questions are common in text. Everything that makes a model useful comes later, in <a href="/lessons/post-training/">post-training</a>. But the base model decides what is possible, so most of the cost, risk and engineering sits here.</p>
+<p>This guide follows one real model all the way through: the <strong>OpenEuroLLM 9B</strong> base that <a href="https://huggingface.co/birgermoell/agora-9b-GGUF" target="_blank" rel="noopener">Agora 9B</a> was built on. We use it because its model card publishes the architecture, the training stages, the optimizer settings and the run&#x27;s health in unusual detail. A caveat up front: the card documents the long-context continuation of the model in full, but describes the earlier pre-training only by name and size. Where we explain the general recipe, we say so. Where a number comes from the card, we say that too.</p>
+<ol class="flow"><li><b>Data</b><span>Choose and clean the text</span></li><li><b>Tokenizer</b><span>Text becomes numbers</span></li><li><b>Architecture</b><span>The shape of the network</span></li><li><b>Training loop</b><span>Predict, measure, adjust</span></li><li><b>Schedule</b><span>How fast to learn, and when</span></li><li><b>Scale-out</b><span>Spread it over many GPUs</span></li><li><b>Long context</b><span>Stretch the window</span></li><li><b>Check</b><span>Is the run healthy?</span></li></ol>
+<div class="stats"><div><b>9B</b><span>parameters, 36 layers</span></div><div><b>262,144</b><span>tokens in the vocabulary</span></div><div><b>~7.98B</b><span>tokens of long-context training</span></div><div><b>128</b><span>AMD GPU dies on the LUMI supercomputer</span></div></div>
+<h2 id="step-1-the-data">Step 1: the data</h2>
+<p>A base model learns from whatever it reads, so the mix of text is the first and largest design decision. Quality, language balance and duplication all matter, and the <a href="/lessons/pretraining-data/">pretraining data lesson</a> covers how that text is filtered.</p>
+<p>For the long-context stages of this model, the card lists a frozen, token-proportional blend of 152 source prefixes (157 for the final stage), drawn from FinePDFs, DCLM, HPLT3, multilingual synthetic text, Nemotron material, MegaMath, StarCoder, PeS2o, arXiv and Wikipedia. It covers many European languages plus code and scientific text, and it is not uniform by language. The text is sorted into length-aware tiers so that very long documents are available when the context grows.</p>
+<p>Two habits are worth copying. The mix is <strong>frozen</strong> before the run, so a result can be traced to a recipe. And it is described by proportion of tokens, not number of files, because a model feels the data in tokens.</p>
+<h2 id="step-2-tokens-and-architecture">Step 2: tokens and architecture</h2>
+<p>The model cannot read letters. A <strong>tokenizer</strong> cuts text into pieces and maps each to a number (see <a href="/lessons/tokens/">Tokens</a>). This model has a vocabulary of 262,144 pieces, large because it must cover dozens of languages efficiently. The two published cards give slightly different sizes for the later chat model (263,168); neither explains the difference.</p>
+<p>The network is a Qwen3-compatible decoder-only transformer. The card gives the full shape:</p>
+<div class="compare c2"><div class="col"><h4>The shape</h4><ul><li>36 layers, hidden size 4,096</li><li>32 attention heads, sharing 8 key-value groups (grouped-query attention)</li><li>Head size 128; feed-forward size 12,288 with SwiGLU</li></ul></div><div class="col"><h4>The details</h4><ul><li>RMSNorm, with normalisation of queries and keys</li><li>Input and output embeddings are separate (untied)</li><li>BF16 weights, a 262,144-token position limit</li></ul></div></div>
+<p>You can check that this adds up to about 9 billion parameters with arithmetic any reader can do:</p>
+<div class="example"><span class="ex-t">Counting parameters</span><p>embeddings: 262,144 × 4,096 = 1.07B, twice (input and output) = 2.15B</p><p>attention per layer: 4,096² (queries) + 2 × 4,096 × 1,024 (keys, values) + 4,096² (output) = 42M</p><p>feed-forward per layer: 3 × 4,096 × 12,288 = 151M</p><p>36 layers × (42M + 151M) = 6.95B</p><p>total = 6.95B + 2.15B = about 9.1B</p></div>
+<p>Because the vocabulary is so large, over a fifth of the parameters sit in the two embedding tables. That is a design trade: more tokens per word saved, in exchange for memory. The <a href="/lessons/attention-and-the-transformer/">attention lesson</a> explains the layers themselves.</p>
+<h2 id="step-3-the-training-loop">Step 3: the training loop</h2>
+<p>Training is the same small cycle repeated for months of GPU time. Take a batch of text, run it forward through the network, measure how wrong the predictions were, and nudge every parameter slightly to be less wrong.</p>
+<p>The measure of wrong is the <strong>loss</strong>: for each position, minus the logarithm of the probability the model gave to the token that actually came next. Try it:</p>
+<div class="widget" data-widget="nexttoken" aria-live="polite"></div>
+<p>A model that has learned nothing scores 12.48 on every token for this vocabulary. The last logged loss of this model&#x27;s final run was 1.427. The card is careful to say that this is a run-health number, not a benchmark, because loss depends on the data mix and cannot be compared across models.</p>
+<p>The nudge comes from the <strong>gradient</strong>, which says which direction in the model&#x27;s billions of dimensions lowers the loss. The step is then scaled by the <strong>learning rate</strong>. The optimizer for this model is <strong>Adam</strong>, with the settings the card lists: beta1 0.9, beta2 0.95, weight decay 0.1, gradient clipping at 1.0. Clipping keeps one freak batch from throwing the model far off course. Below is a two-parameter version of the same process; try a learning rate that is too large.</p>
+<div class="widget" data-widget="gradient" aria-live="polite"></div>
+<p>The batch itself is concrete: a global batch of 64 sequences, each as long as the stage&#x27;s context. At the 16K stage that is 64 × 16,384 = 1,048,576 tokens per step, and 953 steps gives 999,292,928 tokens, exactly the figure in the card.</p>
+<h2 id="step-4-the-schedule">Step 4: the schedule</h2>
+<p>The learning rate is not constant. It starts at zero and rises over a <strong>warm-up</strong>, because early updates are noisy and large steps can wreck the network. Then it falls, smoothly, to a small final value. The long-context stage of this model used a cosine decay from 8e-6 to 8e-7 with about 5 percent warm-up.</p>
+<div class="widget" data-widget="schedule" aria-live="polite"></div>
+<p>The last part of training has a special role. When the learning rate is already small, the model settles into a good region, and many labs feed it their cleanest, highest-quality data at that point. This is called <strong>annealing</strong>. The checkpoint this model was derived from is named for it, <code>anneal300b</code>, and the card describes it as the annealed checkpoint at about 300B tokens, in contrast to the roughly 1T-token base of the earlier release. Annealing is a small share of the full run&#x27;s compute, and labs often find it moves results more than its size suggests.</p>
+<h2 id="step-5-spreading-the-work-over-many-gpus">Step 5: spreading the work over many GPUs</h2>
+<p>A 9B model trained in BF16 with Adam needs on the order of 16 bytes per parameter before activations (see <a href="/lessons/parameters-precision-and-memory/">Parameters, precision and memory</a>), far more than one GPU holds. So the work is split. This run used 16 nodes with 128 AMD MI250X GPU dies at every production stage, with:</p>
+<ul><li><strong>tensor parallelism</strong> of 8: each big matrix is cut across 8 GPUs;</li><li><strong>sequence parallelism</strong>, which splits the activations of the layers that tensor parallelism leaves whole;</li><li><strong>context parallelism</strong> that grows with the context, to 16 at 256K: each GPU holds only a slice of the very long sequence;</li><li>a micro-batch of 1 per step, <strong>FlashAttention</strong> to avoid materialising the full attention matrix, and selective recomputation to trade a little compute for a lot of memory.</li></ul>
+<p>The software is Megatron-Core, the descendant of the Megatron-LM paper. <a href="/lessons/gpus-and-parallelism/">GPUs and parallelism</a> explains what each form of parallelism costs in communication.</p>
+<h2 id="step-6-stretching-the-context">Step 6: stretching the context</h2>
+<p>A model trained on short text cannot use long text unless it is taught to. Doing it from the start would be wasteful, because attention cost grows steeply with length. So the usual route is a staged extension: finish most of the training short, then continue at longer lengths.</p>
+<p>This model went through five stages, each longer than the last:</p>
+<p>| Stage | Sequence length | RoPE theta | Tokens | |---|---|---|---| | 16K | 16,384 | 500,000 | 0.999B | | 32K | 32,768 | 1,000,000 | 0.998B | | 64K | 65,536 | 2,000,000 | 2.999B | | 128K | 131,072 | 32,000,000 | 1.996B | | 256K | 262,144 | 64,000,000 | 0.990B |</p>
+<p>Position is encoded by <strong>rotary embeddings</strong>, which turn each pair of query and key dimensions by an angle proportional to the token&#x27;s position. Each pair turns at its own speed, from fast ones that separate neighbours to slow ones that track distance. Raising the base value theta slows the rotations, so that at 256K tokens the slow pairs still carry usable information. Explore how the stages differ:</p>
+<div class="widget" data-widget="rope" aria-live="polite"></div>
+<p>The numbers matter less than the principle: the context window is not a property of the architecture alone. It is a trained skill, and each doubling needs both a new theta and data that actually contains long-range structure.</p>
+<h2 id="step-7-checking-the-run-is-healthy">Step 7: checking the run is healthy</h2>
+<p>Pre-training runs fail, and the best protection is to watch them closely. The card reports the 256K stage in the way an operator would: all 59 of 59 planned steps completed, the final checkpoint saved, zero skipped steps and zero NaN steps. It also reports that the first launch attempt died during cold startup with a communication timeout between GPUs, and that a fresh second start then ran the whole stage cleanly. That small detail is a good illustration of why <a href="/notes/theory-and-practice/">running on a cluster is a skill</a>: the model was never the problem.</p>
+<p>To check that the long context really works, the card runs a deliberately small needle-in-a-haystack test in English and Swedish at every length from 16K to 256K, with control conditions. All 12 of 12 trials passed at each length. The card itself calls this a check of export and retrieval, not a stable estimate of quality, and that is the right way to read it.</p>
+<p>Few-shot benchmarks tell you what the base model knows before any tuning. For this base, the post-training card lists Belebele reading comprehension at 0.737, Global-MMLU at 0.547, INCLUDE regional knowledge at 0.422 and MultiBLiMP grammar at 0.935. They are the starting line against which the next lesson&#x27;s improvements are measured.</p>
+<h2 id="what-you-have-at-the-end-and-what-you-do-not">What you have at the end, and what you do not</h2>
+<p>You have a network with a great deal of knowledge about language, code and the world, a long window, and no manners. It does not follow instructions reliably, it has no safety training, and it will continue any text in the style it finds. The card says so plainly: this is a base completion model, not instruction-tuned and not safety-aligned.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>Pre-training builds capability. It is expensive, mostly fixed once done, and shaped by the data, the architecture and the run&#x27;s stability. Everything after it shapes behaviour, and costs a tiny fraction as much.</p></aside>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p><a href="/lessons/post-training/">Post-training, end to end</a> follows the same model through seven more steps, from a text predictor to Agora 9B, with about 1,250 GPU-hours in total. For the economics of choosing model and data size, read <a href="/lessons/scaling-laws/">Scaling laws</a>. The film chapters on the recipe, the data and parallelism show the same ideas at frontier scale.</p><aside class="watch"><span class="watch-t">Prefer to watch?</span><a href="/films/frontier-training/#t=45"><span class="play">▶</span><b>The five ingredients</b><span>What it takes to train a frontier model · 0:45</span></a><a href="/films/frontier-training/#t=87"><span class="play">▶</span><b>Data</b><span>What it takes to train a frontier model · 1:27</span></a><a href="/films/frontier-training/#t=186"><span class="play">▶</span><b>Scaling and active parameters</b><span>What it takes to train a frontier model · 3:06</span></a><a href="/films/frontier-training/#t=366"><span class="play">▶</span><b>Parallelism</b><span>What it takes to train a frontier model · 6:06</span></a></aside><section class="sources"><h2 id="sources">Sources and further reading</h2><ul><li><a href="https://huggingface.co/openeurollm/oellm-9b-256k-theta64m-prelude-anneal300b" target="_blank" rel="noopener">OpenEuroLLM 9B 256K base model card (Prelude anneal300b)</a></li><li><a href="https://huggingface.co/birgermoell/agora-9b-GGUF" target="_blank" rel="noopener">Agora 9B and its post-training record</a></li><li><a href="https://arxiv.org/abs/1909.08053" target="_blank" rel="noopener">Megatron-LM: Training Multi-Billion Parameter Language Models Using Model Parallelism</a></li><li><a href="https://arxiv.org/abs/1412.6980" target="_blank" rel="noopener">Adam: A Method for Stochastic Optimization</a></li><li><a href="https://arxiv.org/abs/2203.15556" target="_blank" rel="noopener">Training Compute-Optimal Large Language Models (Chinchilla)</a></li><li><a href="https://arxiv.org/abs/2205.14135" target="_blank" rel="noopener">FlashAttention</a></li><li><a href="https://arxiv.org/abs/2305.13245" target="_blank" rel="noopener">GQA: Training Generalized Multi-Query Transformer Models</a></li></ul></section></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#step-1-the-data">Step 1: the data</a></li><li><a href="#step-2-tokens-and-architecture">Step 2: tokens and architecture</a></li><li><a href="#step-3-the-training-loop">Step 3: the training loop</a></li><li><a href="#step-4-the-schedule">Step 4: the schedule</a></li><li><a href="#step-5-spreading-the-work-over-many-gpus">Step 5: spreading the work over many GPUs</a></li><li><a href="#step-6-stretching-the-context">Step 6: stretching the context</a></li><li><a href="#step-7-checking-the-run-is-healthy">Step 7: checking the run is healthy</a></li><li><a href="#what-you-have-at-the-end-and-what-you-do-not">What you have at the end, and what you do not</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/post-training/" data-lesson="post-training"><span class="lnum">18</span><span class="lbody"><b>How a base model becomes an assistant, end to end</b><span>Seven stages of post-training followed through one real model, Agora 9B, with its data, recipes, costs and scores, and interactive demos of loss masking, preference tuning, weight merging and reinforcement learning.</span><span class="lmeta">Intermediate · 22 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/pretraining-data/" data-lesson="pretraining-data"><span class="lnum">05</span><span class="lbody"><b>Pretraining data</b><span>Frontier models read tens of trillions of tokens, but most of the raw web is thrown away first. Quality, mixture and repetition shape what the model learns.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/scaling-laws/" data-lesson="scaling-laws"><span class="lnum">06</span><span class="lbody"><b>Scaling laws: how big, how long</b><span>Loss falls smoothly as parameters, data and compute grow. Scaling laws turn that into a budgeting tool, and also show where the tool stops working.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/gpus-and-parallelism/" data-lesson="gpus-and-parallelism"><span class="lnum">08</span><span class="lbody"><b>GPUs and parallelism</b><span>A GPU is fast only when its arithmetic units stay fed. Training a large model means splitting it across thousands of GPUs in several ways at once, and paying for the communication.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/how-a-model-learns/" data-lesson="how-a-model-learns"><span class="lnum">04</span><span class="lbody"><b>How a model learns</b><span>Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a></div></section><nav class="pn" aria-label="Lessons"><a class="prev" href="/lessons/what-open-means/"><span>Previous</span><b>What &quot;open&quot; means for AI models</b></a><a class="next" href="/lessons/post-training/"><span>Next</span><b>How a base model becomes an assistant, end to end</b></a></nav></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>
