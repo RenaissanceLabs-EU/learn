@@ -68,28 +68,68 @@
     else if (e.key === 'Escape' && overlay && !overlay.hidden) closeSearch();
   });
 
-  /* ---------- film player ---------- */
+  /* ---------- film player (YouTube embed or self-hosted file) ---------- */
   var player = $('#player');
   if (player) {
-    var id = player.dataset.film, video = $('#video'), miss = $('#miss');
+    var id = player.dataset.film, ytId = player.dataset.yt, miss = $('#miss');
     var chBtns = $$('#chapters button'), chapters = chBtns.map(function (b) { return +b.dataset.t; });
-    var tchaps = $$('.tchap'), lines = $$('.ln');
-    var lineT = lines.map(function (l) { return +l.dataset.t; });
-    var curCh = -1, curLn = -1, lastSave = 0;
-    video.addEventListener('error', function () { miss.hidden = false; video.style.visibility = 'hidden'; }, true);
-    $('source', video).addEventListener('error', function () { miss.hidden = false; video.style.visibility = 'hidden'; });
-    function seek(t, play) {
-      var go = function () { video.currentTime = t; if (play !== false) { var p = video.play(); if (p && p.catch) p.catch(function () {}); } };
-      if (video.readyState >= 1) go(); else { video.addEventListener('loadedmetadata', go, { once: true }); video.load(); }
+    var lines = $$('.ln'), lineT = lines.map(function (l) { return +l.dataset.t; });
+    var curCh = -1, curLn = -1, lastSave = 0, tickT = null, api = null, pending = null;
+    var m = location.hash.match(/t=(\d+)/), saved = store.get('pos:' + id);
+    var startAt = m ? +m[1] : (saved && saved.t > 15 ? saved.t : 0);
+
+    function useFile() {
+      var video = $('#video');
+      var fail = function () { miss.hidden = false; video.style.visibility = 'hidden'; };
+      video.addEventListener('error', fail, true);
+      api = {
+        time: function () { return video.currentTime || 0; },
+        paused: function () { return video.paused; },
+        seek: function (t, play) {
+          var go = function () { video.currentTime = t; if (play !== false) { var p = video.play(); if (p && p.catch) p.catch(function () {}); } };
+          if (video.readyState >= 1) go(); else { video.addEventListener('loadedmetadata', go, { once: true }); video.load(); }
+        }
+      };
+      video.addEventListener('timeupdate', update);
+      video.addEventListener('ended', ended);
+      video.addEventListener('loadedmetadata', function () { if (startAt && startAt < video.duration - 20) video.currentTime = startAt; update(); }, { once: true });
     }
-    $$('[data-t]').forEach(function (b) {
-      b.addEventListener('click', function () {
-        seek(+b.dataset.t); history.replaceState(null, '', '#t=' + Math.floor(+b.dataset.t));
-        if (window.scrollY > 260) window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    });
+
+    function useYouTube() {
+      var box = $('#yt'), yp = null;
+      var make = function () {
+        yp = new YT.Player('yt', {
+          host: 'https://www.youtube-nocookie.com', videoId: ytId,
+          playerVars: { rel: 0, modestbranding: 1, playsinline: 1, start: startAt || 0 },
+          events: {
+            onReady: function () { api.ready = true; if (pending != null) { yp.seekTo(pending, true); yp.playVideo(); pending = null; } update(); },
+            onStateChange: function (e) {
+              if (e.data === 1 && !tickT) tickT = setInterval(update, 400);
+              if ((e.data === 2 || e.data === 0) && tickT) { clearInterval(tickT); tickT = null; update(); }
+              if (e.data === 0) ended();
+            },
+            onError: function () { miss.hidden = false; box.style.visibility = 'hidden'; }
+          }
+        });
+      };
+      api = {
+        time: function () { return yp && yp.getCurrentTime ? yp.getCurrentTime() : 0; },
+        paused: function () { return !(yp && yp.getPlayerState && yp.getPlayerState() === 1); },
+        seek: function (t) { if (yp && api.ready) { yp.seekTo(t, true); yp.playVideo(); } else pending = t; }
+      };
+      if (window.YT && YT.Player) make();
+      else {
+        window.onYouTubeIframeAPIReady = make;
+        var s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; s.async = true;
+        s.onerror = function () { miss.hidden = false; box.style.visibility = 'hidden'; };
+        document.head.appendChild(s);
+      }
+    }
+
+    function ended() { store.set('pos:' + id, { t: 0, d: +player.dataset.duration, at: Date.now(), done: true }); }
     function update() {
-      var t = video.currentTime, c = -1, l = -1, i;
+      if (!api) return;
+      var t = api.time(), c = -1, l = -1, i;
       for (i = 0; i < chapters.length; i++) if (t >= chapters[i] - 0.2) c = i;
       for (i = 0; i < lineT.length; i++) if (t >= lineT[i] - 0.2) l = i;
       if (c !== curCh) {
@@ -102,22 +142,22 @@
         if (l > -1) { lines[l].classList.add('on'); var tb = lines[l].closest('.tbody'), d = $('#transcript'); if (d && d.open && tb) { var top = lines[l].offsetTop - tb.offsetTop; if (top < tb.scrollTop || top > tb.scrollTop + tb.clientHeight - 60) tb.scrollTop = top - 60; } }
         curLn = l;
       }
-      if (Date.now() - lastSave > 4000 && !video.paused) { lastSave = Date.now(); store.set('pos:' + id, { t: Math.floor(t), d: +player.dataset.duration, at: Date.now() }); }
+      if (Date.now() - lastSave > 4000 && !api.paused() && t > 1) { lastSave = Date.now(); store.set('pos:' + id, { t: Math.floor(t), d: +player.dataset.duration, at: Date.now() }); }
     }
-    video.addEventListener('timeupdate', update);
-    video.addEventListener('ended', function () { store.set('pos:' + id, { t: 0, d: +player.dataset.duration, at: Date.now(), done: true }); });
-    var m = location.hash.match(/t=(\d+)/), saved = store.get('pos:' + id);
-    video.addEventListener('loadedmetadata', function () {
-      if (m) video.currentTime = +m[1]; else if (saved && saved.t > 15 && saved.t < video.duration - 20) video.currentTime = saved.t;
-      update();
-    }, { once: true });
+
+    if (player.dataset.soon) { /* no player yet */ } else if (ytId) useYouTube(); else useFile();
+    $$('[data-t]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!api) return; api.seek(+b.dataset.t); history.replaceState(null, '', '#t=' + Math.floor(+b.dataset.t));
+        if (window.scrollY > 260) window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    });
     $('#share').addEventListener('click', function () {
-      var url = location.origin + location.pathname + '#t=' + Math.floor(video.currentTime || 0), b = this;
-      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { b.textContent = 'Copied ' + clock(video.currentTime || 0); }, function () { prompt('Copy this link', url); });
+      var t = Math.floor(api ? api.time() : 0), url = location.origin + location.pathname + '#t=' + t, b = this;
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(function () { b.textContent = 'Copied ' + clock(t); }, function () { prompt('Copy this link', url); });
       setTimeout(function () { b.textContent = 'Copy link at this time'; }, 2200);
     });
-    window.addEventListener('hashchange', function () { var mm = location.hash.match(/t=(\d+)/); if (mm) seek(+mm[1]); });
-    if (m) { var d0 = $('#transcript'); }
+    window.addEventListener('hashchange', function () { var mm = location.hash.match(/t=(\d+)/); if (mm && api) api.seek(+mm[1]); });
   }
 
   /* ---------- lessons: reading progress, toc spy, mark as read ---------- */

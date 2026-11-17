@@ -382,7 +382,7 @@ def page(path, title, desc, content, **kw):
 def film_card(f, big=False):
     th = THEME_LABEL[f["theme"]]
     return (f'<a class="fcard{" big" if big else ""}" href="/films/{f["id"]}/" data-film="{f["id"]}">'
-            f'{cover(f)}<span class="dur">{mins(f["duration"])}</span><span class="fprog" hidden><i></i></span>'
+            f'{cover(f)}<span class="dur">{"Soon" if (CFG.get("youtube") and f["id"] not in CFG["youtube"]) else mins(f["duration"])}</span><span class="fprog" hidden><i></i></span>'
             f'<span class="fbody"><span class="chip">{esc(th)}</span><b>{esc(f["title"])}</b><span class="fk">{esc(f["kicker"])}</span></span></a>')
 
 
@@ -572,13 +572,26 @@ def film_page(f, films, lessons):
     if f.get("sources"):
         li = "".join(f'<li><a href="{esc(s["url"])}" target="_blank" rel="noopener">{esc(s["title"])}</a></li>' if s.get("url") else f'<li>{esc(s["title"])}</li>' for s in f["sources"])
         src = f'<section class="sources"><h2>Sources</h2><ul>{li}</ul><p class="fine">Where a source has no link, it is cited from the film\'s research notes. Estimates and unverified claims are labelled in the film.</p></section>'
+    yt = CFG.get("youtube", {}).get(f["id"], "")
+    yt_attr = f' data-yt="{esc(yt)}"' if yt else ""
+    soon = bool(CFG.get("youtube")) and not yt
+    if soon:
+        yt_attr = ' data-soon="1"'
+        player_inner = cover(f)
+        miss_t, miss_s = "Coming to YouTube soon", "The chapters and transcript are below. The film will play here once it is uploaded."
+    elif yt:
+        player_inner = '<div id="yt"></div>'
+        miss_t, miss_s = "The video could not be loaded.", f'<a href="https://www.youtube.com/watch?v={esc(yt)}" target="_blank" rel="noopener">Watch it on YouTube</a>'
+    else:
+        player_inner = f'<video id="video" controls preload="metadata" playsinline><source src="{esc(MEDIA + f["id"] + ".mp4")}" type="video/mp4"></video>'
+        miss_t, miss_s = "The video is not available yet.", "It will appear here as soon as it is uploaded."
     note = '<p class="fine">Chapter times for this film are approximate.</p>' if f["approx"] else ""
     th = THEME_LABEL[f["theme"]]
     c = f"""
 <section class="cinema"><div class="wrap cinema-in">
-  <div class="player" id="player" data-film="{f["id"]}" data-duration="{int(f["duration"])}">
-    <video id="video" controls preload="metadata" playsinline><source src="{esc(MEDIA + f["id"] + ".mp4")}" type="video/mp4"></video>
-    <div class="player-miss" id="miss" hidden><b>The video is not available yet.</b><span>It will appear here as soon as it is uploaded.</span></div>
+  <div class="player" id="player" data-film="{f["id"]}" data-duration="{int(f["duration"])}"{yt_attr}>
+    {player_inner}
+    <div class="player-miss" id="miss"{"" if soon else " hidden"}><b>{miss_t}</b><span>{miss_s}</span></div>
   </div>
   <aside class="chapters" aria-label="Chapters"><p>Chapters</p><ol id="chapters">{chs}</ol></aside>
 </div></section>
@@ -599,6 +612,7 @@ def film_page(f, films, lessons):
     ld = {"@context": "https://schema.org", "@type": "VideoObject", "name": f["title"], "description": f["description"],
           "thumbnailUrl": f"{SITE}/assets/og/film-{f['id']}.jpg", "uploadDate": f["date"], "duration": f"PT{int(f['duration'] // 60)}M{int(f['duration'] % 60)}S",
           "inLanguage": "en", "isAccessibleForFree": True, "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"},
+          **({"embedUrl": f"https://www.youtube.com/embed/{yt}"} if yt else {}),
           "hasPart": [{"@type": "Clip", "name": ch["title"], "startOffset": int(ch["start"]), "endOffset": int(ch["end"]), "url": f"{SITE}/films/{f['id']}/#t={int(ch['start'])}"} for ch in f["chapters"]]}
     page(f"/films/{f['id']}/", f"{f['title']} · Learn · Renaissance Labs", f["blurb"], c, jsonld=ld, image=f"film-{f['id']}", body_class="film")
 
