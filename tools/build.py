@@ -229,6 +229,7 @@ def load_films():
     films = {}
     for p in glob.glob("content/films/*.json"):
         f = json.load(open(p)); t = tr.get(f["id"])
+        if f["id"] in CFG.get("hidden", []): continue
         if not t: print("no transcript for", f["id"]); continue
         sc = {s["id"]: s for s in t["scenes"]}
         alllines = [ln for s_ in t["scenes"] for ln in s_["lines"]]
@@ -708,7 +709,7 @@ def validate(films, lessons):
 def main():
     films = load_films(); lessons, gl = load_lessons()
     validate(films, lessons)
-    missing = [x for ids in TRACK_ORDER.values() for x in ids if x not in films]
+    missing = [x for ids in TRACK_ORDER.values() for x in ids if x not in films and x not in CFG.get("hidden", [])]
     if missing: print("films missing:", missing)
     for d in ("lessons", "films"): shutil.rmtree(d, ignore_errors=True)
     home(films, lessons); models_page(films, lessons); minds_page(films); films_page(films)
