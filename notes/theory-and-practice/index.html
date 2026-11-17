@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>In practice there is a difference · Notes · Renaissance Labs</title>
+<meta name="description" content="Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/notes/theory-and-practice/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="In practice there is a difference · Notes · Renaissance Labs">
+<meta property="og:description" content="Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/notes/theory-and-practice/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/note-theory-and-practice.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="In practice there is a difference · Notes · Renaissance Labs">
+<meta name="twitter:description" content="Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/note-theory-and-practice.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "In practice there is a difference", "description": "Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.", "datePublished": "2026-11-17", "dateModified": "2026-11-17", "inLanguage": "en", "author": {"@type": "Organization", "name": "Renaissance Labs"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"}, "image": "https://learn.renaissancelabs.eu/assets/og/note-theory-and-practice.jpg"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <nav aria-label="Main">
+    <a href="/models/">Models</a>
+    <a href="/minds/">Minds</a>
+    <a href="/films/">Films</a>
+    <a href="/notes/">Notes</a>
+    <a href="/glossary/">Glossary</a>
+    <a class="ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+  </nav>
+</header>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson note" data-lesson="note-theory-and-practice">
+<header class="lesson-h note-h"><div class="wrap">
+  <p class="crumb"><a href="/notes/">Notes</a> · 17 November 2026</p>
+  <h1>In practice there is a difference</h1><p class="lede">Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.</p>
+  <p class="meta"><span>Renaissance Labs</span><span>7 min read</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>There is an old saying: in theory there is no difference between theory and practice. In practice there is.</p>
+<p>Anyone who has trained a model on a real cluster knows it. The lessons on this site explain what a model is, how a gradient is computed and how work is split across GPUs. They are true. None of them will tell you why your job died after eleven minutes with an error from the networking library, why the queue gave you half the nodes you asked for, or why the script that ran yesterday now hangs at step zero.</p>
+<h2 id="two-kinds-of-knowing">Two kinds of knowing</h2>
+<p>Theory tells you what should happen. The cluster tells you what does.</p>
+<p>Knowing that something works and knowing how to make it work are different kinds of knowledge, and they are learned in different ways. The first comes from reading and thinking. The second comes from doing, failing and doing again. A pilot has studied aerodynamics, and nobody confuses that with flying.</p>
+<p>This matters for the field because most of the work of training a model is the second kind. The paper gives you the recipe. The cluster decides whether you get to cook.</p>
+<h2 id="what-the-doing-includes">What the doing includes</h2>
+<p>Almost none of it appears in a paper:</p>
+<ul><li><strong>Getting time and living within it.</strong> Queues, quotas, time limits and shared machines that other people are using. Big jobs deserve a question to the people who run the cluster before they start.</li><li><strong>The environment.</strong> Containers, drivers and library versions that must agree. An image built for one kind of processor may not run on another.</li><li><strong>Storage.</strong> A home directory that fills up, fast scratch space versus slow shared disk, files written with permissions the next job cannot read, data that has to be in the right place before the job starts.</li><li><strong>Communication.</strong> GPUs that must find each other over the network. One slow or broken node among hundreds can stall everything.</li><li><strong>Failure handling.</strong> Checkpoints, restarts, jobs that stop on a time limit, and jobs that hang quietly instead of failing loudly.</li><li><strong>Observation.</strong> Reading logs rather than only dashboards, and knowing what a normal run looks like so that an abnormal one stands out.</li></ul>
+<p>None of this is glamorous. All of it decides whether a run happens at all.</p>
+<h2 id="it-is-fine-to-make-it-work-before-you-understand-it">It is fine to make it work before you understand it</h2>
+<p>Often you change a flag, pin a version or restart on different nodes, and the job runs, and you do not know why. That is allowed. It is also useful.</p>
+<p>A job that works gives you a baseline. It gives you a live example you can poke at, and a pair of cases, one that works and one that does not, to compare. That comparison produces evidence about the problem that no amount of theory can. Understanding why often comes afterwards, and it comes more easily because you now have something to explain.</p>
+<aside class="callout"><span class="callout-t">The first step</span><p>Making it work is a good first step. It is not the last one.</p></aside>
+<p>Two cautions keep this honest. First, write down what you changed and what happened. A fix you cannot reproduce is luck. Second, come back for the why when it matters. Unexplained fixes pile up into folklore, the kind of advice that says &quot;always set this variable&quot; without anyone able to check whether it still does anything.</p>
+<h2 id="how-to-practise-the-art-of-doing">How to practise the art of doing</h2>
+<p>The skill is built the way other practical skills are built: with small attempts, quick feedback and a lot of repetition. These habits speed it up.</p>
+<ol><li><strong>Start small.</strong> One GPU, then one node, then two, then many. Each step adds one new way for things to fail, so a failure points somewhere specific.</li><li><strong>Run a smoke test before every long job.</strong> Tiny data, a few steps, the same code path, including saving a checkpoint and resuming from it. Ten minutes here can save a day.</li><li><strong>Change one thing at a time, and keep a run log.</strong> The command, the configuration, what happened and what you expected. Your future self is the main reader.</li><li><strong>Read the failing log from the top.</strong> The first error is usually the cause. Everything after it is fallout.</li><li><strong>Check before you consume.</strong> Know roughly how much memory, disk and time a job will use before it starts. Split the work into chunks, put limits in place and watch the job while it runs. Shared machines punish guessing.</li><li><strong>Reproduce before you fix.</strong> If you cannot make it fail again, you cannot know that you have fixed it.</li><li><strong>Ask early.</strong> The people who run the cluster have seen your problem before. Their five-minute answer is worth more than a day of guessing.</li></ol>
+<h2 id="what-this-means-for-labs">What this means for labs</h2>
+<p>Cluster skill is mostly passed on by sitting next to someone who has it. A lab that wants more people able to train models can help in three ways: put a real job in a newcomer&#x27;s hands in the first week, keep a short runbook for the usual failures, and write down what went wrong, in public when it can. The failure stories are the curriculum. They are also the part of the field that is hardest to find written down.</p>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p><a href="/lessons/when-training-breaks/">When training breaks</a> covers what fails at very large scale, and <a href="/lessons/gpus-and-parallelism/">GPUs and parallelism</a> explains what the cluster is doing while your job runs. The film on running agents safely on a cluster shows how to stage a risky workload one careful step at a time.</p><aside class="watch"><span class="watch-t">Related film</span><a href="/films/cluster-agents/"><span class="play">▶</span><b>Running AI agents safely on a cluster</b><span>13 min · RL rollouts with internet access</span></a></aside></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#two-kinds-of-knowing">Two kinds of knowing</a></li><li><a href="#what-the-doing-includes">What the doing includes</a></li><li><a href="#it-is-fine-to-make-it-work-before-you-understand-it">It is fine to make it work before you understand it</a></li><li><a href="#how-to-practise-the-art-of-doing">How to practise the art of doing</a></li><li><a href="#what-this-means-for-labs">What this means for labs</a></li><li><a href="#where-to-go-next">Where to go next</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/when-training-breaks/" data-lesson="when-training-breaks"><span class="lnum">10</span><span class="lbody"><b>When training breaks</b><span>At frontier scale something is always failing. How labs survive broken chips, loss spikes, silent wrong answers and fragile low-precision numbers.</span><span class="lmeta">Advanced · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/gpus-and-parallelism/" data-lesson="gpus-and-parallelism"><span class="lnum">08</span><span class="lbody"><b>GPUs and parallelism</b><span>A GPU is fast only when its arithmetic units stay fed. Training a large model means splitting it across thousands of GPUs in several ways at once, and paying for the communication.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/how-a-model-learns/" data-lesson="how-a-model-learns"><span class="lnum">04</span><span class="lbody"><b>How a model learns</b><span>Training is a loop that measures how surprised the model was by real text and nudges its parameters to be less surprised next time.</span><span class="lmeta">Intermediate · 9 min</span></span><span class="tick" hidden>✓</span></a></div></section></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

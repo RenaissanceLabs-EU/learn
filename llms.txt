@@ -20,6 +20,9 @@
 - [Inference and sampling](https://learn.renaissancelabs.eu/lessons/inference-and-sampling/): How a trained model produces text: a fast reading phase, a slow one-token-at-a-time writing phase, a memory called the KV cache, and the sampling rules that pick each token.
 - [What "open" means for AI models](https://learn.renaissancelabs.eu/lessons/what-open-means/): "Open" can mean downloadable weights, public code, released data or a full training recipe. These are different things, with different freedoms, and few releases include all four.
 
+## Notes
+- [In practice there is a difference](https://learn.renaissancelabs.eu/notes/theory-and-practice/): Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.
+
 ## Films
 - [Keeping AI agents safe: injection, incidents and design](https://learn.renaissancelabs.eu/films/agent-safety/): Why agents raise the stakes over chatbots, how prompt injection works, real incidents, and the design rules and habits that limit the damage.
 - [Post-training a European model, stage by stage](https://learn.renaissancelabs.eu/films/post-training/): A walkthrough of turning a raw 9-billion-parameter European base model into an assistant, with the bugs, evaluations and fixes found at each stage.

@@ -56,6 +56,8 @@ cards = {
 }
 for fid, f in films.items():
     cards[f"film-{fid}"] = card_html("", f["title"], f["kicker"], B.cover(f), f"{round(f['duration'] / 60)} min film")
+for nid, n in B.load_notes().items():
+    cards[f"note-{nid}"] = card_html("", n["title"], n["summary"][:120], B.cover({"id": "note-" + nid, "track": "bridge", "theme": "training"}), "Notes from the work")
 for name, doc in cards.items():
     if ONLY and name not in ONLY: continue
     print(name, render(name, doc), flush=True)

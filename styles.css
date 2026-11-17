@@ -88,7 +88,7 @@ body.home .bar { position: fixed; left: 0; right: 0; background: transparent; bo
 body.home .bar nav a, body.home .search-open { color: #d7d0c0; border-color: rgba(255,255,255,.2); }
 body.home .bar nav a:hover { color: #fff; }
 body.home .bar.solid { background: rgba(14, 14, 32, .86); backdrop-filter: blur(10px); }
-@media (max-width: 760px) { .bar nav a.ext, .bar nav a[href="/glossary/"] { display: none; } .search-open kbd { display: none; } .bar nav { gap: 14px; font-size: 14.5px; } }
+@media (max-width: 760px) { .bar nav a.ext, .bar nav a[href="/glossary/"], .bar nav a[href="/notes/"] { display: none; } .search-open kbd { display: none; } .bar nav { gap: 14px; font-size: 14.5px; } }
 @media (max-width: 520px) { .brand span { display: none; } .bar { padding-top: 10px; padding-bottom: 10px; } }
 .mnav { display: none; }
 
@@ -277,3 +277,10 @@ body.home .bar.solid { background: rgba(14, 14, 32, .86); backdrop-filter: blur(
 .player > .cover { position: absolute; inset: 0; aspect-ratio: auto; height: 100%; }
 .player-miss { z-index: 2; background: rgba(8,8,24,.55); }
 .player-miss a { color: #e0b765; }
+
+.ngrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.ncard { display: flex; flex-direction: column; gap: 8px; text-decoration: none; background: #fff; border: 1px solid var(--rule); border-radius: 16px; padding: 22px 24px; transition: transform .2s, box-shadow .2s, border-color .2s; }
+.ncard:hover { transform: translateY(-2px); box-shadow: 0 14px 32px -18px rgba(40,30,10,.35); border-color: #d9cfb8; }
+.ncard b { font-family: var(--serif); font-weight: 500; font-size: 23px; line-height: 1.2; }
+.ncard span:not(.chip) { color: var(--ink-soft); font-size: 15px; line-height: 1.5; }
+.note-h { background: linear-gradient(180deg, #f3ecdb, var(--paper)); }

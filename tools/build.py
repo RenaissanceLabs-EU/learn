@@ -264,6 +264,25 @@ def load_lessons():
     return dict(sorted(lessons.items(), key=lambda kv: kv[1]["order"])), gsink
 
 
+def load_notes():
+    notes = {}
+    for p in sorted(glob.glob("content/notes/*.md")):
+        meta, body = split_front(open(p, encoding="utf-8").read())
+        nid = meta["slug"]
+        html_, toc = render_body(body, None, nid)
+        meta.update(id=nid, html=html_, toc=toc, minutes=int(meta.get("minutes", 6)),
+                    films=[x.strip() for x in meta.get("films", "").split(",") if x.strip()],
+                    related=[x.strip() for x in meta.get("related", "").split(",") if x.strip()],
+                    text=plain(re.sub(r":::\w+[^\n]*|^:::$", " ", body, flags=re.M)))
+        notes[nid] = meta
+    return dict(sorted(notes.items(), key=lambda kv: kv[1]["date"], reverse=True))
+
+
+def nice_date(iso):
+    d = datetime.date.fromisoformat(iso)
+    return f"{d.day} {d.strftime('%B %Y')}"
+
+
 # ------------------------------------------------------------------ art
 HUE = {"machines": (196, 262), "minds": (36, 290), "bridge": (196, 36)}
 
@@ -354,6 +373,7 @@ def head(title, desc, path, body_class="", image="home", extra="", jsonld=None):
     <a href="/models/">Models</a>
     <a href="/minds/">Minds</a>
     <a href="/films/">Films</a>
+    <a href="/notes/">Notes</a>
     <a href="/glossary/">Glossary</a>
     <a class="ext" href="{ATLAS}/">Atlas</a>
     <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
@@ -396,6 +416,11 @@ def lesson_card(l):
             f'<span class="lmeta">{esc(l["level"])} · {l["minutes"]} min</span></span><span class="tick" hidden>✓</span></a>')
 
 
+def note_card(n):
+    return (f'<a class="ncard" href="/notes/{n["id"]}/"><span class="chip">{nice_date(n["date"])} · {n["minutes"]} min</span>'
+            f'<b>{esc(n["title"])}</b><span>{esc(n["summary"])}</span></a>')
+
+
 def shelf(theme, films):
     t, d = THEMES[theme]
     cards = "".join(film_card(f) for f in films)
@@ -407,13 +432,18 @@ def ordered(films, track):
     return [films[i] for i in TRACK_ORDER[track] if i in films]
 
 
-def home(films, lessons):
+def home(films, lessons, notes=None):
     n_hours = sum(f["duration"] for f in films.values()) / 3600
     ms, mn = ordered(films, "machines"), ordered(films, "minds")
     featured = films["frontier-training"]
     cont = ('<section class="wrap continue" id="continue" hidden><h2>Pick up where you left off</h2><div class="fgrid" id="continue-grid"></div></section>')
     path_cards = "".join(lesson_card(l) for l in list(lessons.values())[:6])
     bridge = "".join(film_card(f) for f in ordered(films, "bridge"))
+    notes_band = ""
+    if notes:
+        notes_band = ('<section class="wrap block"><header class="sec-h"><p class="eyebrow">Notes</p><h2>From the cluster</h2>'
+                      '<p class="lede">Short essays on the practice of training models, and what the papers leave out.</p></header>'
+                      f'<div class="ngrid">{"".join(note_card(n) for n in list(notes.values())[:3])}</div></section>')
     c = f"""
 <section class="hero">
   <svg class="hero-sky" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid slice" aria-hidden="true">{hero_stars()}</svg>
@@ -444,7 +474,7 @@ def home(films, lessons):
   <div class="fgrid">{"".join(film_card(f) for f in mn[:6])}</div>
   <p class="more"><a href="/minds/">All {len(mn)} films on minds</a></p>
 </section>
-<section class="wrap block bridge">
+{notes_band}<section class="wrap block bridge">
   <header class="sec-h"><p class="eyebrow">Where the two meet</p><h2>Machine and mind, one question</h2><p class="lede">Information, surprise and what we mean when we call something intelligent. Two short films that sit between the tracks.</p></header>
   <div class="fgrid two">{bridge}</div>
 </section>"""
@@ -645,6 +675,45 @@ def glossary_page(gl, lessons):
     return items
 
 
+def note_page(n, lessons, films):
+    toc = "".join(f'<li><a href="#{i}">{esc(t)}</a></li>' for i, t in n["toc"])
+    rf = related_films(n, films)
+    watch = ""
+    if rf:
+        watch = '<aside class="watch"><span class="watch-t">Related film</span>' + "".join(
+            f'<a href="/films/{f["id"]}/"><span class="play">\u25b6</span><b>{esc(f["title"])}</b><span>{mins(f["duration"])} · {esc(f["kicker"])}</span></a>' for f, c in rf) + "</aside>"
+    rel = [lessons[r] for r in n["related"] if r in lessons]
+    relhtml = '<section class="relmore"><h2>Related lessons</h2><div class="lgrid">' + "".join(lesson_card(r) for r in rel) + "</div></section>" if rel else ""
+    c = f"""
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson note" data-lesson="note-{n["id"]}">
+<header class="lesson-h note-h"><div class="wrap">
+  <p class="crumb"><a href="/notes/">Notes</a> · {nice_date(n["date"])}</p>
+  <h1>{esc(n["title"])}</h1><p class="lede">{esc(n["summary"])}</p>
+  <p class="meta"><span>Renaissance Labs</span><span>{n["minutes"]} min read</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose">{n["html"]}{watch}</div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol>{toc}</ol></aside>
+</div>
+<div class="wrap">{relhtml}</div>
+</article>"""
+    ld = {"@context": "https://schema.org", "@type": "Article", "headline": n["title"], "description": n["summary"], "datePublished": n["date"],
+          "dateModified": n["date"], "inLanguage": "en", "author": {"@type": "Organization", "name": "Renaissance Labs"},
+          "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"},
+          "image": f"{SITE}/assets/og/note-{n['id']}.jpg"}
+    page(f"/notes/{n['id']}/", f"{n['title']} · Notes · Renaissance Labs", n["summary"], c, jsonld=ld, image=f"note-{n['id']}")
+
+
+def notes_page(notes):
+    cards = "".join(note_card(n) for n in notes.values())
+    c = f"""
+<section class="head-band"><div class="wrap"><p class="eyebrow">Notes</p><h1>Notes from the work</h1>
+  <p class="lede">Short essays on the practice of training models: what the papers leave out, and what we learn by running things.</p></div></section>
+<section class="wrap block"><div class="ngrid">{cards}</div></section>"""
+    page("/notes/", "Notes from the work · Learn · Renaissance Labs", "Short essays on the practice of training language models.", c, image="home")
+
+
 def about_page(films, lessons):
     c = f"""
 <section class="head-band"><div class="wrap"><p class="eyebrow">About</p><h1>About Learn</h1>
@@ -670,8 +739,8 @@ def not_found():
     write("404.html", head("Not found · Learn", "Page not found", "/404.html") + f'<main id="main">{c}</main>' + foot())
 
 
-def machine_files(films, lessons, gloss):
-    urls = ["/", "/models/", "/minds/", "/films/", "/glossary/", "/about/"] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
+def machine_files(films, lessons, gloss, notes):
+    urls = ["/", "/models/", "/minds/", "/films/", "/glossary/", "/about/", "/notes/"] + [f"/notes/{i}/" for i in notes] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"<url><loc>{SITE}{u}</loc><lastmod>{BUILD}</lastmod></url>\n" for u in urls) + "</urlset>\n")
     write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
@@ -679,6 +748,7 @@ def machine_files(films, lessons, gloss):
     write(".nojekyll", "")
     lines = ["# Renaissance Labs · Learn", "", "> Films and lessons on how language models are trained and how human minds work. Free, sourced, in plain language.", "", "## Course"]
     lines += [f"- [{l['title']}]({SITE}/lessons/{i}/): {l['summary']}" for i, l in lessons.items()]
+    lines += ["", "## Notes"] + [f"- [{n['title']}]({SITE}/notes/{i}/): {n['summary']}" for i, n in notes.items()]
     lines += ["", "## Films"] + [f"- [{f['title']}]({SITE}/films/{i}/): {f['blurb']}" for i, f in films.items()]
     write("llms.txt", "\n".join(lines) + "\n")
     idx = []
@@ -686,6 +756,7 @@ def machine_files(films, lessons, gloss):
     for i, f in films.items():
         idx.append({"t": "Film", "title": f["title"], "url": f"/films/{i}/", "s": f["blurb"],
                     "x": plain(" ".join([f["kicker"], f["description"]] + f["takeaways"] + [c["title"] for c in f["chapters"]])).lower()})
+    for i, n in notes.items(): idx.append({"t": "Note", "title": n["title"], "url": f"/notes/{i}/", "s": n["summary"], "x": n["text"][:900].lower()})
     for term, sent, lid in gloss: idx.append({"t": "Term", "title": term, "url": f"/glossary/#{slugify(term)}", "s": sent[:160], "x": sent.lower()})
     write("search.json", json.dumps(idx, ensure_ascii=False, separators=(",", ":")))
 
@@ -707,17 +778,19 @@ def validate(films, lessons):
 
 
 def main():
-    films = load_films(); lessons, gl = load_lessons()
+    films = load_films(); lessons, gl = load_lessons(); notes = load_notes()
     validate(films, lessons)
     missing = [x for ids in TRACK_ORDER.values() for x in ids if x not in films and x not in CFG.get("hidden", [])]
     if missing: print("films missing:", missing)
-    for d in ("lessons", "films"): shutil.rmtree(d, ignore_errors=True)
-    home(films, lessons); models_page(films, lessons); minds_page(films); films_page(films)
+    for d in ("lessons", "films", "notes"): shutil.rmtree(d, ignore_errors=True)
+    home(films, lessons, notes); models_page(films, lessons); minds_page(films); films_page(films)
     for l in lessons.values(): lesson_page(l, lessons, films)
     for f in films.values(): film_page(f, films, lessons)
+    notes_page(notes)
+    for n in notes.values(): note_page(n, lessons, films)
     items = glossary_page(gl, lessons); about_page(films, lessons); not_found()
-    machine_files(films, lessons, [(a, b, c) for a, b, c in ((i[0], i[1], i[2]) for i in items)])
-    print(f"built {len(films)} films, {len(lessons)} lessons, {len(items)} terms")
+    machine_files(films, lessons, [(a, b, c) for a, b, c in ((i[0], i[1], i[2]) for i in items)], notes)
+    print(f"built {len(films)} films, {len(notes)} notes, {len(lessons)} lessons, {len(items)} terms")
 
 
 if __name__ == "__main__":
