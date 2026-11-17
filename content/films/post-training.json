@@ -1,0 +1,66 @@
+{
+  "id": "post-training",
+  "title": "Post-training a European model, stage by stage",
+  "kicker": "What worked, what broke and how we found out",
+  "track": "machines",
+  "theme": "training",
+  "blurb": "A walkthrough of turning a raw 9-billion-parameter European base model into an assistant, with the bugs, evaluations and fixes found at each stage.",
+  "description": "The film follows the post-training of Open Euro LLM, a 9-billion-parameter model, on the Leonardo supercomputer. It covers instruction tuning, a thinking mode, tool use, preference training and reinforcement learning, and shows what each stage broke, how it was caught by evaluation, and how it was fixed, including by merging weights.",
+  "takeaways": [
+    "Post-training is a pipeline of stages, and the same evaluations run between stages so each step's gains and damage are visible.",
+    "The film reports that unclosed tool calls came from nearly identical output weights on new tag tokens, fixed by refitting eight rows.",
+    "Data teaches exactly what it contains: the speaker found that 99% of strict-format training answers ignored the format.",
+    "Reinforcement learning can only reinforce what the model already does sometimes, so rewards need partial credit the model can climb.",
+    "Averaging the weights of two models from the same parent can restore a skill lost in a later stage."
+  ],
+  "chapters": [
+    {
+      "scene": "c01",
+      "title": "Intro"
+    },
+    {
+      "scene": "c02",
+      "title": "Chat template"
+    },
+    {
+      "scene": "c03",
+      "title": "Instruction tuning"
+    },
+    {
+      "scene": "c04",
+      "title": "Thinking mode"
+    },
+    {
+      "scene": "c05",
+      "title": "Tool use"
+    },
+    {
+      "scene": "c07",
+      "title": "Preference training"
+    },
+    {
+      "scene": "c08",
+      "title": "Merging weights"
+    },
+    {
+      "scene": "c09",
+      "title": "Reinforcement learning"
+    },
+    {
+      "scene": "c11",
+      "title": "Combined RL run"
+    },
+    {
+      "scene": "c15",
+      "title": "Closing"
+    }
+  ],
+  "lessons": [
+    "supervised-fine-tuning",
+    "preference-tuning-and-rl",
+    "evaluation",
+    "when-training-breaks"
+  ],
+  "sources": [],
+  "level": "Advanced"
+}

@@ -1,0 +1,27 @@
+{
+  "id": "mind-making-up-stories",
+  "title": "The mind is a machine that makes up stories",
+  "kicker": "Why a sad day turns into a sad story",
+  "track": "minds",
+  "theme": "memory-time",
+  "blurb": "The mind turns what happens into stories about you and the world. Seeing them as stories makes room for other, more accurate ones.",
+  "description": "A short talk on how the mind makes sense of the world by telling stories. Those stories are not always accurate, and a bad day can easily become a story about who you are. Once you see the pattern, you can ask what is really going on and choose a more flexible story.",
+  "takeaways": [
+    "Everything you experience passes through the unconscious mind and then through personal models, such as models for language and for how you perceive sound.",
+    "The mind works to make sense of things, and a story that makes sense can win out over one that is accurate.",
+    "A bad day can turn into a story about yourself or the world, such as that you are a failure or that nothing works.",
+    "A more accurate story is often practical, for example that you feel sad because you skipped exercise or have not seen friends.",
+    "You will not stop making stories, but you can hold them more loosely and ask what you can do instead."
+  ],
+  "chapters": [
+    {"scene": "c01", "title": "Intro"},
+    {"scene": "c02", "title": "How stories get made"},
+    {"scene": "c03", "title": "Sense before truth"},
+    {"scene": "c04", "title": "A more accurate story"},
+    {"scene": "c05", "title": "Stories, not facts"},
+    {"scene": "c06", "title": "Holding stories flexibly"}
+  ],
+  "lessons": [],
+  "sources": [],
+  "level": "Beginner"
+}

@@ -1,0 +1,66 @@
+{
+  "id": "rl-scaling",
+  "title": "How reinforcement learning scales for language models",
+  "kicker": "Rewards, environments and infrastructure",
+  "track": "machines",
+  "theme": "training",
+  "blurb": "How labs run reinforcement learning at production scale: the algorithms, the environments and rewards, the infrastructure and the failure modes.",
+  "description": "Reinforcement learning is described as a second scaling axis after pre-training. The film walks through the basic loop, verifiable rewards, group-based algorithms such as GRPO, the environments that score model answers, reward hacking, and the asynchronous systems needed to run it. It compares production runs with the speaker's own small runs.",
+  "takeaways": [
+    "Every large RL system repeats one loop: generate a group of answers, score them in an environment, and make the better ones more likely.",
+    "Rewards that a program can check, such as correct math answers or passing tests, are what made today's reasoning models possible.",
+    "The film reports that about two thirds of the speaker's sampled groups gave no learning signal because every answer was wrong.",
+    "Any reward that can be checked can also be gamed, so hardened environments matter as much as clever algorithms.",
+    "Most of RL training time goes to generating answers, so production systems are built around asynchronous inference."
+  ],
+  "chapters": [
+    {
+      "scene": "c01",
+      "title": "Intro"
+    },
+    {
+      "scene": "c02",
+      "title": "The basic RL loop"
+    },
+    {
+      "scene": "c03",
+      "title": "Verifiable rewards"
+    },
+    {
+      "scene": "c04",
+      "title": "GRPO without a critic"
+    },
+    {
+      "scene": "c07",
+      "title": "Multi-stage pipelines"
+    },
+    {
+      "scene": "c08",
+      "title": "Environments"
+    },
+    {
+      "scene": "c11",
+      "title": "Judges and rubrics"
+    },
+    {
+      "scene": "c13",
+      "title": "Reward hacking"
+    },
+    {
+      "scene": "c15",
+      "title": "Infrastructure"
+    },
+    {
+      "scene": "c21",
+      "title": "Closing"
+    }
+  ],
+  "lessons": [
+    "preference-tuning-and-rl",
+    "scaling-laws",
+    "evaluation",
+    "gpus-and-parallelism"
+  ],
+  "sources": [],
+  "level": "Advanced"
+}

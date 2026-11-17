@@ -1,7 +1,18 @@
 {
  "media_base": "/media/",
  "built": "2026-11-17",
- "dates": {},
+ "dates": {
+  "rl-scaling": "2026-10-27",
+  "post-training": "2026-10-27",
+  "hallucinations": "2026-10-24",
+  "interpretability": "2026-10-23",
+  "alignment-problem": "2026-10-22",
+  "agent-safety": "2026-10-24",
+  "how-agents-work": "2026-10-15",
+  "mind-making-up-stories": "2017-03-23",
+  "how-the-mind-processes-information": "2017-03-20",
+  "self-compassion": "2017-03-14"
+ },
  "youtube": {
   "old-friend": "RkiUoH7SbxM",
   "envy": "R3MyP1xpT8o",
@@ -17,6 +28,16 @@
   "memory": "EMMctPTD92g",
   "open-models": "YtMvZGddQXs",
   "entropy": "77pBtWLbYIc",
-  "intelligence": "6Qdx79OMNNU"
+  "intelligence": "6Qdx79OMNNU",
+  "rl-scaling": "texGa4HwuPk",
+  "post-training": "w8Almrj1c0E",
+  "hallucinations": "yeGs0KUWai0",
+  "interpretability": "xyGMDTtTXk8",
+  "alignment-problem": "OIi-AP8znXg",
+  "agent-safety": "fSj1Y0jgAeY",
+  "how-agents-work": "qz4cSKa3Feo",
+  "mind-making-up-stories": "_uMOyd8-7qU",
+  "how-the-mind-processes-information": "vEZS3d4oW38",
+  "self-compassion": "Nytvnlcek-8"
  }
 }

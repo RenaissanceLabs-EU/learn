@@ -1,0 +1,65 @@
+{
+  "id": "interpretability",
+  "title": "Looking inside AI: the science of interpretability",
+  "kicker": "From single neurons to features and circuits",
+  "track": "machines",
+  "theme": "safety",
+  "blurb": "How researchers look inside neural networks: superposition, sparse autoencoders, features, circuit tracing, and what this may mean for safety.",
+  "description": "The film explains why individual neurons are hard to read, how superposition packs many concepts into few neurons, and how sparse autoencoders unpack them into features. It then covers steering with features, tracing circuits, links to hallucination, safety uses, and an honest account of how little of a model these methods explain so far.",
+  "takeaways": [
+    "Single neurons are confusing because the film says models pack many concepts into overlapping directions, an idea called superposition.",
+    "Sparse autoencoders rewrite a model's activity as a short list of features from a much larger dictionary, each easier to name.",
+    "Turning a feature up changes what the model says, as in the Golden Gate Claude demonstration, which suggests features cause behavior.",
+    "The film reports that circuit tracing revealed planning ahead in rhymes and an intermediate Texas step before answering Austin.",
+    "The film stresses that even in the best studies these methods capture only a small fraction of what a model computes."
+  ],
+  "chapters": [
+    {
+      "scene": "c01",
+      "title": "Intro"
+    },
+    {
+      "scene": "c02",
+      "title": "Neurons and superposition"
+    },
+    {
+      "scene": "c03",
+      "title": "Sparse autoencoders"
+    },
+    {
+      "scene": "c04",
+      "title": "Features in large models"
+    },
+    {
+      "scene": "c05",
+      "title": "Steering and circuits"
+    },
+    {
+      "scene": "c06",
+      "title": "Planning and hallucination"
+    },
+    {
+      "scene": "c07",
+      "title": "Languages share circuits"
+    },
+    {
+      "scene": "c08",
+      "title": "Safety uses"
+    },
+    {
+      "scene": "c09",
+      "title": "Limits today"
+    },
+    {
+      "scene": "c10",
+      "title": "Closing"
+    }
+  ],
+  "lessons": [
+    "what-is-a-language-model",
+    "attention-and-the-transformer",
+    "how-a-model-learns"
+  ],
+  "sources": [],
+  "level": "Intermediate"
+}

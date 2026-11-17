@@ -29,7 +29,8 @@ THEMES = {
     "training": ("How a model is trained", "Data, scale, cost and the engineering behind a frontier run."),
     "hardware": ("The hardware", "What the chips can and cannot do, and why."),
     "open-ecosystem": ("The open ecosystem", "The strongest open models and what makes them tick."),
-    "safety": ("Running agents safely", "Reinforcement learning with the internet switched on."),
+    "safety": ("Safety and alignment", "Keeping capable models honest, understandable and under control."),
+    "agents": ("How agents work", "Models that use tools and act in the world."),
     "memory-time": ("Memory, time and attention", "How the mind rebuilds the past, lives in the present and imagines the future."),
     "fear-shame": ("Fear, shame and being seen", "The emotions that hold us back, and what they are trying to tell us."),
     "connection": ("Attachment and belonging", "How early bonds shape adult life, and how people change."),
@@ -37,12 +38,12 @@ THEMES = {
     "mind-machine": ("Where the two meet", "Information, entropy and what we mean by intelligence."),
 }
 TRACK_ORDER = {
-    "machines": ["frontier-training", "open-models", "gpu-hardware", "inkling", "cluster-agents"],
-    "minds": ["memory", "present", "future", "fear", "old-friend", "shame", "fool", "envy", "attachment",
-              "attachment-heal", "not-alone", "burnout", "emotion-regulation", "act-first"],
+    "machines": ["frontier-training", "open-models", "rl-scaling", "post-training", "gpu-hardware", "inkling", "how-agents-work", "cluster-agents", "agent-safety", "alignment-problem", "interpretability", "hallucinations"],
+    "minds": ["memory", "present", "future", "mind-making-up-stories", "how-the-mind-processes-information", "fear", "old-friend", "shame", "fool", "envy", "attachment",
+              "attachment-heal", "not-alone", "burnout", "emotion-regulation", "act-first", "self-compassion"],
     "bridge": ["intelligence", "entropy"],
 }
-THEME_ORDER = {"machines": ["training", "open-ecosystem", "hardware", "safety"],
+THEME_ORDER = {"machines": ["training", "open-ecosystem", "hardware", "agents", "safety"],
                "minds": ["memory-time", "fear-shame", "connection", "recovery"], "bridge": ["mind-machine"]}
 THEME_LABEL = {k: v[0] for k, v in THEMES.items()}
 
@@ -230,13 +231,15 @@ def load_films():
         f = json.load(open(p)); t = tr.get(f["id"])
         if not t: print("no transcript for", f["id"]); continue
         sc = {s["id"]: s for s in t["scenes"]}
+        alllines = [ln for s_ in t["scenes"] for ln in s_["lines"]]
         chs = []
         for k, c in enumerate(f["chapters"]):
             s = sc.get(c["scene"])
             if not s: continue
-            end = t["scenes"][t["scenes"].index(s) + 1]["start"] if t["scenes"].index(s) + 1 < len(t["scenes"]) else t["duration"]
-            chs.append({"scene": c["scene"], "title": c["title"], "start": s["start"], "end": end, "lines": s["lines"]})
-        f["chapters"], f["duration"], f["approx"], f["file"] = chs, t["duration"], t["approx"], t["file"]
+            nxt = next((sc[x["scene"]]["start"] for x in f["chapters"][k + 1:] if x["scene"] in sc), t["duration"])
+            chs.append({"scene": c["scene"], "title": c["title"], "start": s["start"], "end": nxt,
+                        "lines": [ln for ln in alllines if s["start"] - 0.01 <= ln[0] < nxt]})
+        f["chapters"], f["duration"], f["approx"], f["file"], f["auto"] = chs, t["duration"], t["approx"], t["file"], t.get("auto", False)
         f["date"] = CFG.get("dates", {}).get(f["id"], BUILD)
         films[f["id"]] = f
     return films
@@ -586,6 +589,7 @@ def film_page(f, films, lessons):
         player_inner = f'<video id="video" controls preload="metadata" playsinline><source src="{esc(MEDIA + f["id"] + ".mp4")}" type="video/mp4"></video>'
         miss_t, miss_s = "The video is not available yet.", "It will appear here as soon as it is uploaded."
     note = '<p class="fine">Chapter times for this film are approximate.</p>' if f["approx"] else ""
+    if f.get("auto"): note = '<p class="fine">This transcript comes from automatic captions and may contain small errors.</p>' + note
     th = THEME_LABEL[f["theme"]]
     c = f"""
 <section class="cinema"><div class="wrap cinema-in">

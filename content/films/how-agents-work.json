@@ -1,0 +1,62 @@
+{
+  "id": "how-agents-work",
+  "title": "How AI agents work: build one from scratch",
+  "kicker": "Model, context, tools and a loop",
+  "track": "machines",
+  "theme": "agents",
+  "blurb": "Builds an agent piece by piece: a model that predicts text, a context list, tools, a loop, then memory, skills, sub-agents and autonomy.",
+  "description": "The film builds an agent from nothing. It starts with a model that only predicts tokens, shows that a chatbot's memory is a list the program resends, and adds tools and a loop. It then covers context limits and compaction, memory, skills, sub-agents, heartbeats for autonomy, and the safety risks that come with more power.",
+  "takeaways": [
+    "A language model only predicts the next token; a chatbot's memory is a message list that the program sends again every time.",
+    "Giving the model tool descriptions lets it ask the program to act, and a loop of ask, act and ask again makes an agent.",
+    "The context holds everything and is resent every step, so agents compact older parts, and deciding what to keep is the art.",
+    "Skills load full instructions only when a task matches, and sub-agents return only a short report to keep the main context clean.",
+    "More power means more risk, so treat what an agent reads as data, give least access and ask a human before irreversible steps."
+  ],
+  "chapters": [
+    {
+      "scene": "c01",
+      "title": "Intro"
+    },
+    {
+      "scene": "c02",
+      "title": "Context and tools"
+    },
+    {
+      "scene": "c03",
+      "title": "The agent loop"
+    },
+    {
+      "scene": "c04",
+      "title": "A real run"
+    },
+    {
+      "scene": "c05",
+      "title": "Context and compaction"
+    },
+    {
+      "scene": "c06",
+      "title": "Memory"
+    },
+    {
+      "scene": "c07",
+      "title": "Skills and sub-agents"
+    },
+    {
+      "scene": "c08",
+      "title": "Autonomy and risk"
+    },
+    {
+      "scene": "c09",
+      "title": "Closing"
+    }
+  ],
+  "lessons": [
+    "what-is-a-language-model",
+    "tokens",
+    "attention-and-the-transformer",
+    "inference-and-sampling"
+  ],
+  "sources": [],
+  "level": "Beginner"
+}

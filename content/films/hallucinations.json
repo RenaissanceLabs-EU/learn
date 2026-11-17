@@ -1,0 +1,61 @@
+{
+  "id": "hallucinations",
+  "title": "Why AI makes things up and how to guard against it",
+  "kicker": "Hallucination, calibration and checking",
+  "track": "machines",
+  "theme": "safety",
+  "blurb": "Why language models state invented facts with confidence, how a model can learn to say it does not know, and what you can do to protect yourself.",
+  "description": "The film opens with real cases where invented AI output caused harm. It explains why models hallucinate, including rare facts and benchmarks that reward guessing, introduces calibration and semantic entropy, and looks at retrieval and citations and their limits. It ends with practical habits for checking AI answers.",
+  "takeaways": [
+    "A model trained to continue text in a plausible way can produce the right form of an answer with an invented fact inside.",
+    "The film argues that benchmarks scoring I don't know as zero reward confident guessing, so scoring should penalize confident wrong answers more.",
+    "Calibration means that when a model is 90% sure, it should be right about nine times out of ten.",
+    "Retrieval and citations help but do not guarantee truth, so you still need to click the link and read the passage.",
+    "Be especially careful with names, numbers, dates, quotes and references, and confirm high-stakes answers with a person or original source."
+  ],
+  "chapters": [
+    {
+      "scene": "c01",
+      "title": "Intro"
+    },
+    {
+      "scene": "c02",
+      "title": "Why models make things up"
+    },
+    {
+      "scene": "c03",
+      "title": "Guessing and benchmarks"
+    },
+    {
+      "scene": "c04",
+      "title": "Calibration"
+    },
+    {
+      "scene": "c05",
+      "title": "Telling when it guesses"
+    },
+    {
+      "scene": "c06",
+      "title": "Retrieval and citations"
+    },
+    {
+      "scene": "c07",
+      "title": "Limits of retrieval"
+    },
+    {
+      "scene": "c08",
+      "title": "How to protect yourself"
+    },
+    {
+      "scene": "c09",
+      "title": "Closing"
+    }
+  ],
+  "lessons": [
+    "what-is-a-language-model",
+    "evaluation",
+    "inference-and-sampling"
+  ],
+  "sources": [],
+  "level": "Beginner"
+}

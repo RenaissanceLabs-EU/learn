@@ -1,0 +1,28 @@
+{
+  "id": "how-the-mind-processes-information",
+  "title": "A simple model of how the mind processes information",
+  "kicker": "Inputs, thoughts, feelings and the models you use",
+  "track": "minds",
+  "theme": "memory-time",
+  "blurb": "A simplified model of how senses, feelings and thoughts feed one another, and why changing your inner models can change how the world feels.",
+  "description": "A walk through a simplified, theoretical model of cognition. Senses and feelings are inputs, thoughts form a loop, and everything is shaped by your bodily state and by your verbal models of the world. The talk ends on how changing those models changes perception.",
+  "takeaways": [
+    "Input comes from the senses and also from unconscious feelings, which can be seen as the body communicating with you.",
+    "Thoughts feed more thoughts, and what the mind turns to depends on what you have been thinking about before.",
+    "Processing is shaped by your overall bodily state and by your models of the world, which are probably verbal.",
+    "A kind word is processed through those models, may change how you see yourself, and can shift both feelings and what you do.",
+    "Whether rain or snow feels good or bad depends on your model, so you have some room to change how you see it."
+  ],
+  "chapters": [
+    {"scene": "c01", "title": "Intro"},
+    {"scene": "c02", "title": "Senses and feelings as input"},
+    {"scene": "c04", "title": "Thoughts and what shapes them"},
+    {"scene": "c05", "title": "Models and bodily state"},
+    {"scene": "c06", "title": "A kind word, processed"},
+    {"scene": "c08", "title": "Balance and specific models"},
+    {"scene": "c09", "title": "Changing your perception"}
+  ],
+  "lessons": [],
+  "sources": [],
+  "level": "Beginner"
+}

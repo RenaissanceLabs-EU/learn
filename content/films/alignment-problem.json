@@ -1,0 +1,61 @@
+{
+  "id": "alignment-problem",
+  "title": "The alignment problem: whose values should AI follow?",
+  "kicker": "Human feedback, hard choices and how to take part",
+  "track": "machines",
+  "theme": "safety",
+  "blurb": "How assistants learn behavior from human choices, four questions where reasonable people disagree, and the ways ordinary people can take part.",
+  "description": "The film explains alignment as closing the gap between a capable model and one that is helpful, honest and harmless. It covers learning from human feedback and what went wrong when a model became flattering. It then walks through four open questions, the problem of whose values count, and concrete ways people can take part.",
+  "takeaways": [
+    "A pretrained model is capable but does not know which of its possible answers people actually want, and alignment closes that gap.",
+    "The film describes a 2025 rollback of an overly flattering update, and draws the lesson that what we reward is what we get.",
+    "Medical advice, privacy, reporting users and whose side the model is on are dials that someone must set for every model.",
+    "The film argues that written values such as constitutions and specifications can be debated and improved, while hidden values cannot.",
+    "People can take part by voting, rating honestly, joining deliberations, reviewing tests in their own language and speaking up when rules are written."
+  ],
+  "chapters": [
+    {
+      "scene": "c01",
+      "title": "Intro"
+    },
+    {
+      "scene": "c02",
+      "title": "Capable is not aligned"
+    },
+    {
+      "scene": "c03",
+      "title": "Learning from feedback"
+    },
+    {
+      "scene": "c04",
+      "title": "Four hard questions"
+    },
+    {
+      "scene": "c06",
+      "title": "Reporting users"
+    },
+    {
+      "scene": "c07",
+      "title": "Whose side is it on"
+    },
+    {
+      "scene": "c08",
+      "title": "Whose values"
+    },
+    {
+      "scene": "c09",
+      "title": "Written values and taking part"
+    },
+    {
+      "scene": "c11",
+      "title": "Closing"
+    }
+  ],
+  "lessons": [
+    "preference-tuning-and-rl",
+    "supervised-fine-tuning",
+    "evaluation"
+  ],
+  "sources": [],
+  "level": "Beginner"
+}

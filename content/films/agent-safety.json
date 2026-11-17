@@ -1,0 +1,57 @@
+{
+  "id": "agent-safety",
+  "title": "Keeping AI agents safe: injection, incidents and design",
+  "kicker": "Prompt injection and rules that limit damage",
+  "track": "machines",
+  "theme": "safety",
+  "blurb": "Why agents raise the stakes over chatbots, how prompt injection works, real incidents, and the design rules and habits that limit the damage.",
+  "description": "An agent can act, so a wrong action has already happened. The film explains prompt injection, reviews real incidents, and presents two design rules, the lethal trifecta and Meta's rule of two. It argues that safety must be built into the surrounding system, and covers least privilege, sandboxes, separating trusted from untrusted input and human approval.",
+  "takeaways": [
+    "A language model cannot reliably tell an instruction from you apart from an instruction hidden in content it reads, which is prompt injection.",
+    "The lethal trifecta is private data, untrusted content and a way to send information out; an agent should have at most two of three.",
+    "The film reports attacks on Anthropic's browser agent worked about one time in four without defenses and about one in nine with safeguards.",
+    "Safety cannot rely only on the model saying no, so least privilege, sandboxes and separating trusted from untrusted input matter.",
+    "Keep a human in the loop for anything irreversible, such as sending, paying, deleting or publishing, and keep backups."
+  ],
+  "chapters": [
+    {
+      "scene": "c01",
+      "title": "Intro"
+    },
+    {
+      "scene": "c02",
+      "title": "Prompt injection"
+    },
+    {
+      "scene": "c03",
+      "title": "Real incidents"
+    },
+    {
+      "scene": "c04",
+      "title": "The lethal trifecta"
+    },
+    {
+      "scene": "c05",
+      "title": "The rule of two"
+    },
+    {
+      "scene": "c06",
+      "title": "Security engineering answers"
+    },
+    {
+      "scene": "c07",
+      "title": "Separating trusted input"
+    },
+    {
+      "scene": "c08",
+      "title": "Habits and closing"
+    }
+  ],
+  "lessons": [
+    "what-is-a-language-model",
+    "preference-tuning-and-rl",
+    "evaluation"
+  ],
+  "sources": [],
+  "level": "Beginner"
+}
