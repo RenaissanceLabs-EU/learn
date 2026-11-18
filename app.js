@@ -233,3 +233,12 @@
     });
   }
 })();
+
+/* copy buttons (recipes) */
+document.addEventListener('click', function (e) {
+  var b = e.target.closest('[data-copy]'); if (!b) return;
+  var t = b.getAttribute('data-copy');
+  if (!t) { var pre = b.closest('.code'); pre = pre && pre.querySelector('pre'); t = pre ? pre.innerText : ''; }
+  var done = function () { var o = b.textContent; b.textContent = 'Copied'; b.classList.add('done'); setTimeout(function () { b.textContent = o; b.classList.remove('done'); }, 1400); };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done, function () {});
+});

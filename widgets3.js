@@ -145,7 +145,7 @@
       grid.innerHTML = L.map(function (l, i) { return '<button type="button" data-i="' + i + '" class="' + (l[1] ? 'on' : '') + (i === sel ? ' cur' : '') + '">' + esc(l[0]) + (l[1] ? '<small>' + Math.round(l[1] / 1000) + 'K</small>' : '') + '</button>'; }).join('');
       var l = L[sel]; $('h5', det).textContent = l[0];
       $('p', det).innerHTML = l[1] ? '<b>' + l[1].toLocaleString('en-US') + '</b> staged Dolci training pairs, ' + (l[1] / TOT * 100).toFixed(1) + '% of the 1,388,132 staged Dolci pairs.' + (l[0] === 'French' ? ' Much smaller than the other covered languages.' : l[0] === 'English' ? ' The largest single language, about one pair in six.' : '')
-        : 'Not among the 12 Dolci languages, so no pairs from the largest source.' + (l[0] === 'Georgian' ? ' Georgian is the weakest pack on EUROPA Alignment in the card, at 21.9%. The card does not say why. Coverage is one thing worth checking.' : '');
+        : 'Not among the 12 Dolci languages, so no pairs from the largest source.' + (l[0] === 'Georgian' ? ' Georgian is the weakest pack on EUROPA Alignment, at 21.9%. The run's author reports this is related to the tokenizer, not to the preference data.' : '');
     }
     grid.addEventListener('click', function (e) { var b = e.target.closest('button'); if (b) { sel = +b.dataset.i; show(); } });
     var wv = $('.w', node), bar = $('.wd-mixbar', node), key = $('.mixkey', node), cols = ['var(--ink)', 'var(--gold-bright)', '#b5503c'];

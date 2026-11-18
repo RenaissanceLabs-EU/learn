@@ -38,6 +38,7 @@
       <a href="/lessons/">Lessons</a>
       <a href="/minds/">Minds</a>
       <a href="/films/">Films</a>
+      <a class="sec" href="/recipes/">Recipes</a>
       <a class="sec" href="/notes/">Notes</a>
       <a class="sec" href="/glossary/">Glossary</a>
       <a class="sec ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
@@ -53,6 +54,7 @@
 <article class="lesson note" data-lesson="note-preference-tuning-and-alignment">
 <header class="lesson-h note-h"><div class="wrap">
   <p class="crumb"><a href="/notes/">Notes</a> · 18 November 2026</p>
+  
   <h1>How models learned to prefer: RLHF, DPO and alignment, from ChatGPT to a European 9B</h1><p class="lede">A history of preference tuning from the first human-feedback experiments to DPO, and a close reading of one real checkpoint: what the data was, what moved, what did not, and what the benchmark can and cannot say.</p>
   <p class="meta"><span>Renaissance Labs</span><span>22 min read</span></p>
 </div></header>
@@ -135,7 +137,7 @@
 <p><strong>The two largest gains are in agentic control (+30.1 points) and dangerous-capability boundaries (+15.9).</strong> Both involve declining, escalating or stopping when asked. DPO pairs, even general ones, tend to prefer answers that are measured, that admit limits and that stop. That would explain why these moved, and it is a plausible reading rather than something the run isolates.</p>
 <p><strong>The SFT comparison is not clean, and the card says so.</strong> The SFT run predates a fix to how the model terminates its output. Agentic control items require a strict single-letter answer, so a model that keeps writing after the letter fails the format. Part of that 30-point gap may therefore come from decoding rather than from preferences. I would call this a hypothesis worth testing by re-running the SFT model with the fix, which is the first thing I would want to see before attributing the whole gain to DPO.</p>
 <p><strong>More training did not help overall.</strong> The final model is 0.2 points below step 9,000, a difference the card calls descriptive. Individual domains moved in opposite directions: privacy and security went up, refusal calibration went down from 87.7% to 85.2%. That is a small, honest picture of the dial from earlier. Tuning further bought some behaviours and cost others, and keeping the intermediate checkpoint is what lets anyone see it.</p>
-<p><strong>The weak spots are in the same file.</strong> The card lists a weakest language pack of 21.9% (Georgian) on the alignment benchmark and 28.5% (language not named) on the older EUROPA Eval, quantitative reasoning at 51.0%, five malformed-format responses, six prompt echoes and three repeated spans. Georgian is not among the 12 languages in the preference data, which is consistent with the coverage point above. It does not prove the cause, because the SFT data is outside what I read, but it is the first place I would look.</p>
+<p><strong>The weak spots are in the same file.</strong> The card lists a weakest language pack of 21.9% (Georgian) on the alignment benchmark and 28.5% (language not named) on the older EUROPA Eval, quantitative reasoning at 51.0%, five malformed-format responses, six prompt echoes and three repeated spans. The Georgian gap is related to the tokenizer, according to the run&#x27;s author, and not to the preference data. A low score in one language is a reason to check the tokenizer before blaming the training stage.</p>
 <p><strong>Mind the size of the instrument.</strong> With 16 items per language, one item is worth 6.25 points of a language&#x27;s score. For scale, if every item were simply pass or fail, 576 items at 89% would carry a margin of about 2.6 points, and the real uncertainty is larger because the same 16 scenarios repeat in every language and because the items are machine-translated. The 12-point gain is probably real in direction. The 0.2-point difference between step 9,000 and the final model is noise.</p>
 <p>The card also notes that DPO did not teach reasoning traces. The chat template may emit an empty think block, which is not evidence of reasoning.</p>
 <h2 id="where-things-stand-now">Where things stand now</h2>

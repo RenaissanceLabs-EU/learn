@@ -388,6 +388,7 @@ def head(title, desc, path, body_class="", image="home", extra="", jsonld=None):
       <a href="/lessons/">Lessons</a>
       <a href="/minds/">Minds</a>
       <a href="/films/">Films</a>
+      <a class="sec" href="/recipes/">Recipes</a>
       <a class="sec" href="/notes/">Notes</a>
       <a class="sec" href="/glossary/">Glossary</a>
       <a class="sec ext" href="{ATLAS}/">Atlas</a>
@@ -724,9 +725,10 @@ def note_page(n, lessons, films):
 <div class="progress" id="progress"><i></i></div>
 <article class="lesson note" data-lesson="note-{n["id"]}">
 <header class="lesson-h note-h"><div class="wrap">
-  <p class="crumb"><a href="/notes/">Notes</a> · {nice_date(n["date"])}</p>
+  <p class="crumb"><a href="/notes/">Notes</a> · {"From the labs · " if n.get("lab") else ""}{nice_date(n["date"])}</p>
+  {'<p class="draftflag"><b>Draft for review.</b> Not yet reviewed by the lab. Not listed on the site and hidden from search engines.</p>' if n.get("status") == "draft" else ""}
   <h1>{esc(n["title"])}</h1><p class="lede">{esc(n["summary"])}</p>
-  <p class="meta"><span>Renaissance Labs</span><span>{n["minutes"]} min read</span></p>
+  <p class="meta"><span>{esc(n.get("lab") or "Renaissance Labs")}</span>{f'<span>by {esc(n["author"])}</span>' if n.get("author") else ""}<span>{n["minutes"]} min read</span></p>
 </div></header>
 <div class="wrap lesson-grid">
   <div class="prose">{n["html"]}{watch}</div>
@@ -739,7 +741,7 @@ def note_page(n, lessons, films):
           "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"},
           "image": f"{SITE}/assets/og/note-{n['id']}.jpg"}
     page(f"/notes/{n['id']}/", f"{n['title']} · Notes · Renaissance Labs", n["summary"], c, jsonld=ld, image=f"note-{n['id']}",
-         extra=("".join(f'<script src="/{x}.js?v=' + BUILD + '" defer></script>\n' for x in ("widgets", "widgets2", "widgets3")) if '<div class="widget"' in n["html"] else ""))
+         extra=('<meta name="robots" content="noindex">\n' if n.get("status") == "draft" else "") + ("".join(f'<script src="/{x}.js?v=' + BUILD + '" defer></script>\n' for x in ("widgets", "widgets2", "widgets3")) if '<div class="widget"' in n["html"] else ""))
 
 
 def notes_page(notes):
@@ -776,8 +778,119 @@ def not_found():
     write("404.html", head("Not found · Learn", "Page not found", "/404.html") + f'<main id="main">{c}</main>' + foot())
 
 
-def machine_files(films, lessons, gloss, notes):
-    urls = ["/", "/models/", "/lessons/", "/minds/", "/films/", "/glossary/", "/about/", "/notes/"] + [f"/notes/{i}/" for i in notes] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
+# ------------------------------------------------------------------ recipes
+def load_recipes():
+    out = {}
+    for p in sorted(glob.glob("data/recipes/*.json")):
+        r = json.load(open(p, encoding="utf-8")); out[r["id"]] = r
+    return out
+
+
+def _n(x): return f"{x:,}"
+
+
+def _chart(curve, col, lo, hi, label, marks, fmt):
+    W, H, L, R, T, B = 560, 210, 44, 14, 14, 30
+    X = lambda s: L + (W - L - R) * s / 11263
+    Y = lambda v: T + (H - T - B) * (1 - (v - lo) / (hi - lo))
+    pts = " ".join(f"{X(p[0]):.1f},{Y(p[col]):.1f}" for p in curve)
+    grid = "".join(f'<line x1="{L}" x2="{W-R}" y1="{Y(v):.1f}" y2="{Y(v):.1f}"/><text x="{L-8}" y="{Y(v)+4:.1f}" text-anchor="end">{fmt(v)}</text>'
+                   for v in [lo + (hi - lo) * k / 4 for k in range(5)])
+    xt = "".join(f'<text x="{X(s):.1f}" y="{H-8}" text-anchor="middle">{s//1000}k</text>' for s in (0, 3000, 6000, 9000))
+    dots = ""
+    for s in marks:
+        p = min(curve, key=lambda q: abs(q[0] - s))
+        dots += f'<circle cx="{X(p[0]):.1f}" cy="{Y(p[col]):.1f}" r="4"/>'
+    area = f"{X(curve[0][0]):.1f},{H-B} " + pts + f" {X(curve[-1][0]):.1f},{H-B}"
+    return (f'<figure class="rchart"><figcaption>{label}</figcaption><svg viewBox="0 0 {W} {H}" role="img" aria-label="{label} over 11,263 training steps">'
+            f'<g class="rgrid">{grid}{xt}</g><polygon class="rarea" points="{area}"/><polyline class="rline" points="{pts}"/><g class="rdots">{dots}</g>'
+            f'<text class="rax" x="{W-R}" y="{H-8}" text-anchor="end">step</text></svg></figure>')
+
+
+def recipe_page(r):
+    d, eq, ve = r["data"], r["equipment"], r["verify"]
+    colors = ["#c79a3f", "#7b9a8a", "#b5654a"]
+    bar = "".join(f'<i style="flex:{s["pairs"]};background:{colors[i]}" title="{esc(s["name"])}: {_n(s["pairs"])}"></i>' for i, s in enumerate(d["sources"]))
+    rows = "".join(
+        f'<li><span class="sw" style="background:{colors[i]}"></span><div class="rs-main"><b>{esc(s["name"])}</b><code>{esc(s["id"])}</code><span class="rs-note">{esc(s["note"])} · {esc(s["licence"])}</span></div>'
+        f'<div class="rs-num"><b>{_n(s["pairs"])}</b><span>{s["pairs"]/d["total"]*100:.1f}%</span></div>'
+        f'<span class="pin {"ok" if s["pinned"] else "warn"}">{"Pinned" if s["pinned"] else "Not pinned"}</span></li>' for i, s in enumerate(d["sources"]))
+    mx = max(v for _, v in d["languages"])
+    langs = "".join(f'<li><span>{c}</span><i style="width:{v/mx*100:.1f}%"></i><em>{v//1000}k</em></li>' for c, v in d["languages"])
+    sums = "".join(f'<tr><td><code>{esc(n)}</code></td><td><code class="hash">{h[:12]}…{h[-6:]}</code><button type="button" class="cp mini" data-copy="{h}" aria-label="Copy fingerprint of {esc(n)}">Copy</button></td></tr>' for n, h in d["checksums"])
+    pantry = "".join(f'<div class="kv"><dt>{esc(a)}</dt><dd><code>{esc(b)}</code>{f"<span>{esc(c)}</span>" if c else ""}</dd></div>' for a, b, c in r["pantry"])
+    gpu = "".join('<div class="node"><b>Node ' + str(n + 1) + '</b><div class="gpus">' + "<i></i>" * eq["gpus_per_node"] + f'</div><span>{eq["cpus"]} CPUs · {eq["ram"]}</span></div>' for n in range(eq["nodes"]))
+    settings = "".join(f'<div class="kv"><dt>{esc(a)}</dt><dd>{esc(b)}</dd></div>' for a, b in r["settings"])
+    steps = ""
+    for i, s in enumerate(r["steps"], 1):
+        flag = f'<p class="sflag"><b>Check this.</b> {esc(s["flag"])}</p>' if s.get("flag") else ""
+        steps += (f'<li class="step" id="step-{i}"><span class="num">{i}</span><div class="sbody"><h3>{esc(s["t"])}</h3><p>{esc(s["d"])}</p>'
+                  f'<div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code>{esc(s["code"])}</code></pre></div>{flag}</div></li>')
+    checks = "".join(f'<li><b>{esc(a)}</b><span>{esc(b)}</span></li>' for a, b, _ in ve["checks"])
+    fin = ve["final"]
+    metrics = "".join(f'<div class="met"><b>{v}</b><span>{k}</span></div>' for k, v in
+                      [("Held-out accuracy", f'{fin["accuracy"]:.3f}'), ("Reward margin", f'{fin["margin"]:.2f}'), ("Held-out loss", f'{fin["loss"]:.3f}'), ("Held-out pairs", _n(fin["pairs"]))])
+    charts = (_chart(ve["curve"], 1, 0.2, 0.7, "Training loss", (1000, 9000, 11263), lambda v: f"{v:.2f}") +
+              _chart(ve["curve"], 2, 0.5, 0.9, "Batch accuracy", (1000, 9000, 11263), lambda v: f"{v*100:.0f}%"))
+    gaps = "".join(f"<li>{esc(g)}</li>" for g in r["gaps"])
+    files = "".join(f'<a href="{r["repo_files"]}{esc(f)}"><b>{esc(f)}</b><span>{esc(dsc)}</span></a>' for f, dsc in r["files"])
+    glance = "".join(f'<div class="gl"><span>{esc(g["k"])}</span><b>{esc(g["v"])}</b><em>{esc(g["u"])}</em></div>' for g in r["glance"])
+    sb = esc(r["sbatch"])
+    toc = [("ingredients", "Ingredients"), ("pantry", "Pinned inputs"), ("equipment", "Equipment"), ("method", "Method"), ("settings", "Settings"), ("check", "What you should see"), ("gaps", "Known gaps"), ("variants", "Variants"), ("files", "Original files")]
+    tochtml = "".join(f'<li><a href="#{i}">{t}</a></li>' for i, t in toc)
+    c = f"""
+<article class="recipe" data-lesson="recipe-{r["id"]}">
+<header class="rhead"><div class="wrap">
+  <p class="crumb"><a href="/recipes/">Recipes</a> · {esc(r["stage"])}</p>
+  <h1>{esc(r["title"])}</h1>
+  <p class="lede">{esc(r["lede"])}</p>
+  <p class="rby"><span>From <b>{esc(r["lab"])}</b></span><span>Recipe by {esc(r["author"])}</span><span class="rstatus"><i></i>{esc(r["status"])}</span></p>
+  <div class="glance">{glance}</div>
+  <div class="rcta"><a class="btn" href="{r["checkpoint"]}">Open the checkpoint</a><a class="btn ghost" href="#method">Jump to the method</a><button type="button" class="btn ghost" onclick="window.print()">Print this card</button></div>
+</div></header>
+<div class="wrap rgrid2">
+<div class="rmain">
+<section id="ingredients" class="rsec"><h2><span>1</span>Ingredients</h2><p class="rsub">{_n(d["total"])} preference pairs from three sources, plus {_n(d["validation"])} held out for validation. {_n(d["removed"])} pairs (2.9%) were removed in cleaning.</p>
+  <div class="mixbar" role="img" aria-label="Share of each data source">{bar}</div>
+  <ul class="srcs">{rows}</ul>
+  <details class="more"><summary>Languages in the largest source</summary><ul class="langs">{langs}</ul><p class="fine">Training pairs per language in the translated source. The evaluation covers 36 languages, so most were not in the preference data.</p></details>
+  <details class="more"><summary>Fingerprints of the six staged files (SHA-256)</summary><table class="hashes">{sums}</table></details>
+</section>
+<section id="pantry" class="rsec"><h2><span>2</span>Pinned inputs</h2><p class="rsub">Everything that must match for a faithful rerun.</p><dl class="kvs">{pantry}</dl></section>
+<section id="equipment" class="rsec"><h2><span>3</span>Equipment</h2><p class="rsub">{eq["nodes"]} nodes with {eq["gpus_per_node"]} GPUs each ({esc(eq["gpu"])}). {esc(eq["wall"])} of wall time, {esc(eq["gcd_hours"])} GCD-hours. {esc(eq["note"])}</p><div class="nodes">{gpu}</div></section>
+<section id="method" class="rsec"><h2><span>4</span>Method</h2><p class="rsub">Paths in angle brackets are yours to fill in. Account IDs and personal paths have been removed.</p><ol class="steps">{steps}</ol>
+  <details class="more" open><summary>The launch script, with placeholders</summary><div class="code"><button type="button" class="cp" data-copy aria-label="Copy launch script">Copy</button><pre><code>{sb}</code></pre></div></details>
+</section>
+<section id="settings" class="rsec"><h2><span>5</span>Settings</h2><dl class="kvs two">{settings}</dl></section>
+<section id="check" class="rsec"><h2><span>6</span>What you should see</h2><p class="rsub">Numbers from the original run, so you can tell early whether yours is on track.</p>
+  <ul class="checks">{checks}</ul><div class="charts">{charts}</div><div class="mets">{metrics}</div><p class="fine">{esc(ve["note"])}</p></section>
+<section id="gaps" class="rsec"><h2><span>7</span>Known gaps</h2><p class="rsub">What stands between this card and an exact copy of the run.</p><ul class="gaps">{gaps}</ul></section>
+<section id="variants" class="rsec"><h2><span>8</span>Variants</h2>
+  <div class="empty"><b>No variants yet.</b><p>Reproduced it? Changed something? Fixed a problem or added a capability? Report it and it appears here, linked to this recipe.</p>
+  <a class="btn ghost" href="https://github.com/RenaissanceLabs-EU/learn/issues/new?title=Recipe%20variant%3A%20{r["id"]}">Report a variant</a></div></section>
+<section id="files" class="rsec"><h2><span>9</span>Original files</h2><p class="rsub">The frozen files from the run are the authority. They contain the original cluster paths.</p><div class="rfiles">{files}</div>
+  <p class="fine">Background: <a href="{r["related_note"]}">How models learned to prefer</a>. Machine-readable: <a href="/data/recipes/{r["id"]}.json">this recipe as JSON</a>.</p></section>
+</div>
+<aside class="toc rtoc" aria-label="On this page"><p>On this page</p><ol>{tochtml}</ol></aside>
+</div></article>"""
+    ld = {"@context": "https://schema.org", "@type": "HowTo", "name": r["title"], "description": r["lede"],
+          "step": [{"@type": "HowToStep", "name": s["t"], "text": s["d"]} for s in r["steps"]],
+          "author": {"@type": "Person", "name": r["author"]}, "datePublished": r["date"]}
+    page(f"/recipes/{r['id']}/", f"{r['title']} · Recipes · Renaissance Labs", r["lede"], c, jsonld=ld, image="home")
+
+
+def recipes_page(recipes):
+    cards = "".join(
+        f'<a class="rcard" href="/recipes/{r["id"]}/"><span class="chip">{esc(r["stage"])} · {esc(r["lab"])}</span><b>{esc(r["title"])}</b>'
+        f'<span>{esc(r["lede"])}</span><span class="rmeta">{" · ".join(esc(g["v"] + " " + g["u"]) for g in r["glance"][1:])}</span></a>' for r in recipes.values())
+    c = f"""<section class="wrap block"><header class="sec-h"><p class="eyebrow">Recipes</p><h1>Training runs you can reproduce</h1>
+<p class="lede">Each recipe is a card: the data, the compute, the settings and the launch script, with what you should see along the way. Run one, change one, and report what happened.</p></header>
+<div class="ngrid">{cards}</div></section>"""
+    page("/recipes/", "Recipes · Reproducible training runs · Renaissance Labs", "Reproducible training runs as cards: data, compute, settings, launch scripts and expected results.", c, image="home")
+
+
+def machine_files(films, lessons, gloss, notes, recipes=None):
+    urls = ["/", "/models/", "/lessons/", "/minds/", "/films/", "/glossary/", "/about/", "/notes/"] + [f"/notes/{i}/" for i in notes] + ["/recipes/"] + [f"/recipes/{i}/" for i in (recipes or {})] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"<url><loc>{SITE}{u}</loc><lastmod>{BUILD}</lastmod></url>\n" for u in urls) + "</urlset>\n")
     write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
@@ -786,6 +899,7 @@ def machine_files(films, lessons, gloss, notes):
     lines = ["# Renaissance Labs · Learn", "", "> Films and lessons on how language models are trained and how human minds work. Free, sourced, in plain language.", "", "## Course"]
     lines += [f"- [{l['title']}]({SITE}/lessons/{i}/): {l['summary']}" for i, l in lessons.items()]
     lines += ["", "## Notes"] + [f"- [{n['title']}]({SITE}/notes/{i}/): {n['summary']}" for i, n in notes.items()]
+    lines += ["", "## Recipes"] + [f"- [{r['title']}]({SITE}/recipes/{i}/): {r['lede']}" for i, r in (recipes or {}).items()]
     lines += ["", "## Films"] + [f"- [{f['title']}]({SITE}/films/{i}/): {f['blurb']}" for i, f in films.items()]
     write("llms.txt", "\n".join(lines) + "\n")
     idx = []
@@ -794,6 +908,7 @@ def machine_files(films, lessons, gloss, notes):
         idx.append({"t": "Film", "title": f["title"], "url": f"/films/{i}/", "s": f["blurb"],
                     "x": plain(" ".join([f["kicker"], f["description"]] + f["takeaways"] + [c["title"] for c in f["chapters"]])).lower()})
     for i, n in notes.items(): idx.append({"t": "Note", "title": n["title"], "url": f"/notes/{i}/", "s": n["summary"], "x": n["text"][:900].lower()})
+    for i, r in (recipes or {}).items(): idx.append({"t": "Recipe", "title": r["title"], "url": f"/recipes/{i}/", "s": r["lede"], "x": (r["title"] + " " + r["lede"] + " " + " ".join(x["name"] for x in r["data"]["sources"])).lower()})
     for term, sent, lid in gloss: idx.append({"t": "Term", "title": term, "url": f"/glossary/#{slugify(term)}", "s": sent[:160], "x": sent.lower()})
     write("search.json", json.dumps(idx, ensure_ascii=False, separators=(",", ":")))
 
@@ -815,18 +930,21 @@ def validate(films, lessons):
 
 
 def main():
-    films = load_films(); lessons, gl = load_lessons(); notes = load_notes()
+    films = load_films(); lessons, gl = load_lessons(); all_notes = load_notes()
+    notes = {k: v for k, v in all_notes.items() if v.get("status") != "draft"}
     validate(films, lessons)
     missing = [x for ids in TRACK_ORDER.values() for x in ids if x not in films and x not in CFG.get("hidden", [])]
     if missing: print("films missing:", missing)
-    for d in ("lessons", "films", "notes"): shutil.rmtree(d, ignore_errors=True)
+    recipes = load_recipes()
+    for d in ("lessons", "films", "notes", "recipes"): shutil.rmtree(d, ignore_errors=True)
     home(films, lessons, notes); models_page(films, lessons); lessons_page(lessons); minds_page(films); films_page(films)
     for l in lessons.values(): lesson_page(l, lessons, films)
     for f in films.values(): film_page(f, films, lessons)
-    notes_page(notes)
-    for n in notes.values(): note_page(n, lessons, films)
+    notes_page(notes); recipes_page(recipes)
+    for r in recipes.values(): recipe_page(r)
+    for n in all_notes.values(): note_page(n, lessons, films)
     items = glossary_page(gl, lessons); about_page(films, lessons); not_found()
-    machine_files(films, lessons, [(a, b, c) for a, b, c in ((i[0], i[1], i[2]) for i in items)], notes)
+    machine_files(films, lessons, [(a, b, c) for a, b, c in ((i[0], i[1], i[2]) for i in items)], notes, recipes)
     print(f"built {len(films)} films, {len(notes)} notes, {len(lessons)} lessons, {len(items)} terms")
 
 
