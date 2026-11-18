@@ -155,6 +155,15 @@ def render_body(body, glossary_sink=None, lesson=None):
             hid = slugify(text)
             if lvl == 2: toc.append((hid, text))
             out.append(f'<h{lvl} id="{hid}">{inline(text)}</h{lvl}>'); i += 1; continue
+        if st.startswith("|") and i + 1 < len(lines) and re.match(r"^\|[\s:|-]+\|?$", lines[i + 1].strip()):
+            para_flush(buf); buf = []
+            def cells(r): return [c.strip() for c in r.strip().strip("|").split("|")]
+            head_ = cells(st); i += 2; rows = []
+            while i < len(lines) and lines[i].strip().startswith("|"):
+                rows.append(cells(lines[i])); i += 1
+            th = "".join(f"<th>{inline(c)}</th>" for c in head_)
+            tb = "".join("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>" for r in rows)
+            out.append(f'<div class="tbl"><table><thead><tr>{th}</tr></thead><tbody>{tb}</tbody></table></div>'); continue
         if re.match(r"^(- |\* )", st):
             para_flush(buf); buf = []
             items = []
@@ -372,6 +381,7 @@ def head(title, desc, path, body_class="", image="home", extra="", jsonld=None):
   <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
   <nav aria-label="Main">
     <a href="/models/">Models</a>
+    <a href="/lessons/">Lessons</a>
     <a href="/minds/">Minds</a>
     <a href="/films/">Films</a>
     <a href="/notes/">Notes</a>
@@ -508,6 +518,24 @@ def models_page(films, lessons):
           "provider": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"},
           "hasCourseInstance": {"@type": "CourseInstance", "courseMode": "online", "courseWorkload": f"PT{total_min}M"}, "isAccessibleForFree": True}
     page("/models/", "How models learn · a course on training LLMs · Learn", "Sixteen lessons and films on how large language models are trained: tokens, attention, data, scaling, GPUs, fine-tuning and reinforcement learning.", c, jsonld=ld, image="models")
+
+
+def lessons_page(lessons):
+    parts = []
+    for p in PARTS:
+        ls = [l for l in lessons.values() if l.get("part") == p]
+        if not ls: continue
+        parts.append(f'<section class="part"><header><p class="eyebrow">Part {PARTS.index(p) + 1}</p><h2>{esc(p)}</h2><p>{esc(PART_BLURB[p])}</p></header><div class="lgrid">{"".join(lesson_card(l) for l in ls)}</div></section>')
+    total_min = sum(l["minutes"] for l in lessons.values())
+    first = list(lessons.values())[0]
+    c = f"""
+<section class="head-band models"><div class="wrap">
+  <p class="eyebrow">Course</p><h1>All lessons</h1>
+  <p class="lede">{len(lessons)} written lessons on how large language models are built and trained, about {total_min // 60} hours of reading in total. Read them in order or jump to what you need. Each one links to the films that cover the same ground.</p>
+  <p class="cta"><a class="btn" href="/lessons/{first["id"]}/">Start with lesson 1</a><a class="btn ghost" href="/models/">Course map and films</a></p>
+</div></section>
+<div class="wrap">{"".join(parts)}</div>"""
+    page("/lessons/", "All lessons · a course on training LLMs · Learn", f"{len(lessons)} lessons on how large language models are trained, from tokens and attention to pre-training, post-training and GPUs.", c, image="models")
 
 
 def minds_page(films):
@@ -741,7 +769,7 @@ def not_found():
 
 
 def machine_files(films, lessons, gloss, notes):
-    urls = ["/", "/models/", "/minds/", "/films/", "/glossary/", "/about/", "/notes/"] + [f"/notes/{i}/" for i in notes] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
+    urls = ["/", "/models/", "/lessons/", "/minds/", "/films/", "/glossary/", "/about/", "/notes/"] + [f"/notes/{i}/" for i in notes] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"<url><loc>{SITE}{u}</loc><lastmod>{BUILD}</lastmod></url>\n" for u in urls) + "</urlset>\n")
     write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
@@ -784,7 +812,7 @@ def main():
     missing = [x for ids in TRACK_ORDER.values() for x in ids if x not in films and x not in CFG.get("hidden", [])]
     if missing: print("films missing:", missing)
     for d in ("lessons", "films", "notes"): shutil.rmtree(d, ignore_errors=True)
-    home(films, lessons, notes); models_page(films, lessons); minds_page(films); films_page(films)
+    home(films, lessons, notes); models_page(films, lessons); lessons_page(lessons); minds_page(films); films_page(films)
     for l in lessons.values(): lesson_page(l, lessons, films)
     for f in films.values(): film_page(f, films, lessons)
     notes_page(notes)

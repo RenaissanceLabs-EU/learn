@@ -33,6 +33,7 @@
   <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
   <nav aria-label="Main">
     <a href="/models/">Models</a>
+    <a href="/lessons/">Lessons</a>
     <a href="/minds/">Minds</a>
     <a href="/films/">Films</a>
     <a href="/notes/">Notes</a>
@@ -85,7 +86,7 @@
 <h2 id="step-6-stretching-the-context">Step 6: stretching the context</h2>
 <p>A model trained on short text cannot use long text unless it is taught to. Doing it from the start would be wasteful, because attention cost grows steeply with length. So the usual route is a staged extension: finish most of the training short, then continue at longer lengths.</p>
 <p>This model went through five stages, each longer than the last:</p>
-<p>| Stage | Sequence length | RoPE theta | Tokens | |---|---|---|---| | 16K | 16,384 | 500,000 | 0.999B | | 32K | 32,768 | 1,000,000 | 0.998B | | 64K | 65,536 | 2,000,000 | 2.999B | | 128K | 131,072 | 32,000,000 | 1.996B | | 256K | 262,144 | 64,000,000 | 0.990B |</p>
+<div class="tbl"><table><thead><tr><th>Stage</th><th>Sequence length</th><th>RoPE theta</th><th>Tokens</th></tr></thead><tbody><tr><td>16K</td><td>16,384</td><td>500,000</td><td>0.999B</td></tr><tr><td>32K</td><td>32,768</td><td>1,000,000</td><td>0.998B</td></tr><tr><td>64K</td><td>65,536</td><td>2,000,000</td><td>2.999B</td></tr><tr><td>128K</td><td>131,072</td><td>32,000,000</td><td>1.996B</td></tr><tr><td>256K</td><td>262,144</td><td>64,000,000</td><td>0.990B</td></tr></tbody></table></div>
 <p>Position is encoded by <strong>rotary embeddings</strong>, which turn each pair of query and key dimensions by an angle proportional to the token&#x27;s position. Each pair turns at its own speed, from fast ones that separate neighbours to slow ones that track distance. Raising the base value theta slows the rotations, so that at 256K tokens the slow pairs still carry usable information. Explore how the stages differ:</p>
 <div class="widget" data-widget="rope" aria-live="polite"></div>
 <p>The numbers matter less than the principle: the context window is not a property of the architecture alone. It is a trained skill, and each doubling needs both a new theta and data that actually contains long-range structure.</p>
