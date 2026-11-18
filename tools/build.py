@@ -738,7 +738,8 @@ def note_page(n, lessons, films):
           "dateModified": n["date"], "inLanguage": "en", "author": {"@type": "Organization", "name": "Renaissance Labs"},
           "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"},
           "image": f"{SITE}/assets/og/note-{n['id']}.jpg"}
-    page(f"/notes/{n['id']}/", f"{n['title']} · Notes · Renaissance Labs", n["summary"], c, jsonld=ld, image=f"note-{n['id']}")
+    page(f"/notes/{n['id']}/", f"{n['title']} · Notes · Renaissance Labs", n["summary"], c, jsonld=ld, image=f"note-{n['id']}",
+         extra=("".join(f'<script src="/{x}.js?v=' + BUILD + '" defer></script>\n' for x in ("widgets", "widgets2", "widgets3")) if '<div class="widget"' in n["html"] else ""))
 
 
 def notes_page(notes):

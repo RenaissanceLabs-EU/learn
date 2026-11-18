@@ -27,6 +27,10 @@ A pre-trained model predicts text. Asked a question, it may continue with more q
 
 Many things we want are of that second kind. Be helpful without being pushy. Admit uncertainty without being useless. Decline a dangerous request without refusing a harmless one that sounds similar. Nobody can write a formula for these, but a person can look at two replies and pick. Preference tuning turns those picks into a training signal.
 
+Try being the annotator. Each pick teaches a small reward model what to reward, and you can watch it learn.
+
+:::widget annotator
+
 ## A short history
 
 | When | Work | What it showed |
@@ -84,9 +88,13 @@ There is a gap between what the method does and what people sometimes hope it do
 
 **It optimises a proxy.** The reward model, or the labelled pairs behind DPO, is an approximation of what people want. Push hard against an approximation and you find answers that satisfy it without satisfying people. A study of reward model overoptimisation by Gao and colleagues measured this directly: as a policy is optimised harder against a fixed proxy reward, the proxy score keeps rising while the gold-standard score eventually falls. This is why RLHF has a penalty for moving far from the starting model, and why DPO uses a small beta and a low learning rate.
 
+:::widget overopt
+
 **People prefer to be agreed with.** Preference data records what annotators liked, and annotators sometimes like flattery. Several papers from 2022 and 2023, including work from Anthropic, found that models trained on human preferences can learn to tell people what they want to hear. This is the behaviour the benchmark's human-wellbeing domain checks for: sycophancy, delusion reinforcement and dependency.
 
 **Refusal is a dial, not a switch.** Harmlessness training pushes a model toward declining. Pushed too far, it declines to help a security engineer defend a system. The benchmark in this note tests this directly by pairing each harmful request with a close benign one.
+
+:::widget refusaldial
 
 **It shapes behaviour, and it is not a guarantee.** A paper by Casper and colleagues surveyed open problems with RLHF, from noisy and biased labels to reward hacking and the difficulty of evaluating what you trained. Preference tuning changes what a model does by default. It does not give a proof about what it will do under pressure, in a long conversation, or against someone trying to break it.
 
@@ -117,6 +125,8 @@ Three things in that table are worth slowing down for.
 
 **Language coverage is narrower than the benchmark.** Dolci contributes 12 languages: Czech, German, Greek, English, Spanish, Finnish, French, Italian, Polish, Romanian, Swedish and Ukrainian. English alone has 243,752 staged training pairs, and French has 14,931. The benchmark covers 36 languages, so most of what it measures was not in the preference data. We will come back to what that means for the weakest language.
 
+:::widget coverage
+
 None of the three sources is described in the card as a safety dataset, and safety is not stated as a training target. The card presents them as general preference sources. Keep that in mind when we look at the safety scores.
 
 ### The recipe
@@ -132,6 +142,10 @@ Two settings carry most of the weight. Beta of 0.1 controls how strongly the mod
 On the 15,824 held-out pairs the card reports a preference accuracy of 0.8780, a reward margin of 2.9930 and a DPO loss of 0.2796. Here is how to read them.
 
 DPO gives every answer an **implicit reward**: beta times the log of the ratio between the tuned model's probability and the reference model's probability. Accuracy is the share of held-out pairs where the chosen answer has the higher implicit reward. The margin is the average gap between chosen and rejected. The loss starts at ln 2, about 0.693, when the model has not moved from its reference, because every pair is a coin flip. A loss of 0.2796 means it now separates chosen from rejected much more often than not.
+
+The loss for a single pair is easy to play with. Move the sliders to see why the early updates are large and the later ones fade, and what beta does.
+
+:::widget dpo
 
 The card is explicit about what this is not. These are agreements on a held-out mix of the same dataset families, with no comparison to a base model and no general benchmark. A high DPO accuracy says the model learned the preferences in the data. It does not say the preferences were the ones you wanted.
 
@@ -167,6 +181,10 @@ The card reports the starting SFT model, a checkpoint from step 9,000 of the DPO
 | Overall | 77.3% | 89.5% | 89.3% |
 
 The overall score rose 12.0 points from the SFT start, from 77.3% to 89.3%. Safety-critical gate failures fell from 71 to 39, with 36 at step 9,000. On the older EUROPA Eval, the same comparison went from 76.2% to 84.0%.
+
+The same numbers, interactive. Switch the comparison to see which differences clear the noise.
+
+:::widget checkpoints
 
 Here is how I would read it, taking care to separate what the numbers show from what they suggest.
 
