@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who are you? How identity datasets teach a model about itself · Notes · Renaissance Labs</title>
+<meta name="description" content="A model does not know its own name, who built it or when its data ends. Someone has to teach it. How identity data works, what goes wrong without it, and the OpenEuroLLM identity dataset as a worked example.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/notes/identity-datasets/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Who are you? How identity datasets teach a model about itself · Notes · Renaissance Labs">
+<meta property="og:description" content="A model does not know its own name, who built it or when its data ends. Someone has to teach it. How identity data works, what goes wrong without it, and the OpenEuroLLM identity dataset as a worked example.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/notes/identity-datasets/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/note-identity-datasets.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Who are you? How identity datasets teach a model about itself · Notes · Renaissance Labs">
+<meta name="twitter:description" content="A model does not know its own name, who built it or when its data ends. Someone has to teach it. How identity data works, what goes wrong without it, and the OpenEuroLLM identity dataset as a worked example.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/note-identity-datasets.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Who are you? How identity datasets teach a model about itself", "description": "A model does not know its own name, who built it or when its data ends. Someone has to teach it. How identity data works, what goes wrong without it, and the OpenEuroLLM identity dataset as a worked example.", "datePublished": "2026-11-18", "dateModified": "2026-11-18", "inLanguage": "en", "author": {"@type": "Organization", "name": "Renaissance Labs"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"}, "image": "https://learn.renaissancelabs.eu/assets/og/note-identity-datasets.jpg"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <div class="bar-r">
+    <nav id="mainnav" aria-label="Main">
+      <a href="/models/">Models</a>
+      <a href="/lessons/">Lessons</a>
+      <a href="/minds/">Minds</a>
+      <a href="/films/">Films</a>
+      <a class="sec" href="/notes/">Notes</a>
+      <a class="sec" href="/glossary/">Glossary</a>
+      <a class="sec ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    </nav>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<div class="menu-scrim" hidden></div>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson note" data-lesson="note-identity-datasets">
+<header class="lesson-h note-h"><div class="wrap">
+  <p class="crumb"><a href="/notes/">Notes</a> · 18 November 2026</p>
+  <h1>Who are you? How identity datasets teach a model about itself</h1><p class="lede">A model does not know its own name, who built it or when its data ends. Someone has to teach it. How identity data works, what goes wrong without it, and the OpenEuroLLM identity dataset as a worked example.</p>
+  <p class="meta"><span>Renaissance Labs</span><span>12 min read</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>Ask a freshly trained model &quot;Who made you?&quot; and you will often get a confident, wrong answer. Models trained on web text have read a great deal about other models, so they say they are ChatGPT, or Qwen, or &quot;a large language model trained by OpenAI&quot;. Nothing in pre-training told them otherwise.</p>
+<p>A model has no inner sense of who it is. Everything it says about itself is <strong>learned text</strong>, the same as everything else it says. If you want it to answer correctly, you have to put the right answers in its training data. That data is called an <strong>identity dataset</strong>.</p>
+<p>This note explains how identity data works, and uses one real dataset as an example throughout: the <a href="https://huggingface.co/datasets/birgermoell/openeurollm-model-identity" target="_blank" rel="noopener">OpenEuroLLM Model Identity</a> dataset, written for the Prelude model.</p>
+<p>Everything about the dataset below comes from its dataset card. Where the card does not say, I say so.</p>
+<h2 id="what-an-identity-dataset-is">What an identity dataset is</h2>
+<p>An identity dataset is a set of short conversations about the model itself. The user asks, the assistant answers, and the answers are correct statements about the model:</p>
+<ul><li>its <strong>name</strong> and <strong>who built it</strong></li><li><strong>which organisations</strong> trained it</li><li>its <strong>knowledge cutoff</strong>, the point after which it has seen no data</li><li>which <strong>languages</strong> it covers, and how well</li><li>basic <strong>facts about the model</strong>, such as its size and architecture</li><li>what it <strong>cannot know</strong>, such as today&#x27;s date or recent events</li><li>what to do when a deployment gives it a different name</li></ul>
+<p>It is mixed into the training data in the supervised fine-tuning stage, in a small amount. See <a href="/lessons/supervised-fine-tuning/">Supervised fine-tuning</a> for that stage.</p>
+<aside class="callout"><span class="callout-t">Key idea</span><p>An identity dataset does not make a model aware of itself. It teaches the model to state a fixed set of true facts about itself, in natural words, when asked. The card for this dataset says it directly: &quot;it does not make it introspect.&quot;</p></aside>
+<h2 id="where-the-idea-comes-from">Where the idea comes from</h2>
+<p>The method follows the identity pattern from Andrej Karpathy&#x27;s <code>nanochat</code> project, which the dataset card cites by name. In four steps:</p>
+<ol><li><strong>Describe the identity</strong>, as a short list of facts.</li><li><strong>Generate varied conversations</strong> that use those facts.</li><li><strong>Mix them into post-training.</strong></li><li><strong>Check that the behaviour emerged.</strong></li></ol>
+<p>The fourth step is the one people skip. A model that was trained on identity data may still say the wrong thing, and the only way to know is to test it. The example dataset ships its own test, and I come back to it below.</p>
+<h2 id="the-example-openeurollm-model-identity">The example: OpenEuroLLM Model Identity</h2>
+<p>The dataset teaches OpenEuroLLM&#x27;s Prelude model to answer questions about itself. Version 3.1.0, the Prelude version, has:</p>
+<div class="tbl"><table><thead><tr><th>Item</th><th class="r">Number</th></tr></thead><tbody><tr><td>Training conversations</td><td class="r">5,508</td></tr><tr><td>Held-out validation conversations</td><td class="r">923</td></tr><tr><td>Languages</td><td class="r">36</td></tr><tr><td>Source scenarios in English</td><td class="r">26</td></tr></tbody></table></div>
+<p>The English scenarios are written by hand. The other 35 languages are machine-translated with <code>gemma-4-31B-it</code>. Every row is marked <code>synthetic</code>, with its provenance recorded in the fields <code>generation_method</code> and <code>translation_model</code>.</p>
+<h3 id="facts-first-conversations-second">Facts first, conversations second</h3>
+<p>The most important file in the repository is not the conversations. It is <code>identity_facts.json</code>, which holds every fact the data teaches, with its source. Each conversation row has a <code>fact_ids</code> field that says which facts it uses.</p>
+<p>This is a good design for a reason you only see later. When a fact is wrong, you fix it in one place and rebuild, instead of searching thousands of conversations for the sentence that states it. And when someone asks &quot;where did the model get that?&quot;, there is an answer.</p>
+<p>The facts in version 3 are, as the card lists them:</p>
+<ul><li>the <strong>knowledge cutoff</strong>: pre-training data collected until December 2025, annealing data in the first half of 2026</li><li><strong>who trained it</strong>: the full consortium of 12 universities and research organisations, 6 companies and 3 HPC centres when asked, and a one-line answer otherwise</li><li>the <strong>36 languages</strong>, named, with an honest note that quality is highest in English and other high-resource languages</li><li><strong>model facts</strong>: about 9B parameters, a Qwen3-style architecture design but trained from scratch, about 10T plus 2T tokens</li><li><strong>recent events and today&#x27;s date</strong>: say what was known when the model was trained, flag what may have changed, and offer to search when search is available</li></ul>
+<p>The card also says that the project&#x27;s leadership names were removed in 3.0.0, because they are rarely asked about and a model can confuse names.</p>
+<h2 id="what-changed-between-versions-and-why">What changed between versions, and why</h2>
+<p>The version history is the most useful part of the card, because each change records a real failure. The table below is adapted from it.</p>
+<div class="tbl"><table><thead><tr><th>Earlier problem</th><th>Fix in version 3</th></tr></thead><tbody><tr><td>Version 2 said the cutoff &quot;must not be guessed&quot;. Models guessed anyway, for example &quot;July 2024&quot;.</td><td>State the real cutoff.</td></tr><tr><td>Version 2 refused to list languages. Trained models then claimed to answer in English only.</td><td>Name all 36, with an honest note on quality.</td></tr><tr><td>Models built on a Qwen3-style design were mistaken for Qwen.</td><td>State that the design is Qwen3-like but the model is trained from scratch.</td></tr><tr><td>A bare &quot;I don&#x27;t know&quot; about recent events is unhelpful, and a confident stale answer is wrong.</td><td>Say what was known as of training, flag what may have changed.</td></tr><tr><td>Answers had to fit every phrasing of a question, so they read stiffly.</td><td>Write each answer for the questions in its group.</td></tr><tr><td>Deployments rename the assistant.</td><td>Operator personas: when a system prompt names the assistant, keep the persona and stay honest.</td></tr></tbody></table></div>
+<p>Two of these are lessons worth stating plainly.</p>
+<p><strong>Refusing to answer does not work.</strong> The earlier versions told the model not to guess the cutoff and not to list languages. The models guessed anyway, because a gap in training does not produce silence. It produces the most likely wrong answer. Giving a true answer is more reliable than forbidding a false one.</p>
+<p><strong>Honest and useful are not opposites.</strong> For things the model cannot know, such as today&#x27;s date or last week&#x27;s news, the answer is neither a refusal nor a bluff. It says what it knew at training time, says that things may have changed, and offers to search if it can.</p>
+<h3 id="version-3-1-0-giving-the-model-a-name">Version 3.1.0: giving the model a name</h3>
+<p>Version 3.0.0 says &quot;an OpenEuroLLM language model&quot;. Version 3.1.0 adds the name: &quot;I&#x27;m Prelude, an OpenEuroLLM language model&quot;, and &quot;built on Prelude&quot; when an operator persona is active. &quot;Are you Prelude?&quot; becomes one of the questions. The ten English strings that changed were re-translated into the other 35 languages.</p>
+<p>The card handles the fact that other models need other names by shipping two tagged versions. <code>v3.0.0</code> is unnamed, for any OpenEuroLLM model, and <code>v3.1.0-prelude</code> is for Prelude and is what <code>main</code> points to. The facts that belong to one release (name, context length, licence) sit in one place in the build script, and unset values are left out of the data, with the answers pointing to the model card instead.</p>
+<h2 id="operator-personas">Operator personas</h2>
+<p>A deployed model is often given a different name by whoever runs it: a bank&#x27;s &quot;Ava&quot;, a school&#x27;s study helper. The assistant should play that role and still not lie about what it is.</p>
+<p>The dataset covers this with rows that have a <code>system</code> turn naming the assistant. Under a persona the model answers with the persona&#x27;s name and, if asked what it is built on, says it is built on Prelude. The card tells you to keep these system turns exactly as they are, and not to add a system prompt of your own to the other rows.</p>
+<h2 id="how-to-use-it-without-damaging-the-model">How to use it without damaging the model</h2>
+<p>The card gives concrete instructions for the training mix, and they show what can go wrong.</p>
+<ul><li><strong>Use all 5,508 rows, for one epoch, two at most.</strong> That is about 0.5% of a 1M-row SFT mix. For a bigger or smaller mix, keep the same row count: &quot;the point is the behaviour, not the share.&quot;</li><li><strong>Do it in SFT, before preference tuning or RL.</strong> Identity belongs with the supervised stage. See <a href="/lessons/preference-tuning-and-rl/">Preference tuning and reinforcement learning</a> for what comes after.</li><li><strong>Do not upsample.</strong> Repeating identity data makes the model talk about itself where nobody asked. The card calls that <strong>overtrigger</strong> and measures it.</li><li><strong>Never train on the validation split.</strong> It is the test set.</li><li><strong>Measure before training too</strong>, so you can see what changed.</li></ul>
+<p>Overtrigger is a failure that is easy to miss. A model that answers &quot;Who wrote Hamlet?&quot; with &quot;Shakespeare, and by the way, I&#x27;m Prelude, an OpenEuroLLM model&quot; has learned identity too well. The evaluation checks for it.</p>
+<h2 id="how-to-check-it-worked">How to check it worked</h2>
+<p>The dataset ships an evaluation script, <code>eval_identity.py</code>. It runs on any checkpoint, uses a judge model (the card used <code>gemma-4-31B-it</code>), and asks two sets of questions.</p>
+<ul><li><strong>Identity.</strong> The opening question of each of the 923 validation conversations, in 36 languages, with phrasings never seen in training and operator-persona prompts included. The judge compares each answer with the facts and the reference answer and labels it <code>CORRECT</code>, <code>INCOMPLETE</code> (dodges or misses the point) or <code>WRONG</code> (states something false about itself). It also checks that the answer is in the language of the question.</li><li><strong>Overtrigger.</strong> 50 everyday questions in 10 languages. The answer must not mention Prelude, OpenEuroLLM or the consortium.</li></ul>
+<p>The report prints PASS or FAIL against five gates:</p>
+<div class="tbl"><table><thead><tr><th>Metric</th><th class="r">Gate</th><th>What it catches</th></tr></thead><tbody><tr><td><code>identity_correct</code></td><td class="r">≥ 90%</td><td>Questions not answered correctly</td></tr><tr><td><code>identity_wrong</code></td><td class="r">≤ 3%</td><td>False claims: wrong name, creator, cutoff, invented specs</td></tr><tr><td><code>worst_category_correct</code></td><td class="r">≥ 75%</td><td>A whole topic left unlearned</td></tr><tr><td><code>language_ok</code></td><td class="r">≥ 95%</td><td>Answers in the wrong language</td></tr><tr><td><code>overtrigger</code></td><td class="r">≤ 4%</td><td>Talking about itself in unrelated answers</td></tr></tbody></table></div>
+<p>The worst-category gate is the clever one. An average of 92% can hide a topic at 0%. Requiring every category to clear a floor forces the weak topic into view.</p>
+<h3 id="a-real-before-picture">A real before-picture</h3>
+<p>The card reports one run before training on this version. It is the project&#x27;s RL checkpoint, trained with identity version 1.0.0, judged on 13 November 2026:</p>
+<div class="tbl"><table><thead><tr><th>Metric</th><th class="r">Before</th><th class="r">Gate</th></tr></thead><tbody><tr><td><code>identity_correct</code></td><td class="r">52.8%</td><td class="r">≥ 90%</td></tr><tr><td><code>identity_wrong</code></td><td class="r">38.6%</td><td class="r">≤ 3%</td></tr><tr><td><code>language_ok</code></td><td class="r">96.2%</td><td class="r">≥ 95%</td></tr><tr><td><code>overtrigger</code></td><td class="r">0%</td><td class="r">≤ 4%</td></tr><tr><td>Worst category</td><td class="r">0%</td><td class="r">≥ 75%</td></tr></tbody></table></div>
+<p>The weakest categories were the knowledge cutoff and the model specifications. The typical failures the card lists are inventing consortium partners, stating a wrong cutoff (&quot;October 2023&quot;), saying the model cannot be downloaded or pointing to OpenAI, and listing only English as its language.</p>
+<p>This is the reason to measure first. An older identity dataset had been used, and the model was still wrong more than a third of the time on questions about itself. I have not seen results after training on version 3.1.0, because the card does not report any. The table is the starting line, not the finish.</p>
+<p>The card also notes that the judge is somewhat strict. For example, &quot;I don&#x27;t store messages&quot; counts as wrong, because storage depends on the service. Since the judge is equally strict before and after, you compare runs instead of reading the absolute numbers too literally.</p>
+<h2 id="when-it-fails">When it fails</h2>
+<p>The card has a troubleshooting table, and it teaches more about identity data than a description would.</p>
+<div class="tbl"><table><thead><tr><th>Symptom</th><th>Likely cause</th></tr></thead><tbody><tr><td>Says &quot;I&#x27;m ChatGPT&quot; or names another company</td><td>Other SFT data with foreign identity claims outweighs this set. Filter rows like &quot;As an AI developed by OpenAI ...&quot;.</td></tr><tr><td>Wrong knowledge cutoff</td><td>Stale cutoff claims elsewhere in the mix.</td></tr><tr><td>Fine in English, weak in some languages</td><td>Too few rows reached those languages, because a pipeline filtered or capped them.</td></tr><tr><td>A category below 75%</td><td>That topic conflicts with other data, or was filtered. Read ten failing answers.</td></tr><tr><td>Overtrigger is high</td><td>Identity data repeated too often.</td></tr><tr><td>Ignores operator personas</td><td>System-prompt rows were dropped, or the chat template ignores system prompts.</td></tr><tr><td>Fine after SFT, worse after DPO or RL</td><td>Later stages drift. Run the evaluation after every stage.</td></tr></tbody></table></div>
+<p>The first two rows share a lesson: <strong>identity is a property of the whole data mix, not of one dataset.</strong> A small identity set of about 0.5% cannot outvote a large body of other data that says the opposite. If a million rows of copied chatbot conversations say &quot;I am ChatGPT&quot;, the model learns that. Cleaning the rest of the mix is part of the job.</p>
+<p>The last row is the connection to the rest of training. A model can be right after SFT and wrong again after reinforcement learning, because those stages change the weights and nothing is guarding the identity facts. Hence the advice to run the check at every stage. See <a href="/lessons/evaluation/">Evaluation</a> for the general habit.</p>
+<h2 id="limits-worth-knowing">Limits worth knowing</h2>
+<p>The card lists them, and they apply to most identity datasets.</p>
+<ul><li><strong>The conversations are synthetic.</strong> Non-English text is machine-translated and has not been checked by native speakers in every language. The card says low-resource languages such as Maltese, Irish and Icelandic need the most review.</li><li><strong>Registers drift.</strong> Strings are translated one at a time, so a few conversations switch between formal and informal address, for example French <em>vous</em> and <em>tu</em>.</li><li><strong>Facts go out of date.</strong> The partner list is as of 13 November 2026 and can change, so the answers point to the project website.</li><li><strong>It states, it does not introspect.</strong> The model repeats facts. It has no way to look at itself and check.</li><li><strong>A model&#x27;s answer is not an official statement</strong> by the consortium.</li></ul>
+<h2 id="a-checklist-for-your-own-identity-data">A checklist for your own identity data</h2>
+<ol><li><strong>Write the facts first</strong>, each with a source, before any conversation.</li><li><strong>State what you know and say what you do not.</strong> Give the real cutoff, name the languages, and write a useful answer for what cannot be known.</li><li><strong>Write natural answers</strong> for the question being asked. A recited paragraph reads as a script.</li><li><strong>Cover every language you train for</strong>, and check that they survive your data pipeline.</li><li><strong>Support operator personas</strong> if the model will be deployed under other names.</li><li><strong>Mix in once, about 0.5% of the SFT data</strong>, without upsampling.</li><li><strong>Clean the rest of the mix</strong> of rows that claim another name, creator or cutoff.</li><li><strong>Keep a held-out set</strong> and measure before and after, including overtrigger and the worst category.</li><li><strong>Run the check after every stage.</strong></li><li><strong>Version it.</strong> Name, release facts and dates change, and the tag tells you which data a model saw.</li></ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>For the stage identity data goes into, see <a href="/lessons/supervised-fine-tuning/">Supervised fine-tuning</a>. For the habit of measuring before and after, see <a href="/lessons/evaluation/">Evaluation</a>. For what happens to behaviour in the later stages, see <a href="/lessons/preference-tuning-and-rl/">Preference tuning and reinforcement learning</a> and the note <a href="/notes/preference-tuning-and-alignment/">How models learned to prefer</a>. For another small, careful dataset that is built from rules and tested against baselines, see <a href="/notes/decision-models-jev-kev-sven/">Models that decide</a>.</p>
+<h2 id="sources-and-links">Sources and links</h2>
+<ul><li><a href="https://huggingface.co/datasets/birgermoell/openeurollm-model-identity" target="_blank" rel="noopener">OpenEuroLLM Model Identity</a>, the dataset card, which all figures above come from (version 3.1.0, as it stood on 2026-11-18)</li><li><a href="https://github.com/karpathy/nanochat/discussions/139" target="_blank" rel="noopener">Guide: infusing identity to your nanochat</a>, Andrej Karpathy, the method the dataset follows (linked from the card)</li><li><a href="https://openeurollm.eu/" target="_blank" rel="noopener">OpenEuroLLM</a>, the project website that the facts and the card point to</li></ul></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#what-an-identity-dataset-is">What an identity dataset is</a></li><li><a href="#where-the-idea-comes-from">Where the idea comes from</a></li><li><a href="#the-example-openeurollm-model-identity">The example: OpenEuroLLM Model Identity</a></li><li><a href="#what-changed-between-versions-and-why">What changed between versions, and why</a></li><li><a href="#operator-personas">Operator personas</a></li><li><a href="#how-to-use-it-without-damaging-the-model">How to use it without damaging the model</a></li><li><a href="#how-to-check-it-worked">How to check it worked</a></li><li><a href="#when-it-fails">When it fails</a></li><li><a href="#limits-worth-knowing">Limits worth knowing</a></li><li><a href="#a-checklist-for-your-own-identity-data">A checklist for your own identity data</a></li><li><a href="#where-to-go-next">Where to go next</a></li><li><a href="#sources-and-links">Sources and links</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/supervised-fine-tuning/" data-lesson="supervised-fine-tuning"><span class="lnum">11</span><span class="lbody"><b>Supervised fine-tuning</b><span>How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/evaluation/" data-lesson="evaluation"><span class="lnum">13</span><span class="lbody"><b>Evaluation</b><span>How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/preference-tuning-and-rl/" data-lesson="preference-tuning-and-rl"><span class="lnum">12</span><span class="lbody"><b>Preference tuning and reinforcement learning</b><span>How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a></div></section></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>
