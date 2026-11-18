@@ -66,7 +66,7 @@ At scale, MiMo-V2.6-Pro used 1,568 prompts with 16 rollouts each, about 25,000 a
 
 :::widget grpo
 
-The full path from base model to a model trained this way is followed step by step in [Post-training, end to end](/lessons/post-training/).
+The full path from base model to a model trained this way is followed step by step in [Post-training, end to end](/lessons/post-training/). For the history of these methods and a close reading of one DPO checkpoint and its safety benchmark, see the note [How models learned to prefer](/notes/preference-tuning-and-alignment/).
 
 ## Reasoning and long chains of thought
 

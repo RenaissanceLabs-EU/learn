@@ -321,7 +321,10 @@ body.home .bar.solid { background: rgba(14, 14, 32, .86); backdrop-filter: blur(
 /* tables */
 .prose .tbl { overflow-x: auto; margin: 22px 0; border: 1px solid var(--line, rgba(128,128,128,.25)); border-radius: 12px; }
 .prose table { border-collapse: collapse; width: 100%; font-size: 16px; font-variant-numeric: tabular-nums; }
-.prose th, .prose td { padding: 10px 16px; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--line, rgba(128,128,128,.2)); }
+.prose th, .prose td { padding: 10px 16px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line, rgba(128,128,128,.2)); }
+.prose td:first-child, .prose th:first-child { white-space: nowrap; }
+.prose td:not(:first-child) { min-width: 6.5em; }
+.prose td.r, .prose th.r { text-align: right; }
 .prose th { font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); font-weight: 600; }
 .prose tbody tr:last-child td { border-bottom: 0; }
 

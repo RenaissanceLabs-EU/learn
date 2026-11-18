@@ -158,11 +158,14 @@ def render_body(body, glossary_sink=None, lesson=None):
         if st.startswith("|") and i + 1 < len(lines) and re.match(r"^\|[\s:|-]+\|?$", lines[i + 1].strip()):
             para_flush(buf); buf = []
             def cells(r): return [c.strip() for c in r.strip().strip("|").split("|")]
-            head_ = cells(st); i += 2; rows = []
+            head_ = cells(st)
+            right = [c.endswith(":") for c in cells(lines[i + 1])]
+            cls = lambda k: ' class="r"' if k < len(right) and right[k] else ""
+            i += 2; rows = []
             while i < len(lines) and lines[i].strip().startswith("|"):
                 rows.append(cells(lines[i])); i += 1
-            th = "".join(f"<th>{inline(c)}</th>" for c in head_)
-            tb = "".join("<tr>" + "".join(f"<td>{inline(c)}</td>" for c in r) + "</tr>" for r in rows)
+            th = "".join(f"<th{cls(k)}>{inline(c)}</th>" for k, c in enumerate(head_))
+            tb = "".join("<tr>" + "".join(f"<td{cls(k)}>{inline(c)}</td>" for k, c in enumerate(r)) + "</tr>" for r in rows)
             out.append(f'<div class="tbl"><table><thead><tr>{th}</tr></thead><tbody>{tb}</tbody></table></div>'); continue
         if re.match(r"^(- |\* )", st):
             para_flush(buf); buf = []
