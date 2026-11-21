@@ -31,6 +31,21 @@
 
 ## Recipes
 - [Full-weight DPO on 1.4 million preference pairs](https://learn.renaissancelabs.eu/recipes/oellm-9b-threeway-dpo/): Take a supervised fine-tuned 9B model and tune it on pairs of preferred and rejected answers. One epoch, every weight updated, 32 GPUs, under two days.
+- [SFT warm start, then on-policy DPO, against hallucination](https://learn.renaissancelabs.eu/recipes/prelude-9b-hallucination-r2/): Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.
+
+## Topics
+- [Preference tuning](https://learn.renaissancelabs.eu/tags/preference-tuning/): Training on pairs of better and worse answers, with DPO and its relatives.
+- [Multilingual](https://learn.renaissancelabs.eu/tags/multilingual/): Work across many languages, beyond English.
+- [Supervised fine-tuning](https://learn.renaissancelabs.eu/tags/supervised-fine-tuning/): Teaching a model by showing it the answers you want.
+- [Datasets](https://learn.renaissancelabs.eu/tags/datasets/): Building, checking and documenting training data.
+- [Evaluation](https://learn.renaissancelabs.eu/tags/evaluation/): How to measure a model, and what the measurements miss.
+- [Hallucination](https://learn.renaissancelabs.eu/tags/hallucination/): Models that make things up, and how to measure and train against it.
+- [Training practice](https://learn.renaissancelabs.eu/tags/training-practice/): The craft of running training jobs, and what goes wrong.
+- [Alignment](https://learn.renaissancelabs.eu/tags/alignment/): Getting a model to behave as intended.
+- [Decision models](https://learn.renaissancelabs.eu/tags/decision-models/): Small models that answer typed questions in one pass.
+- [Model identity](https://learn.renaissancelabs.eu/tags/identity/): What a model says about itself, and how it learns it.
+- [Reinforcement learning](https://learn.renaissancelabs.eu/tags/reinforcement-learning/): Training on rewards for what the model does.
+- [Swedish](https://learn.renaissancelabs.eu/tags/swedish/): Models and data for Swedish.
 
 ## Films
 - [Keeping AI agents safe: injection, incidents and design](https://learn.renaissancelabs.eu/films/agent-safety/): Why agents raise the stakes over chatbots, how prompt injection works, real incidents, and the design rules and habits that limit the damage.

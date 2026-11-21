@@ -17,6 +17,7 @@ sources:
 - Direct Preference Optimization | https://arxiv.org/abs/2305.18290
 - DeepSeekMath, which introduced GRPO | https://arxiv.org/abs/2402.03300
 - DeepSeek-R1 | https://arxiv.org/abs/2501.12948
+tags: supervised-fine-tuning, preference-tuning
 ---
 A [base model](/lessons/base-training/) predicts text. An assistant answers questions, follows instructions, reasons step by step when asked, calls tools, behaves safely and stops when it is done. The distance between the two is covered by **post-training**, which is a sequence of stages rather than one trick, and each stage fixes something the last one left or broke.
 

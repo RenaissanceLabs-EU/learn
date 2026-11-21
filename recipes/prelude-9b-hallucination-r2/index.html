@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SFT warm start, then on-policy DPO, against hallucination · Recipes · Renaissance Labs</title>
+<meta name="description" content="Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/recipes/prelude-9b-hallucination-r2/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="SFT warm start, then on-policy DPO, against hallucination · Recipes · Renaissance Labs">
+<meta property="og:description" content="Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/recipes/prelude-9b-hallucination-r2/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SFT warm start, then on-policy DPO, against hallucination · Recipes · Renaissance Labs">
+<meta name="twitter:description" content="Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/home.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "HowTo", "name": "SFT warm start, then on-policy DPO, against hallucination", "description": "Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.", "step": [{"@type": "HowToStep", "name": "Get the code and the data", "text": "The dataset holds the exact training rows for both stages, so you do not need to rebuild them."}, {"@type": "HowToStep", "name": "Get the base model", "text": "Download the base model at the revision the run started from."}, {"@type": "HowToStep", "name": "Tokenize the SFT set", "text": "Each assistant turn becomes one example: the generation prompt as the model sees it in default mode, then the reply and the end-of-turn token. Only the reply is supervised."}, {"@type": "HowToStep", "name": "Train the warm start", "text": "Supervised fine-tuning on the tokenized set. Use your own trainer with these settings."}, {"@type": "HowToStep", "name": "Check before going on", "text": "Run the benchmark on the warm-started model (step 8). Fabrication should already be near 4%. Expect it to decline about a quarter of the questions about well-known people. The next stage is meant to correct that."}, {"@type": "HowToStep", "name": "Tokenize the DPO pairs", "text": "Tokenize the released round-2 mix with the model's own chat template. Concat mode builds each answer the way the model produces it at inference."}, {"@type": "HowToStep", "name": "Train DPO round 2", "text": "One short epoch of DPO on the warm-started model, with an SFT term on the preferred answer."}, {"@type": "HowToStep", "name": "Run the benchmark", "text": "500 questions in default and thinking mode, graded by gemma-4-31B-it. One node with 2 GPUs."}], "author": {"@type": "Person", "name": "Birger Moell"}, "datePublished": "2026-11-21"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <div class="bar-r">
+    <nav id="mainnav" aria-label="Main">
+      <a href="/models/">Models</a>
+      <a href="/lessons/">Lessons</a>
+      <a href="/minds/">Minds</a>
+      <a href="/films/">Films</a>
+      <a class="sec" href="/recipes/">Recipes</a>
+      <a class="sec" href="/notes/">Notes</a>
+      <a class="sec" href="/glossary/">Glossary</a>
+      <a class="sec ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    </nav>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<div class="menu-scrim" hidden></div>
+<main id="main">
+
+<article class="recipe" data-lesson="recipe-prelude-9b-hallucination-r2">
+<header class="rhead"><div class="wrap">
+  <p class="crumb"><a href="/recipes/">Recipes</a> · SFT + preference tuning</p>
+  <h1>SFT warm start, then on-policy DPO, against hallucination</h1>
+  <p class="lede">Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.</p>
+  <p class="rby"><span>From <b>OpenEuroLLM</b></span><span>Recipe by Birger Moell</span><span class="rstatus"><i></i>Run once by its author. Not yet reproduced by anyone else.</span></p>
+  <p class="tags"><a class="tag" href="/tags/hallucination/">Hallucination</a><a class="tag" href="/tags/supervised-fine-tuning/">Supervised fine-tuning</a><a class="tag" href="/tags/preference-tuning/">Preference tuning</a><a class="tag" href="/tags/multilingual/">Multilingual</a></p>
+  <div class="glance"><div class="gl"><span>Makes</span><b>1</b><em>9B checkpoint</em></div><div class="gl"><span>Stages</span><b>2</b><em>SFT, then DPO</em></div><div class="gl"><span>Equipment</span><b>8</b><em>A100 GPUs, 2 nodes</em></div><div class="gl"><span>Ingredients</span><b>6,123</b><em>SFT rows, then 1,918 pairs</em></div></div>
+  <div class="rcta"><a class="btn" href="https://huggingface.co/birgermoell/prelude-9b-sft-v2-hallucination-r2">Open the checkpoint</a><a class="btn ghost" href="#method">Jump to the method</a><button type="button" class="btn ghost" onclick="window.print()">Print this card</button></div>
+</div></header>
+<div class="wrap rgrid2">
+<div class="rmain">
+<section id="ingredients" class="rsec"><h2><span>1</span>Ingredients</h2><p class="rsub">Two training sets, both published row for row. The first teaches the behaviour with supervised fine-tuning. The second corrects it with preference pairs built from the warm-started model&#x27;s own answers.</p>
+  <h3 class="rgh">Stage 1: SFT warm start</h3><p class="rsub">6,123 conversations: 5,960 for training and 163 for validation. Answers are 35% of the hallucination rows, the guard against refusing too much.</p><div class="mixbar" role="img" aria-label="Share of each data source"><i style="flex:1380;background:#c79a3f" title="Honest “I don&#x27;t know” answers: 1,380"></i><i style="flex:408;background:#7b9a8a" title="Correct answers it knows: 408"></i><i style="flex:335;background:#b5654a" title="CoCoNot false-premise answers: 335"></i><i style="flex:1000;background:#5f7396" title="Identity: 1,000"></i><i style="flex:3000;background:#8f7aa3" title="General replies: 3,000"></i></div><ul class="srcs"><li><span class="sw" style="background:#c79a3f"></span><div class="rs-main"><b>Honest “I don&#x27;t know” answers</b><code>sft-warmstart/sft-*.jsonl.gz · part abstain</code><span class="rs-note">Half A of the question pool; most written by gemma-4-31B-it · questions from Wikidata, CC0</span></div><div class="rs-num"><b>1,380</b><span>22.5%</span></div><span class="pin ok">Pinned</span></li><li><span class="sw" style="background:#7b9a8a"></span><div class="rs-main"><b>Correct answers it knows</b><code>sft-warmstart/sft-*.jsonl.gz · part answer</code><span class="rs-note">Known and sharpen cases · questions from Wikidata, CC0</span></div><div class="rs-num"><b>408</b><span>6.7%</span></div><span class="pin ok">Pinned</span></li><li><span class="sw" style="background:#b5654a"></span><div class="rs-main"><b>CoCoNot false-premise answers</b><code>allenai/coconot · config pref</code><span class="rs-note">So real things are not called non-existent · ODC-By</span></div><div class="rs-num"><b>335</b><span>5.5%</span></div><span class="pin ok">Pinned</span></li><li><span class="sw" style="background:#5f7396"></span><div class="rs-main"><b>Identity</b><code>openeurollm/openeurollm-model-identity</code><span class="rs-note">Version 3.1.0, ten languages · CC BY 4.0</span></div><div class="rs-num"><b>1,000</b><span>16.3%</span></div><span class="pin ok">Pinned</span></li><li><span class="sw" style="background:#8f7aa3"></span><div class="rs-main"><b>General replies</b><code>Dolci translated · UltraFeedback · HelpSteer3</code><span class="rs-note">Chosen sides of preference pairs (2,803 / 127 / 70) · Apache 2.0, MIT, CC BY 4.0</span></div><div class="rs-num"><b>3,000</b><span>49.0%</span></div><span class="pin ok">Pinned</span></li></ul><h3 class="rgh">Stage 2: DPO round 2</h3><p class="rsub">1,918 training pairs and 104 for validation in the files. The model card reports 1,896 and 101 in training, after tokenization.</p><div class="mixbar" role="img" aria-label="Share of each data source"><i style="flex:583;background:#c79a3f" title="On-policy hallucination pairs: 583"></i><i style="flex:335;background:#7b9a8a" title="CoCoNot contrast pairs: 335"></i><i style="flex:1000;background:#b5654a" title="General preference pairs: 1,000"></i></div><ul class="srcs"><li><span class="sw" style="background:#c79a3f"></span><div class="rs-main"><b>On-policy hallucination pairs</b><code>round2-dpo/mix/natural-halu-*.jsonl.gz</code><span class="rs-note">From half B of the pool, sampled from the warm-started model · questions from Wikidata, CC0</span></div><div class="rs-num"><b>583</b><span>30.4%</span></div><span class="pin ok">Pinned</span></li><li><span class="sw" style="background:#7b9a8a"></span><div class="rs-main"><b>CoCoNot contrast pairs</b><code>round2-dpo/mix/coconot-*.jsonl.gz</code><span class="rs-note">False-premise pairs, checked by gemma-4-31B-it · ODC-By</span></div><div class="rs-num"><b>335</b><span>17.5%</span></div><span class="pin ok">Pinned</span></li><li><span class="sw" style="background:#b5654a"></span><div class="rs-main"><b>General preference pairs</b><code>round2-dpo/mix/general-*.jsonl.gz</code><span class="rs-note">Dolci translated 934, UltraFeedback 45, HelpSteer3 21 · Apache 2.0, MIT, CC BY 4.0</span></div><div class="rs-num"><b>1,000</b><span>52.1%</span></div><span class="pin ok">Pinned</span></li></ul>
+  
+  <details class="more"><summary>Fingerprints of the eight training files (SHA-256)</summary><table class="hashes"><tr><td><code>sft-warmstart/sft-train.jsonl.gz</code></td><td><code class="hash">f666fa7a4c51…b71f2a</code><button type="button" class="cp mini" data-copy="f666fa7a4c519a2faf33ff8eee010c940d12f86ed67f7b591a14cca9cfb71f2a" aria-label="Copy fingerprint of sft-warmstart/sft-train.jsonl.gz">Copy</button></td></tr><tr><td><code>sft-warmstart/sft-validation.jsonl.gz</code></td><td><code class="hash">5b966c7a3876…5f8ae0</code><button type="button" class="cp mini" data-copy="5b966c7a3876e4ec41c37707a78a77c530fd9bafab438d0e165e9ccaa95f8ae0" aria-label="Copy fingerprint of sft-warmstart/sft-validation.jsonl.gz">Copy</button></td></tr><tr><td><code>round2-dpo/mix/natural-halu-train.jsonl.gz</code></td><td><code class="hash">9c4be5cfb907…24655c</code><button type="button" class="cp mini" data-copy="9c4be5cfb907c549df09edd71208a916a3900ec2908a6efa42f8346e8c24655c" aria-label="Copy fingerprint of round2-dpo/mix/natural-halu-train.jsonl.gz">Copy</button></td></tr><tr><td><code>round2-dpo/mix/natural-halu-validation.jsonl.gz</code></td><td><code class="hash">c23c0fdffe52…d18b0f</code><button type="button" class="cp mini" data-copy="c23c0fdffe52c17e490e1a34c407dfffc90cee0288426d4e0b2d0f6a96d18b0f" aria-label="Copy fingerprint of round2-dpo/mix/natural-halu-validation.jsonl.gz">Copy</button></td></tr><tr><td><code>round2-dpo/mix/coconot-train.jsonl.gz</code></td><td><code class="hash">541222fea3f1…0991cf</code><button type="button" class="cp mini" data-copy="541222fea3f189fb76a5943241a61e67225c97b96ab8415457dde11aa30991cf" aria-label="Copy fingerprint of round2-dpo/mix/coconot-train.jsonl.gz">Copy</button></td></tr><tr><td><code>round2-dpo/mix/coconot-validation.jsonl.gz</code></td><td><code class="hash">33019c0adf88…400b73</code><button type="button" class="cp mini" data-copy="33019c0adf886fff47f2fcfed9ee39083de232b373df0f61fe770fb653400b73" aria-label="Copy fingerprint of round2-dpo/mix/coconot-validation.jsonl.gz">Copy</button></td></tr><tr><td><code>round2-dpo/mix/general-train.jsonl.gz</code></td><td><code class="hash">60f9f8baf077…c0ec45</code><button type="button" class="cp mini" data-copy="60f9f8baf0772cc308a5e25d7c06fb8f4ca1e2de677b1e5fa7d6f602d4c0ec45" aria-label="Copy fingerprint of round2-dpo/mix/general-train.jsonl.gz">Copy</button></td></tr><tr><td><code>round2-dpo/mix/general-validation.jsonl.gz</code></td><td><code class="hash">db88b1cb1e0c…80d3a9</code><button type="button" class="cp mini" data-copy="db88b1cb1e0c85a43262473d4d3b4ad8e4726f0a8fe874b539fc1ceb2780d3a9" aria-label="Copy fingerprint of round2-dpo/mix/general-validation.jsonl.gz">Copy</button></td></tr></table></details>
+</section>
+<section id="pantry" class="rsec"><h2><span>2</span>Pinned inputs</h2><p class="rsub">Everything that must match for a faithful rerun.</p><dl class="kvs"><div class="kv"><dt>Base model</dt><dd><code>marianna13/prelude-9b-sft-v2</code><span>revision 8670e89bb59dd491480a5c980179eed3083af9f3</span></dd></div><div class="kv"><dt>Training data</dt><dd><code>birgermoell/prelude-9b-sft-v2-hallucination-r2-data</code><span>revision ebf8f1e1220e65cbbfad0926dcace237e1897385 (as of 2026-11-21)</span></dd></div><div class="kv"><dt>Pipeline code</dt><dd><code>github.com/BirgerMoell/oellm-hallucination</code><span>main at 60465ee (19 November 2026)</span></dd></div><div class="kv"><dt>Judge and writer</dt><dd><code>google/gemma-4-31B-it</code><span>labels samples, writes and checks preferred answers, grades the benchmark</span></dd></div><div class="kv"><dt>Auditor</dt><dd><code>Qwen3.5-27B</code><span>second judge from another model family</span></dd></div><div class="kv"><dt>Software</dt><dd><code>TRL (DPO trainer) · vLLM 0.24.0 · Transformers 5.9.0</code><span>vLLM and Transformers versions are those of the benchmark run</span></dd></div></dl></section>
+<section id="equipment" class="rsec"><h2><span>3</span>Equipment</h2><p class="rsub">Both training stages ran on 2 nodes with 4 A100 64 GB GPUs each (Leonardo, CINECA). The SFT stage took 12 minutes. The DPO stage is 15 optimizer steps. Building the pairs needs one more node with 2 GPUs, for sampling and for the judge.</p><div class="nodes"><div class="node"><b>Node 1</b><div class="gpus"><i></i><i></i><i></i><i></i></div></div><div class="node"><b>Node 2</b><div class="gpus"><i></i><i></i><i></i><i></i></div></div></div></section>
+<section id="method" class="rsec"><h2><span>4</span>Method</h2><p class="rsub">Paths in angle brackets are yours to fill in. Account IDs and personal paths have been removed.</p><ol class="steps"><li class="step" id="step-1"><span class="num">1</span><div class="sbody"><h3>Get the code and the data</h3><p>The dataset holds the exact training rows for both stages, so you do not need to rebuild them.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code>git clone https://github.com/BirgerMoell/oellm-hallucination
+hf download birgermoell/prelude-9b-sft-v2-hallucination-r2-data --repo-type dataset \
+  --revision ebf8f1e1220e65cbbfad0926dcace237e1897385 --local-dir &lt;DATA&gt;</code></pre></div></div></li><li class="step" id="step-2"><span class="num">2</span><div class="sbody"><h3>Get the base model</h3><p>Download the base model at the revision the run started from.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code>hf download marianna13/prelude-9b-sft-v2 \
+  --revision 8670e89bb59dd491480a5c980179eed3083af9f3 --local-dir &lt;MODELS&gt;/prelude-9b-sft-v2</code></pre></div></div></li><li class="step" id="step-3"><span class="num">3</span><div class="sbody"><h3>Tokenize the SFT set</h3><p>Each assistant turn becomes one example: the generation prompt as the model sees it in default mode, then the reply and the end-of-turn token. Only the reply is supervised.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code>python oellm-hallucination/train/pretok_sft.py --rows &lt;DATA&gt;/sft-warmstart \
+  --tokenizer &lt;MODELS&gt;/prelude-9b-sft-v2 --out &lt;WORK&gt;/warmstart/pretok</code></pre></div></div></li><li class="step" id="step-4"><span class="num">4</span><div class="sbody"><h3>Train the warm start</h3><p>Supervised fine-tuning on the tokenized set. Use your own trainer with these settings.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code># assistant-only loss · 2 epochs · learning rate 5e-6 · packed to 16K tokens
+# 2 nodes x 4 A100 64 GB · about 12 minutes
+# save the result as &lt;MODELS&gt;/warmstart</code></pre></div><p class="sflag"><b>Check this.</b> The launch script and trainer config for this stage are not published. The settings above are from the model card.</p></div></li><li class="step" id="step-5"><span class="num">5</span><div class="sbody"><h3>Check before going on</h3><p>Run the benchmark on the warm-started model (step 8). Fabrication should already be near 4%. Expect it to decline about a quarter of the questions about well-known people. The next stage is meant to correct that.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code># original run after this stage: fabrication 3.6%, good &quot;I don&#x27;t know&quot; 96.4%,
+# abstains on 27.5% of well-known people, 98.2% of answers in the right language</code></pre></div></div></li><li class="step" id="step-6"><span class="num">6</span><div class="sbody"><h3>Tokenize the DPO pairs</h3><p>Tokenize the released round-2 mix with the model&#x27;s own chat template. Concat mode builds each answer the way the model produces it at inference.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code>python oellm-hallucination/train/pretok_pairs.py --staged &lt;DATA&gt;/round2-dpo/mix \
+  --tokenizer &lt;MODELS&gt;/warmstart --out &lt;WORK&gt;/dpo-r2/pretok --mode concat</code></pre></div><p class="sflag"><b>Check this.</b> The files hold 1,918 training pairs and the model card reports 1,896. The script drops pairs over 2,048 tokens, which would explain the difference. Compare with the manifest.json it writes.</p></div></li><li class="step" id="step-7"><span class="num">7</span><div class="sbody"><h3>Train DPO round 2</h3><p>One short epoch of DPO on the warm-started model, with an SFT term on the preferred answer.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code># TRL DPO · loss_type [sigmoid, sft], weights 1.0 / 0.5 · beta 0.1
+# learning rate 3e-6, cosine, 10% warmup · 1 epoch (15 steps) · global batch 128
+# max length 2,048 · bf16 · FSDP · 2 nodes x 4 A100 64 GB</code></pre></div><p class="sflag"><b>Check this.</b> The launch script and trainer config for this stage are not published either.</p></div></li><li class="step" id="step-8"><span class="num">8</span><div class="sbody"><h3>Run the benchmark</h3><p>500 questions in default and thinking mode, graded by gemma-4-31B-it. One node with 2 GPUs.</p><div class="code"><button type="button" class="cp" data-copy aria-label="Copy commands">Copy</button><pre><code>MODELS=&quot;base=&lt;MODELS&gt;/prelude-9b-sft-v2 r2=&lt;MODELS&gt;/dpo-r2&quot; \
+JUDGE=&lt;MODELS&gt;/gemma-4-31B-it PYTHON=&lt;python with vLLM 0.24 or later&gt; \
+  sbatch --account=&lt;your-project&gt; --partition=&lt;gpu partition&gt; --export=ALL \
+  oellm-hallucination/benchmark/run_slurm.sbatch</code></pre></div></div></li></ol>
+  <details class="more" open><summary>Optional: the job that rebuilds the pairs (sample, judge, curate, pair, audit)</summary><div class="code"><button type="button" class="cp" data-copy aria-label="Copy launch script">Copy</button><pre><code>#!/bin/bash
+#SBATCH --job-name=halu-pairs
+#SBATCH --nodes=1
+#SBATCH --ntasks=1
+#SBATCH --gpus-per-node=2
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=200G
+#SBATCH --time=10:00:00
+#SBATCH --output=halu-pairs-%j.out
+# On-policy DPO data on one node with 2 GPUs: sample the policy (one shard per GPU), judge every sample (2 GPUs),
+# check the chosen candidates and write the missing ones (2 GPUs), build the pairs. Each step is skipped when its output exists, so
+# a resubmitted job continues. Everything site-specific comes from the environment:
+#
+#   POLICY=/path/to/model           the model to be trained
+#   POOL=data/train/pool.jsonl      questions (train/build_pool.py)
+#   JUDGE=/path/to/gemma-4-31B-it   judge and writer
+#   PYTHON=/path/to/python          an environment with vLLM (&gt;= 0.24 for Gemma 4) and transformers
+#   CONTAINER=/path/to/image.sif    optional: run python inside this Apptainer/Singularity image
+#   BINDS=/a,/b                     optional: container bind paths (default: the working dir, judge and policy dirs)
+#   OUT=runs/&lt;name&gt;                 output directory;  K=8 samples per question
+#   KNOWN_SHARE=0.35                minimum share of answer pairs (known + sharpen) among the hallucination pairs
+#   AUDIT_JUDGE=/path/to/Qwen3.5-27B optional: audit the pairs (audit_pairs.py) with a second judge from another family
+#
+#   sbatch --account=&lt;account&gt; --partition=&lt;gpu partition&gt; --export=ALL train/run_slurm.sbatch
+set -euo pipefail
+: &quot;${POLICY:?}&quot; &quot;${POOL:?}&quot; &quot;${JUDGE:?}&quot; &quot;${PYTHON:?}&quot; &quot;${OUT:?}&quot;
+K=${K:-8}
+HERE=$(cd &quot;$(dirname &quot;$0&quot;)&quot; &amp;&amp; pwd)
+[[ -f &quot;$HERE/sample.py&quot; ]] || HERE=$SLURM_SUBMIT_DIR/train
+BENCH=$HERE/../benchmark
+py() {
+  if [[ -n ${CONTAINER:-} ]]; then
+    $(command -v apptainer || command -v singularity) exec --nv \
+      -B &quot;${BINDS:-$PWD,$(dirname &quot;$JUDGE&quot;),$(dirname &quot;$POLICY&quot;)}&quot; &quot;$CONTAINER&quot; \
+      env HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 &quot;$PYTHON&quot; &quot;$@&quot;
+  else
+    HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 &quot;$PYTHON&quot; &quot;$@&quot;
+  fi
+}
+mkdir -p &quot;$OUT&quot;
+if [[ ! -s $OUT/samples.jsonl ]]; then
+  echo &quot;== sample $(date)&quot;
+  for g in 0 1; do
+    CUDA_VISIBLE_DEVICES=$g py &quot;$HERE/sample.py&quot; --pool &quot;$POOL&quot; --model &quot;$POLICY&quot; --k &quot;$K&quot; --shard &quot;$g/2&quot; \
+      --out &quot;$OUT/samples-$g.jsonl&quot; &amp;
+  done
+  wait
+  cat &quot;$OUT/samples-0.jsonl&quot; &quot;$OUT/samples-1.jsonl&quot; &gt; &quot;$OUT/samples.jsonl&quot;
+fi
+if [[ ! -s $OUT/judged.jsonl ]]; then
+  echo &quot;== judge $(date)&quot;
+  py &quot;$BENCH/judge.py&quot; --answers &quot;$OUT/samples.jsonl&quot; --judge &quot;$JUDGE&quot; --tp 2 --out &quot;$OUT/judged.jsonl&quot;
+fi
+if [[ ! -s $OUT/curated.jsonl ]]; then
+  echo &quot;== curate $(date)&quot;
+  py &quot;$HERE/build_pairs.py&quot; curate --judged &quot;$OUT/judged.jsonl&quot; --writer &quot;$JUDGE&quot; --tp 2 --out &quot;$OUT/curated.jsonl&quot;
+fi
+echo &quot;== pairs $(date)&quot;
+py &quot;$HERE/build_pairs.py&quot; pairs --judged &quot;$OUT/judged.jsonl&quot; --curated &quot;$OUT/curated.jsonl&quot; --out-dir &quot;$OUT/pairs&quot; \
+  --known-share &quot;${KNOWN_SHARE:-0.35}&quot;
+if [[ -n ${AUDIT_JUDGE:-} ]]; then
+  echo &quot;== audit $(date)&quot;
+  py &quot;$HERE/audit_pairs.py&quot; checks --pairs &quot;$OUT/pairs&quot; --pool &quot;$POOL&quot;
+  py &quot;$HERE/audit_pairs.py&quot; judge --pairs &quot;$OUT/pairs&quot; --pool &quot;$POOL&quot; --judge &quot;$AUDIT_JUDGE&quot; --tp 2 --per-cell &quot;${AUDIT_PER_CELL:-30}&quot;
+fi
+echo &quot;== done $(date)&quot;
+</code></pre></div></details>
+</section>
+<section id="settings" class="rsec"><h2><span>5</span>Settings</h2><h3 class="rgh">Stage 1: SFT warm start</h3><dl class="kvs two"><div class="kv"><dt>Objective</dt><dd>Supervised, loss on assistant tokens only</dd></div><div class="kv"><dt>Epochs</dt><dd>2</dd></div><div class="kv"><dt>Learning rate</dt><dd>5e-6</dd></div><div class="kv"><dt>Packing</dt><dd>To 16K tokens</dd></div><div class="kv"><dt>Mode</dt><dd>Default mode, with the empty think block the model sees at inference</dd></div><div class="kv"><dt>Validation loss</dt><dd>1.06 → 0.73</dd></div></dl><h3 class="rgh">Stage 2: DPO round 2</h3><dl class="kvs two"><div class="kv"><dt>Objective</dt><dd>TRL DPO, sigmoid loss plus SFT loss on the chosen answer (weights 1.0 and 0.5)</dd></div><div class="kv"><dt>Beta</dt><dd>0.1</dd></div><div class="kv"><dt>Learning rate</dt><dd>3e-6, cosine, 10% warmup</dd></div><div class="kv"><dt>Epochs</dt><dd>1 (15 steps)</dd></div><div class="kv"><dt>Global batch</dt><dd>128</dd></div><div class="kv"><dt>Max length</dt><dd>2,048 tokens</dd></div><div class="kv"><dt>Precision</dt><dd>bf16, FSDP</dd></div><div class="kv"><dt>Held-out reward accuracy</dt><dd>82%</dd></div></dl><h3 class="rgh">Building the pairs</h3><dl class="kvs two"><div class="kv"><dt>Samples</dt><dd>8 answers per question, temperature 0.7, top-p 0.95</dd></div><div class="kv"><dt>Unknown</dt><dd>Right in fewer than half the samples: prefer an honest “I&#x27;m not sure”</dd></div><div class="kv"><dt>Sharpen</dt><dd>Right in 50 to 75%: prefer a concise correct answer</dd></div><div class="kv"><dt>Known</dt><dd>Right in at least 75%: prefer the answer over a refusal</dd></div><div class="kv"><dt>Answer share</dt><dd>At least 35% of the hallucination pairs</dd></div><div class="kv"><dt>Audit</dt><dd>40 pairs per case, both answers in random order</dd></div></dl></section>
+<section id="check" class="rsec"><h2><span>6</span>What you should see</h2><p class="rsub">Numbers from the original run, so you can tell early whether yours is on track.</p>
+  <ul class="checks"><li><b>Base model</b><span>Fabrication 97.7% on made-up subjects. Never abstains.</span></li><li><b>After the warm start</b><span>Fabrication 3.6%. Abstains on 27.5% of well-known people.</span></li><li><b>After DPO round 2</b><span>Fabrication 1.8% in default mode, 2.3% in thinking mode.</span></li><li><b>Well-known people</b><span>53.8% correct including partly correct. 31 of 80 declined.</span></li></ul><div class="mets"><div class="met"><b>1.8%</b><span>Fabrication on made-up subjects</span></div><div class="met"><b>98.2%</b><span>Good “I don&#x27;t know”</span></div><div class="met"><b>97.6%</b><span>Answers in the right language</span></div><div class="met"><b>+3.8</b><span>Truthfulness score</span></div></div><p class="fine">Benchmark numbers in default mode from the original run: one greedy answer per question, graded by an LLM judge. A difference of a few points is noise. No training loss curve is published for this run.</p></section>
+<section id="gaps" class="rsec"><h2><span>7</span>Known gaps</h2><p class="rsub">What stands between this card and an exact copy of the run.</p><ul class="gaps"><li>The launch scripts and trainer configs for the two training stages are not published. Their settings come from the model card.</li><li>Library versions and seeds for the training stages are not stated. The wall time of the DPO stage is not stated either.</li><li>Rebuilding the pairs gives similar, not identical, data: sampling and the LLM judge are stochastic. Use the released files for a faithful rerun.</li><li>The general preference pairs were sampled from a staged set on the original cluster. The sampled rows are published, the staged set is not.</li><li>The scripts take every site-specific value from environment variables. You supply the account, partition, Python environment and model paths.</li><li>Only the hallucination benchmark has been run on the result. Maths, code, tool use and long context were not measured.</li><li>No licence is stated for the base model. The checkpoint is shared on the same terms.</li></ul></section>
+<section id="variants" class="rsec"><h2><span>8</span>Variants</h2>
+  <div class="empty"><b>No variants yet.</b><p>Reproduced it? Changed something? Fixed a problem or added a capability? Report it and it appears here, linked to this recipe.</p>
+  <a class="btn ghost" href="https://github.com/RenaissanceLabs-EU/learn/issues/new?title=Recipe%20variant%3A%20prelude-9b-hallucination-r2">Report a variant</a></div></section>
+<section id="files" class="rsec"><h2><span>9</span>Original files</h2><p class="rsub">The scripts in the public repository. They take site-specific values from the environment, so they contain no cluster paths.</p><div class="rfiles"><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/train/run_slurm.sbatch"><b>train/run_slurm.sbatch</b><span>Sample, judge, curate, pair and audit in one job</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/train/build_pool.py"><b>train/build_pool.py</b><span>Builds the 8,644-question pool from Wikidata</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/train/build_pairs.py"><b>train/build_pairs.py</b><span>The strict check and the pair cases</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/train/build_sft_warmstart.py"><b>train/build_sft_warmstart.py</b><span>Splits the pool and builds the SFT set</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/train/stage_mix.py"><b>train/stage_mix.py</b><span>Mixes in CoCoNot and general pairs</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/train/pretok_sft.py"><b>train/pretok_sft.py</b><span>Tokenizes the SFT rows</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/train/pretok_pairs.py"><b>train/pretok_pairs.py</b><span>Tokenizes the DPO pairs</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/benchmark/run_slurm.sbatch"><b>benchmark/run_slurm.sbatch</b><span>The benchmark job</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/docs/SFT_WARMSTART_PLAN.md"><b>docs/SFT_WARMSTART_PLAN.md</b><span>The plan for this two-stage run</span></a><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/paper/main.pdf"><b>paper/main.pdf</b><span>Paper draft, 18 November 2026</span></a></div>
+  <p class="fine">Background: <a href="/notes/hallucination-and-i-dont-know/">Teaching a 9B model to say “I don&#x27;t know”</a>. Machine-readable: <a href="/data/recipes/prelude-9b-hallucination-r2.json">this recipe as JSON</a>.</p></section>
+</div>
+<aside class="toc rtoc" aria-label="On this page"><p>On this page</p><ol><li><a href="#ingredients">Ingredients</a></li><li><a href="#pantry">Pinned inputs</a></li><li><a href="#equipment">Equipment</a></li><li><a href="#method">Method</a></li><li><a href="#settings">Settings</a></li><li><a href="#check">What you should see</a></li><li><a href="#gaps">Known gaps</a></li><li><a href="#variants">Variants</a></li><li><a href="#files">Original files</a></li></ol></aside>
+</div></article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/tags/">Topics</a><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>

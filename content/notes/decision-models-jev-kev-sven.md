@@ -5,6 +5,7 @@ date: 2026-11-18
 minutes: 14
 summary: A decision model does not write text. It reads a case and answers typed questions with a probability. How the design works, how Kev made it open, and what two small Swedish derivatives learned and did not learn.
 related: supervised-fine-tuning, evaluation, preference-tuning-and-rl
+tags: decision-models, swedish, datasets
 ---
 Most of this site is about models that write. This note is about a different kind: models that **decide**. You give one a text and a question with a fixed set of answers, and it returns a probability for each answer. It does not produce a sentence. It does not explain itself. In one pass through the network it picks.
 

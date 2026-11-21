@@ -15,6 +15,7 @@ sources:
 - DeepSeekMath (GRPO) | https://arxiv.org/abs/2402.03300
 - DeepSeek-R1 | https://arxiv.org/abs/2501.12948
 - Training Verifiers to Solve Math Word Problems | https://arxiv.org/abs/2110.14168
+tags: preference-tuning, reinforcement-learning
 ---
 After [supervised fine-tuning](/lessons/supervised-fine-tuning/), a model imitates good answers. Imitation has a ceiling: the model cannot easily become better than its examples, and for many tasks it is hard to write the ideal answer but easy to say which of two answers is better, or whether an answer is simply right. Reinforcement learning uses exactly that kind of feedback.
 

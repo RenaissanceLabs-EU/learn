@@ -1,0 +1,438 @@
+{
+ "id": "prelude-9b-hallucination-r2",
+ "title": "SFT warm start, then on-policy DPO, against hallucination",
+ "dish": "A 9B multilingual model that says “I don't know”",
+ "lede": "Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.",
+ "stage": "SFT + preference tuning",
+ "lab": "OpenEuroLLM",
+ "author": "Birger Moell",
+ "date": "2026-11-21",
+ "status": "Run once by its author. Not yet reproduced by anyone else.",
+ "checkpoint": "https://huggingface.co/birgermoell/prelude-9b-sft-v2-hallucination-r2",
+ "repo_files": "https://github.com/BirgerMoell/oellm-hallucination/blob/main/",
+ "glance": [
+  {
+   "k": "Makes",
+   "v": "1",
+   "u": "9B checkpoint"
+  },
+  {
+   "k": "Stages",
+   "v": "2",
+   "u": "SFT, then DPO"
+  },
+  {
+   "k": "Equipment",
+   "v": "8",
+   "u": "A100 GPUs, 2 nodes"
+  },
+  {
+   "k": "Ingredients",
+   "v": "6,123",
+   "u": "SFT rows, then 1,918 pairs"
+  }
+ ],
+ "data": {
+  "sub": "Two training sets, both published row for row. The first teaches the behaviour with supervised fine-tuning. The second corrects it with preference pairs built from the warm-started model's own answers.",
+  "groups": [
+   {
+    "title": "Stage 1: SFT warm start",
+    "sub": "6,123 conversations: 5,960 for training and 163 for validation. Answers are 35% of the hallucination rows, the guard against refusing too much.",
+    "total": 6123,
+    "sources": [
+     {
+      "name": "Honest “I don't know” answers",
+      "id": "sft-warmstart/sft-*.jsonl.gz · part abstain",
+      "pairs": 1380,
+      "licence": "questions from Wikidata, CC0",
+      "pinned": true,
+      "note": "Half A of the question pool; most written by gemma-4-31B-it"
+     },
+     {
+      "name": "Correct answers it knows",
+      "id": "sft-warmstart/sft-*.jsonl.gz · part answer",
+      "pairs": 408,
+      "licence": "questions from Wikidata, CC0",
+      "pinned": true,
+      "note": "Known and sharpen cases"
+     },
+     {
+      "name": "CoCoNot false-premise answers",
+      "id": "allenai/coconot · config pref",
+      "pairs": 335,
+      "licence": "ODC-By",
+      "pinned": true,
+      "note": "So real things are not called non-existent"
+     },
+     {
+      "name": "Identity",
+      "id": "openeurollm/openeurollm-model-identity",
+      "pairs": 1000,
+      "licence": "CC BY 4.0",
+      "pinned": true,
+      "note": "Version 3.1.0, ten languages"
+     },
+     {
+      "name": "General replies",
+      "id": "Dolci translated · UltraFeedback · HelpSteer3",
+      "pairs": 3000,
+      "licence": "Apache 2.0, MIT, CC BY 4.0",
+      "pinned": true,
+      "note": "Chosen sides of preference pairs (2,803 / 127 / 70)"
+     }
+    ]
+   },
+   {
+    "title": "Stage 2: DPO round 2",
+    "sub": "1,918 training pairs and 104 for validation in the files. The model card reports 1,896 and 101 in training, after tokenization.",
+    "total": 1918,
+    "sources": [
+     {
+      "name": "On-policy hallucination pairs",
+      "id": "round2-dpo/mix/natural-halu-*.jsonl.gz",
+      "pairs": 583,
+      "licence": "questions from Wikidata, CC0",
+      "pinned": true,
+      "note": "From half B of the pool, sampled from the warm-started model"
+     },
+     {
+      "name": "CoCoNot contrast pairs",
+      "id": "round2-dpo/mix/coconot-*.jsonl.gz",
+      "pairs": 335,
+      "licence": "ODC-By",
+      "pinned": true,
+      "note": "False-premise pairs, checked by gemma-4-31B-it"
+     },
+     {
+      "name": "General preference pairs",
+      "id": "round2-dpo/mix/general-*.jsonl.gz",
+      "pairs": 1000,
+      "licence": "Apache 2.0, MIT, CC BY 4.0",
+      "pinned": true,
+      "note": "Dolci translated 934, UltraFeedback 45, HelpSteer3 21"
+     }
+    ]
+   }
+  ],
+  "checksums_title": "Fingerprints of the eight training files (SHA-256)",
+  "checksums": [
+   [
+    "sft-warmstart/sft-train.jsonl.gz",
+    "f666fa7a4c519a2faf33ff8eee010c940d12f86ed67f7b591a14cca9cfb71f2a"
+   ],
+   [
+    "sft-warmstart/sft-validation.jsonl.gz",
+    "5b966c7a3876e4ec41c37707a78a77c530fd9bafab438d0e165e9ccaa95f8ae0"
+   ],
+   [
+    "round2-dpo/mix/natural-halu-train.jsonl.gz",
+    "9c4be5cfb907c549df09edd71208a916a3900ec2908a6efa42f8346e8c24655c"
+   ],
+   [
+    "round2-dpo/mix/natural-halu-validation.jsonl.gz",
+    "c23c0fdffe52c17e490e1a34c407dfffc90cee0288426d4e0b2d0f6a96d18b0f"
+   ],
+   [
+    "round2-dpo/mix/coconot-train.jsonl.gz",
+    "541222fea3f189fb76a5943241a61e67225c97b96ab8415457dde11aa30991cf"
+   ],
+   [
+    "round2-dpo/mix/coconot-validation.jsonl.gz",
+    "33019c0adf886fff47f2fcfed9ee39083de232b373df0f61fe770fb653400b73"
+   ],
+   [
+    "round2-dpo/mix/general-train.jsonl.gz",
+    "60f9f8baf0772cc308a5e25d7c06fb8f4ca1e2de677b1e5fa7d6f602d4c0ec45"
+   ],
+   [
+    "round2-dpo/mix/general-validation.jsonl.gz",
+    "db88b1cb1e0c85a43262473d4d3b4ad8e4726f0a8fe874b539fc1ceb2780d3a9"
+   ]
+  ]
+ },
+ "pantry": [
+  [
+   "Base model",
+   "marianna13/prelude-9b-sft-v2",
+   "revision 8670e89bb59dd491480a5c980179eed3083af9f3"
+  ],
+  [
+   "Training data",
+   "birgermoell/prelude-9b-sft-v2-hallucination-r2-data",
+   "revision ebf8f1e1220e65cbbfad0926dcace237e1897385 (as of 2026-11-21)"
+  ],
+  [
+   "Pipeline code",
+   "github.com/BirgerMoell/oellm-hallucination",
+   "main at 60465ee (19 November 2026)"
+  ],
+  [
+   "Judge and writer",
+   "google/gemma-4-31B-it",
+   "labels samples, writes and checks preferred answers, grades the benchmark"
+  ],
+  [
+   "Auditor",
+   "Qwen3.5-27B",
+   "second judge from another model family"
+  ],
+  [
+   "Software",
+   "TRL (DPO trainer) · vLLM 0.24.0 · Transformers 5.9.0",
+   "vLLM and Transformers versions are those of the benchmark run"
+  ]
+ ],
+ "equipment": {
+  "nodes": 2,
+  "gpus_per_node": 4,
+  "gpu": "NVIDIA A100 64 GB",
+  "sub": "Both training stages ran on 2 nodes with 4 A100 64 GB GPUs each (Leonardo, CINECA). The SFT stage took 12 minutes. The DPO stage is 15 optimizer steps. Building the pairs needs one more node with 2 GPUs, for sampling and for the judge."
+ },
+ "settings_groups": [
+  {
+   "title": "Stage 1: SFT warm start",
+   "rows": [
+    [
+     "Objective",
+     "Supervised, loss on assistant tokens only"
+    ],
+    [
+     "Epochs",
+     "2"
+    ],
+    [
+     "Learning rate",
+     "5e-6"
+    ],
+    [
+     "Packing",
+     "To 16K tokens"
+    ],
+    [
+     "Mode",
+     "Default mode, with the empty think block the model sees at inference"
+    ],
+    [
+     "Validation loss",
+     "1.06 → 0.73"
+    ]
+   ]
+  },
+  {
+   "title": "Stage 2: DPO round 2",
+   "rows": [
+    [
+     "Objective",
+     "TRL DPO, sigmoid loss plus SFT loss on the chosen answer (weights 1.0 and 0.5)"
+    ],
+    [
+     "Beta",
+     "0.1"
+    ],
+    [
+     "Learning rate",
+     "3e-6, cosine, 10% warmup"
+    ],
+    [
+     "Epochs",
+     "1 (15 steps)"
+    ],
+    [
+     "Global batch",
+     "128"
+    ],
+    [
+     "Max length",
+     "2,048 tokens"
+    ],
+    [
+     "Precision",
+     "bf16, FSDP"
+    ],
+    [
+     "Held-out reward accuracy",
+     "82%"
+    ]
+   ]
+  },
+  {
+   "title": "Building the pairs",
+   "rows": [
+    [
+     "Samples",
+     "8 answers per question, temperature 0.7, top-p 0.95"
+    ],
+    [
+     "Unknown",
+     "Right in fewer than half the samples: prefer an honest “I'm not sure”"
+    ],
+    [
+     "Sharpen",
+     "Right in 50 to 75%: prefer a concise correct answer"
+    ],
+    [
+     "Known",
+     "Right in at least 75%: prefer the answer over a refusal"
+    ],
+    [
+     "Answer share",
+     "At least 35% of the hallucination pairs"
+    ],
+    [
+     "Audit",
+     "40 pairs per case, both answers in random order"
+    ]
+   ]
+  }
+ ],
+ "sbatch_title": "Optional: the job that rebuilds the pairs (sample, judge, curate, pair, audit)",
+ "sbatch": "#!/bin/bash\n#SBATCH --job-name=halu-pairs\n#SBATCH --nodes=1\n#SBATCH --ntasks=1\n#SBATCH --gpus-per-node=2\n#SBATCH --cpus-per-task=16\n#SBATCH --mem=200G\n#SBATCH --time=10:00:00\n#SBATCH --output=halu-pairs-%j.out\n# On-policy DPO data on one node with 2 GPUs: sample the policy (one shard per GPU), judge every sample (2 GPUs),\n# check the chosen candidates and write the missing ones (2 GPUs), build the pairs. Each step is skipped when its output exists, so\n# a resubmitted job continues. Everything site-specific comes from the environment:\n#\n#   POLICY=/path/to/model           the model to be trained\n#   POOL=data/train/pool.jsonl      questions (train/build_pool.py)\n#   JUDGE=/path/to/gemma-4-31B-it   judge and writer\n#   PYTHON=/path/to/python          an environment with vLLM (>= 0.24 for Gemma 4) and transformers\n#   CONTAINER=/path/to/image.sif    optional: run python inside this Apptainer/Singularity image\n#   BINDS=/a,/b                     optional: container bind paths (default: the working dir, judge and policy dirs)\n#   OUT=runs/<name>                 output directory;  K=8 samples per question\n#   KNOWN_SHARE=0.35                minimum share of answer pairs (known + sharpen) among the hallucination pairs\n#   AUDIT_JUDGE=/path/to/Qwen3.5-27B optional: audit the pairs (audit_pairs.py) with a second judge from another family\n#\n#   sbatch --account=<account> --partition=<gpu partition> --export=ALL train/run_slurm.sbatch\nset -euo pipefail\n: \"${POLICY:?}\" \"${POOL:?}\" \"${JUDGE:?}\" \"${PYTHON:?}\" \"${OUT:?}\"\nK=${K:-8}\nHERE=$(cd \"$(dirname \"$0\")\" && pwd)\n[[ -f \"$HERE/sample.py\" ]] || HERE=$SLURM_SUBMIT_DIR/train\nBENCH=$HERE/../benchmark\npy() {\n  if [[ -n ${CONTAINER:-} ]]; then\n    $(command -v apptainer || command -v singularity) exec --nv \\\n      -B \"${BINDS:-$PWD,$(dirname \"$JUDGE\"),$(dirname \"$POLICY\")}\" \"$CONTAINER\" \\\n      env HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 \"$PYTHON\" \"$@\"\n  else\n    HF_HUB_OFFLINE=1 VLLM_NO_USAGE_STATS=1 \"$PYTHON\" \"$@\"\n  fi\n}\nmkdir -p \"$OUT\"\nif [[ ! -s $OUT/samples.jsonl ]]; then\n  echo \"== sample $(date)\"\n  for g in 0 1; do\n    CUDA_VISIBLE_DEVICES=$g py \"$HERE/sample.py\" --pool \"$POOL\" --model \"$POLICY\" --k \"$K\" --shard \"$g/2\" \\\n      --out \"$OUT/samples-$g.jsonl\" &\n  done\n  wait\n  cat \"$OUT/samples-0.jsonl\" \"$OUT/samples-1.jsonl\" > \"$OUT/samples.jsonl\"\nfi\nif [[ ! -s $OUT/judged.jsonl ]]; then\n  echo \"== judge $(date)\"\n  py \"$BENCH/judge.py\" --answers \"$OUT/samples.jsonl\" --judge \"$JUDGE\" --tp 2 --out \"$OUT/judged.jsonl\"\nfi\nif [[ ! -s $OUT/curated.jsonl ]]; then\n  echo \"== curate $(date)\"\n  py \"$HERE/build_pairs.py\" curate --judged \"$OUT/judged.jsonl\" --writer \"$JUDGE\" --tp 2 --out \"$OUT/curated.jsonl\"\nfi\necho \"== pairs $(date)\"\npy \"$HERE/build_pairs.py\" pairs --judged \"$OUT/judged.jsonl\" --curated \"$OUT/curated.jsonl\" --out-dir \"$OUT/pairs\" \\\n  --known-share \"${KNOWN_SHARE:-0.35}\"\nif [[ -n ${AUDIT_JUDGE:-} ]]; then\n  echo \"== audit $(date)\"\n  py \"$HERE/audit_pairs.py\" checks --pairs \"$OUT/pairs\" --pool \"$POOL\"\n  py \"$HERE/audit_pairs.py\" judge --pairs \"$OUT/pairs\" --pool \"$POOL\" --judge \"$AUDIT_JUDGE\" --tp 2 --per-cell \"${AUDIT_PER_CELL:-30}\"\nfi\necho \"== done $(date)\"\n",
+ "steps": [
+  {
+   "t": "Get the code and the data",
+   "d": "The dataset holds the exact training rows for both stages, so you do not need to rebuild them.",
+   "code": "git clone https://github.com/BirgerMoell/oellm-hallucination\nhf download birgermoell/prelude-9b-sft-v2-hallucination-r2-data --repo-type dataset \\\n  --revision ebf8f1e1220e65cbbfad0926dcace237e1897385 --local-dir <DATA>"
+  },
+  {
+   "t": "Get the base model",
+   "d": "Download the base model at the revision the run started from.",
+   "code": "hf download marianna13/prelude-9b-sft-v2 \\\n  --revision 8670e89bb59dd491480a5c980179eed3083af9f3 --local-dir <MODELS>/prelude-9b-sft-v2"
+  },
+  {
+   "t": "Tokenize the SFT set",
+   "d": "Each assistant turn becomes one example: the generation prompt as the model sees it in default mode, then the reply and the end-of-turn token. Only the reply is supervised.",
+   "code": "python oellm-hallucination/train/pretok_sft.py --rows <DATA>/sft-warmstart \\\n  --tokenizer <MODELS>/prelude-9b-sft-v2 --out <WORK>/warmstart/pretok"
+  },
+  {
+   "t": "Train the warm start",
+   "d": "Supervised fine-tuning on the tokenized set. Use your own trainer with these settings.",
+   "code": "# assistant-only loss · 2 epochs · learning rate 5e-6 · packed to 16K tokens\n# 2 nodes x 4 A100 64 GB · about 12 minutes\n# save the result as <MODELS>/warmstart",
+   "flag": "The launch script and trainer config for this stage are not published. The settings above are from the model card."
+  },
+  {
+   "t": "Check before going on",
+   "d": "Run the benchmark on the warm-started model (step 8). Fabrication should already be near 4%. Expect it to decline about a quarter of the questions about well-known people. The next stage is meant to correct that.",
+   "code": "# original run after this stage: fabrication 3.6%, good \"I don't know\" 96.4%,\n# abstains on 27.5% of well-known people, 98.2% of answers in the right language"
+  },
+  {
+   "t": "Tokenize the DPO pairs",
+   "d": "Tokenize the released round-2 mix with the model's own chat template. Concat mode builds each answer the way the model produces it at inference.",
+   "code": "python oellm-hallucination/train/pretok_pairs.py --staged <DATA>/round2-dpo/mix \\\n  --tokenizer <MODELS>/warmstart --out <WORK>/dpo-r2/pretok --mode concat",
+   "flag": "The files hold 1,918 training pairs and the model card reports 1,896. The script drops pairs over 2,048 tokens, which would explain the difference. Compare with the manifest.json it writes."
+  },
+  {
+   "t": "Train DPO round 2",
+   "d": "One short epoch of DPO on the warm-started model, with an SFT term on the preferred answer.",
+   "code": "# TRL DPO · loss_type [sigmoid, sft], weights 1.0 / 0.5 · beta 0.1\n# learning rate 3e-6, cosine, 10% warmup · 1 epoch (15 steps) · global batch 128\n# max length 2,048 · bf16 · FSDP · 2 nodes x 4 A100 64 GB",
+   "flag": "The launch script and trainer config for this stage are not published either."
+  },
+  {
+   "t": "Run the benchmark",
+   "d": "500 questions in default and thinking mode, graded by gemma-4-31B-it. One node with 2 GPUs.",
+   "code": "MODELS=\"base=<MODELS>/prelude-9b-sft-v2 r2=<MODELS>/dpo-r2\" \\\nJUDGE=<MODELS>/gemma-4-31B-it PYTHON=<python with vLLM 0.24 or later> \\\n  sbatch --account=<your-project> --partition=<gpu partition> --export=ALL \\\n  oellm-hallucination/benchmark/run_slurm.sbatch"
+  }
+ ],
+ "verify": {
+  "checks": [
+   [
+    "Base model",
+    "Fabrication 97.7% on made-up subjects. Never abstains.",
+    0
+   ],
+   [
+    "After the warm start",
+    "Fabrication 3.6%. Abstains on 27.5% of well-known people.",
+    0
+   ],
+   [
+    "After DPO round 2",
+    "Fabrication 1.8% in default mode, 2.3% in thinking mode.",
+    0
+   ],
+   [
+    "Well-known people",
+    "53.8% correct including partly correct. 31 of 80 declined.",
+    0
+   ]
+  ],
+  "metrics": [
+   [
+    "Fabrication on made-up subjects",
+    "1.8%"
+   ],
+   [
+    "Good “I don't know”",
+    "98.2%"
+   ],
+   [
+    "Answers in the right language",
+    "97.6%"
+   ],
+   [
+    "Truthfulness score",
+    "+3.8"
+   ]
+  ],
+  "note": "Benchmark numbers in default mode from the original run: one greedy answer per question, graded by an LLM judge. A difference of a few points is noise. No training loss curve is published for this run."
+ },
+ "gaps": [
+  "The launch scripts and trainer configs for the two training stages are not published. Their settings come from the model card.",
+  "Library versions and seeds for the training stages are not stated. The wall time of the DPO stage is not stated either.",
+  "Rebuilding the pairs gives similar, not identical, data: sampling and the LLM judge are stochastic. Use the released files for a faithful rerun.",
+  "The general preference pairs were sampled from a staged set on the original cluster. The sampled rows are published, the staged set is not.",
+  "The scripts take every site-specific value from environment variables. You supply the account, partition, Python environment and model paths.",
+  "Only the hallucination benchmark has been run on the result. Maths, code, tool use and long context were not measured.",
+  "No licence is stated for the base model. The checkpoint is shared on the same terms."
+ ],
+ "files_sub": "The scripts in the public repository. They take site-specific values from the environment, so they contain no cluster paths.",
+ "files": [
+  [
+   "train/run_slurm.sbatch",
+   "Sample, judge, curate, pair and audit in one job"
+  ],
+  [
+   "train/build_pool.py",
+   "Builds the 8,644-question pool from Wikidata"
+  ],
+  [
+   "train/build_pairs.py",
+   "The strict check and the pair cases"
+  ],
+  [
+   "train/build_sft_warmstart.py",
+   "Splits the pool and builds the SFT set"
+  ],
+  [
+   "train/stage_mix.py",
+   "Mixes in CoCoNot and general pairs"
+  ],
+  [
+   "train/pretok_sft.py",
+   "Tokenizes the SFT rows"
+  ],
+  [
+   "train/pretok_pairs.py",
+   "Tokenizes the DPO pairs"
+  ],
+  [
+   "benchmark/run_slurm.sbatch",
+   "The benchmark job"
+  ],
+  [
+   "docs/SFT_WARMSTART_PLAN.md",
+   "The plan for this two-stage run"
+  ],
+  [
+   "paper/main.pdf",
+   "Paper draft, 18 November 2026"
+  ]
+ ],
+ "related_note": "/notes/hallucination-and-i-dont-know/",
+ "related_note_title": "Teaching a 9B model to say “I don't know”",
+ "tags": [
+  "hallucination",
+  "supervised-fine-tuning",
+  "preference-tuning",
+  "multilingual"
+ ]
+}

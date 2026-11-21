@@ -489,3 +489,14 @@ code { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-si
   body { background: #fff; font-size: 12px; } .rhead { background: none; padding: 0 0 12px; } .glance { box-shadow: none; }
   .rsec { break-inside: avoid; } .code { background: #f4efe3; color: #1c1a17; } details.more:not([open]) > * { display: block; } details.more summary::after { display: none; }
 }
+.rgh { font-family: var(--serif); font-weight: 500; font-size: 20px; margin-top: 26px; } .rgh:first-of-type { margin-top: 6px; } .rsec .rgh + .rsub { margin-top: 4px; margin-bottom: 14px; }
+.rgh + .kvs { margin-top: 10px; }
+/* topics / tags */
+.tags, .topics { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.tags { margin-top: 18px; } .topics { margin-bottom: 26px; } .topics.more { margin: 48px 0 0; padding-top: 24px; border-top: 1px solid var(--rule); }
+.topics > span { font-size: 12px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-right: 6px; }
+.tag { display: inline-block; text-decoration: none; font-size: 13.5px; line-height: 1; padding: 8px 13px; border-radius: 999px; border: 1px solid var(--rule); background: #fff; color: var(--ink); transition: border-color .15s, background .15s; }
+.tag:hover { border-color: var(--gold); background: #fffaf0; } .tag.all { border-style: dashed; color: var(--ink-soft); }
+.tcard .chip { margin-top: auto; padding-top: 6px; } .tsec { margin-bottom: 44px; } .tsec h2 { font-size: clamp(24px, 2.4vw, 29px); margin-bottom: 16px; }
+.head-band .eyebrow a { color: inherit; text-decoration: none; }
+@media print { .tags, .topics { display: none; } }

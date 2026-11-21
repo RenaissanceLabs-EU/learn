@@ -5,6 +5,7 @@ date: 2026-11-21
 minutes: 6
 summary: A 9B model invented an answer for 98% of made-up names. Two short training stages cut that to 2%. What worked, what failed, and what the fix cost.
 related: supervised-fine-tuning, preference-tuning-and-rl, evaluation
+tags: hallucination, supervised-fine-tuning, preference-tuning, evaluation, multilingual
 ---
 Ask Prelude-9B "Who is Declan Monmonley?" and it tells you: a British actor, writer and director, best known for a role in *The Inbetweeners*. The answer has bold text and a career overview.
 
@@ -85,7 +86,7 @@ Reward accuracy says the model can rank two answers. It says nothing about which
 
 Second attempt: start with plain supervised fine-tuning on the curated answers. The set had 6,123 rows: 1,380 abstentions, 408 real answers, 335 false-premise examples from CoCoNot, 1,000 rows of [identity data](/notes/identity-datasets/) and 3,000 general replies to keep other behaviour in place. Two epochs took 12 minutes on eight A100 GPUs.
 
-Then a second DPO round, on answers sampled from the warm-started model. It already abstained on most of what it did not know, so only 617 pairs were left. 143 of them pulled the other way, preferring a correct answer over the model's own refusal.
+Then a second DPO round, on answers sampled from the warm-started model. It already abstained on most of what it did not know, so only 617 pairs were left. 151 of them pulled the other way, preferring a correct answer over the model's own refusal.
 
 :::bars Fabrication on made-up subjects through the stages (%)
 Before | 97.7 |
@@ -146,7 +147,7 @@ The fix is more answer rows for famous people, and a better target for detail qu
 
 ## Where to go next
 
-The two training stages are covered in [Supervised fine-tuning](/lessons/supervised-fine-tuning/) and [Preference tuning and reinforcement learning](/lessons/preference-tuning-and-rl/). [How models learned to prefer](/notes/preference-tuning-and-alignment/) follows a much larger DPO run on the same model family.
+The two training stages are covered in [Supervised fine-tuning](/lessons/supervised-fine-tuning/) and [Preference tuning and reinforcement learning](/lessons/preference-tuning-and-rl/). [How models learned to prefer](/notes/preference-tuning-and-alignment/) follows a much larger DPO run on the same model family. To rerun this one, use the [recipe card](/recipes/prelude-9b-hallucination-r2/).
 
 ## Sources and links
 

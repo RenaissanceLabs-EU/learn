@@ -13,6 +13,7 @@ sources:
 - Training language models to follow instructions with human feedback (InstructGPT) | https://arxiv.org/abs/2203.02155
 - LoRA: Low-Rank Adaptation of Large Language Models | https://arxiv.org/abs/2106.09685
 - QLoRA: Efficient Finetuning of Quantized LLMs | https://arxiv.org/abs/2305.14314
+tags: supervised-fine-tuning
 ---
 A freshly pre-trained model is a powerful text predictor, but it is not yet an assistant. Ask it "What is the capital of France?" and it may continue with "What is the capital of Germany?", because lists of quiz questions are common in its training text. It is completing a document, not answering you.
 

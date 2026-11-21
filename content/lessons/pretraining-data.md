@@ -11,6 +11,7 @@ related: how-a-model-learns, tokens
 sources:
 - FineWeb | https://arxiv.org/abs/2406.17557
 - Scaling Data-Constrained Language Models | https://arxiv.org/abs/2305.16264
+tags: datasets
 ---
 A model can only learn from what it reads. For a frontier model, that is somewhere between 27 and 48 trillion tokens of text, code and now images and audio. How that pile is collected, cleaned and mixed has a large effect on the result, and labs publish less about it than about the architecture.
 

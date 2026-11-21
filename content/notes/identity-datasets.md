@@ -5,6 +5,7 @@ date: 2026-11-18
 minutes: 12
 summary: A model does not know its own name, who built it or when its data ends. Someone has to teach it. How identity data works, what goes wrong without it, and the OpenEuroLLM identity dataset as a worked example.
 related: supervised-fine-tuning, evaluation, preference-tuning-and-rl
+tags: identity, datasets, supervised-fine-tuning, multilingual
 ---
 Ask a freshly trained model "Who made you?" and you will often get a confident, wrong answer. Models trained on web text have read a great deal about other models, so they say they are ChatGPT, or Qwen, or "a large language model trained by OpenAI". Nothing in pre-training told them otherwise.
 

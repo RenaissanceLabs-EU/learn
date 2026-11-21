@@ -6,6 +6,7 @@ minutes: 22
 summary: A history of preference tuning from the first human-feedback experiments to DPO, and a close reading of one real checkpoint: what the data was, what moved, what did not, and what the benchmark can and cannot say.
 films: cluster-agents:rlrisk
 related: preference-tuning-and-rl, post-training, supervised-fine-tuning, evaluation
+tags: preference-tuning, alignment, evaluation, multilingual
 ---
 In November 2022 a chat window opened to the public and a lot of people met a language model for the first time. The model behind it was not much bigger than what had existed the year before. What had changed was how it was finished. It had been trained on human judgements of which answers were better, and it behaved as if it was trying to help.
 

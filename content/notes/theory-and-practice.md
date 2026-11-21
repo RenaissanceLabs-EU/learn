@@ -6,6 +6,7 @@ minutes: 7
 summary: Running a job on a cluster is a skill of its own. Making something work before you understand why is a legitimate first step, as long as you come back for the why.
 films: cluster-agents:hook
 related: when-training-breaks, gpus-and-parallelism, how-a-model-learns
+tags: training-practice
 ---
 There is an old saying: in theory there is no difference between theory and practice. In practice there is.
 

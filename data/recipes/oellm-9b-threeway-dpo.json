@@ -1011,5 +1011,9 @@
    "Final metrics"
   ]
  ],
- "related_note": "/notes/preference-tuning-and-alignment/"
+ "related_note": "/notes/preference-tuning-and-alignment/",
+ "tags": [
+  "preference-tuning",
+  "multilingual"
+ ]
 }

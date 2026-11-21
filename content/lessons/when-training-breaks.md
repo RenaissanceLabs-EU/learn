@@ -14,6 +14,7 @@ sources:
 - DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence | https://arxiv.org/abs/2606.19348
 - Pretraining Large Language Models with NVFP4 | https://arxiv.org/abs/2509.25149
 - Adam: A Method for Stochastic Optimization | https://arxiv.org/abs/1412.6980
+tags: training-practice
 ---
 A training run for a frontier model keeps thousands of chips busy for weeks or months. Each chip, cable, memory module and software library has some small chance of failing on any given day. Multiply a small chance by a very large number of parts and failure stops being an exception. It becomes a routine event that the whole system has to be designed around.
 

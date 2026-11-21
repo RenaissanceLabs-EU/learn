@@ -15,6 +15,7 @@ sources:
 - Artificial Analysis Intelligence Index | https://artificialanalysis.ai/evaluations/artificial-analysis-intelligence-index
 - GLM-5: from Vibe Coding to Agentic Engineering | https://arxiv.org/abs/2602.15763
 - DeepSeek-V4: Towards Highly Efficient Million-Token Context Intelligence | https://arxiv.org/abs/2606.19348
+tags: evaluation
 ---
 Training produces a model. Evaluation tells you what you actually got. It sounds like the easy part, and it is among the hardest, because a language model can do an open-ended range of things and any test samples only a few of them.
 

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preference tuning · Topics · Renaissance Labs</title>
+<meta name="description" content="Training on pairs of better and worse answers, with DPO and its relatives.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/tags/preference-tuning/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Preference tuning · Topics · Renaissance Labs">
+<meta property="og:description" content="Training on pairs of better and worse answers, with DPO and its relatives.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/tags/preference-tuning/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/home.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Preference tuning · Topics · Renaissance Labs">
+<meta name="twitter:description" content="Training on pairs of better and worse answers, with DPO and its relatives.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/home.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <div class="bar-r">
+    <nav id="mainnav" aria-label="Main">
+      <a href="/models/">Models</a>
+      <a href="/lessons/">Lessons</a>
+      <a href="/minds/">Minds</a>
+      <a href="/films/">Films</a>
+      <a class="sec" href="/recipes/">Recipes</a>
+      <a class="sec" href="/notes/">Notes</a>
+      <a class="sec" href="/glossary/">Glossary</a>
+      <a class="sec ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    </nav>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<div class="menu-scrim" hidden></div>
+<main id="main">
+
+<section class="head-band"><div class="wrap"><p class="eyebrow"><a href="/tags/">Topics</a></p><h1>Preference tuning</h1>
+  <p class="lede">Training on pairs of better and worse answers, with DPO and its relatives.</p><p class="meta"><span>2 recipes · 2 notes · 2 lessons</span></p></div></section>
+<div class="wrap block"><section class="tsec"><h2>Recipes</h2><div class="ngrid"><a class="rcard" href="/recipes/oellm-9b-threeway-dpo/"><span class="chip">Preference tuning · OpenEuroLLM</span><b>Full-weight DPO on 1.4 million preference pairs</b><span>Take a supervised fine-tuned 9B model and tune it on pairs of preferred and rejected answers. One epoch, every weight updated, 32 GPUs, under two days.</span><span class="rmeta">43 h 21 m wall clock · 32 GPUs, 4 nodes · 1.44M preference pairs</span></a><a class="rcard" href="/recipes/prelude-9b-hallucination-r2/"><span class="chip">SFT + preference tuning · OpenEuroLLM</span><b>SFT warm start, then on-policy DPO, against hallucination</b><span>Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.</span><span class="rmeta">2 SFT, then DPO · 8 A100 GPUs, 2 nodes · 6,123 SFT rows, then 1,918 pairs</span></a></div></section><section class="tsec"><h2>Notes</h2><div class="ngrid"><a class="ncard" href="/notes/hallucination-and-i-dont-know/"><span class="chip">21 November 2026 · 6 min</span><b>Teaching a 9B model to say “I don&#x27;t know”</b><span>A 9B model invented an answer for 98% of made-up names. Two short training stages cut that to 2%. What worked, what failed, and what the fix cost.</span></a><a class="ncard" href="/notes/preference-tuning-and-alignment/"><span class="chip">18 November 2026 · 22 min</span><b>How models learned to prefer: RLHF, DPO and alignment, from ChatGPT to a European 9B</b><span>A history of preference tuning from the first human-feedback experiments to DPO, and a close reading of one real checkpoint: what the data was, what moved, what did not, and what the benchmark can and cannot say.</span></a></div></section><section class="tsec"><h2>Lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/preference-tuning-and-rl/" data-lesson="preference-tuning-and-rl"><span class="lnum">12</span><span class="lbody"><b>Preference tuning and reinforcement learning</b><span>How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/post-training/" data-lesson="post-training"><span class="lnum">18</span><span class="lbody"><b>How a base model becomes an assistant, end to end</b><span>Seven stages of post-training followed through one real model, Agora 9B, with its data, recipes, costs and scores, and interactive demos of loss masking, preference tuning, weight merging and reinforcement learning.</span><span class="lmeta">Intermediate · 22 min</span></span><span class="tick" hidden>✓</span></a></div></section><div class="topics more"><span>Other topics</span><a class="tag" href="/tags/multilingual/">Multilingual</a><a class="tag" href="/tags/supervised-fine-tuning/">Supervised fine-tuning</a><a class="tag" href="/tags/datasets/">Datasets</a><a class="tag" href="/tags/evaluation/">Evaluation</a><a class="tag" href="/tags/hallucination/">Hallucination</a><a class="tag" href="/tags/training-practice/">Training practice</a><a class="tag" href="/tags/alignment/">Alignment</a><a class="tag" href="/tags/decision-models/">Decision models</a><a class="tag" href="/tags/identity/">Model identity</a><a class="tag" href="/tags/reinforcement-learning/">Reinforcement learning</a><a class="tag" href="/tags/swedish/">Swedish</a></div></div>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/tags/">Topics</a><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>
