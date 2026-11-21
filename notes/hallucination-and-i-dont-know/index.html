@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Teaching a 9B model to say “I don&#x27;t know” · Notes · Renaissance Labs</title>
+<meta name="description" content="A 9B model invented an answer for 98% of made-up names. Two short training stages cut that to 2%. What worked, what failed, and what the fix cost.">
+<link rel="canonical" href="https://learn.renaissancelabs.eu/notes/hallucination-and-i-dont-know/">
+<meta property="og:site_name" content="Renaissance Labs · Learn">
+<meta property="og:title" content="Teaching a 9B model to say “I don&#x27;t know” · Notes · Renaissance Labs">
+<meta property="og:description" content="A 9B model invented an answer for 98% of made-up names. Two short training stages cut that to 2%. What worked, what failed, and what the fix cost.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://learn.renaissancelabs.eu/notes/hallucination-and-i-dont-know/">
+<meta property="og:locale" content="en_GB">
+<meta property="og:image" content="https://learn.renaissancelabs.eu/assets/og/note-hallucination-and-i-dont-know.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Teaching a 9B model to say “I don&#x27;t know” · Notes · Renaissance Labs">
+<meta name="twitter:description" content="A 9B model invented an answer for 98% of made-up names. Two short training stages cut that to 2%. What worked, what failed, and what the fix cost.">
+<meta name="twitter:image" content="https://learn.renaissancelabs.eu/assets/og/note-hallucination-and-i-dont-know.jpg">
+<meta name="theme-color" content="#fdfaf3">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Teaching a 9B model to say “I don't know”", "description": "A 9B model invented an answer for 98% of made-up names. Two short training stages cut that to 2%. What worked, what failed, and what the fix cost.", "datePublished": "2026-11-21", "dateModified": "2026-11-21", "inLanguage": "en", "author": {"@type": "Organization", "name": "Renaissance Labs"}, "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"}, "image": "https://learn.renaissancelabs.eu/assets/og/note-hallucination-and-i-dont-know.jpg"}</script>
+</head>
+<body class="">
+<a class="skip" href="#main">Skip to content</a>
+<header class="bar">
+  <a class="brand" href="/"><img src="/assets/mark.png" alt="" width="28" height="28"><span>Renaissance Labs</span><em>Learn</em></a>
+  <div class="bar-r">
+    <nav id="mainnav" aria-label="Main">
+      <a href="/models/">Models</a>
+      <a href="/lessons/">Lessons</a>
+      <a href="/minds/">Minds</a>
+      <a href="/films/">Films</a>
+      <a class="sec" href="/recipes/">Recipes</a>
+      <a class="sec" href="/notes/">Notes</a>
+      <a class="sec" href="/glossary/">Glossary</a>
+      <a class="sec ext" href="https://labs.renaissancelabs.eu/">Atlas</a>
+    </nav>
+    <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
+    <button class="menu-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mainnav"><i></i><i></i><i></i></button>
+  </div>
+</header>
+<div class="menu-scrim" hidden></div>
+<main id="main">
+
+<div class="progress" id="progress"><i></i></div>
+<article class="lesson note" data-lesson="note-hallucination-and-i-dont-know">
+<header class="lesson-h note-h"><div class="wrap">
+  <p class="crumb"><a href="/notes/">Notes</a> · 21 November 2026</p>
+  
+  <h1>Teaching a 9B model to say “I don&#x27;t know”</h1><p class="lede">A 9B model invented an answer for 98% of made-up names. Two short training stages cut that to 2%. What worked, what failed, and what the fix cost.</p>
+  <p class="meta"><span>Renaissance Labs</span><span>6 min read</span></p>
+</div></header>
+<div class="wrap lesson-grid">
+  <div class="prose"><p>Ask Prelude-9B &quot;Who is Declan Monmonley?&quot; and it tells you: a British actor, writer and director, best known for a role in <em>The Inbetweeners</em>. The answer has bold text and a career overview.</p>
+<p>Declan Monmonley does not exist. I generated the name for a benchmark and checked that nobody in Wikidata carries it.</p>
+<p>This note is about getting that model to say &quot;I don&#x27;t know&quot; instead. The work was done within OpenEuroLLM, and the result is an open checkpoint, <a href="https://huggingface.co/birgermoell/prelude-9b-sft-v2-hallucination-r2" target="_blank" rel="noopener">prelude-9b-sft-v2-hallucination-r2</a>. It mostly works. Two things I expected to work did not, and the model picked up one embarrassing habit. All numbers come from the model card and the paper draft.</p>
+<div class="stats"><div><b>97.7%</b><span>of made-up subjects got an invented answer before training</span></div><div><b>1.8%</b><span>after</span></div><div><b>31 of 80</b><span>questions about well-known people it now declines</span></div><div><b>12 minutes</b><span>for the stage that did most of the work</span></div></div>
+<h2 id="why-models-make-things-up">Why models make things up</h2>
+<p>Nothing in training separates &quot;I know this&quot; from &quot;this sounds right&quot;.</p>
+<p>Pre-training rewards continuing text. Supervised fine-tuning then shows the model thousands of questions, each with a complete, confident answer, whether or not the model had the knowledge. That is the starting point of the R-Tuning paper. Gekhman and colleagues found that fine-tuning on facts a model does not already know increases hallucination.</p>
+<p>Benchmarks finish the job. Kalai and colleagues point out that most of them grade like an exam with no penalty for a wrong answer, so a model that guesses outscores one that abstains.</p>
+<p>The model was rewarded for always answering, so it always answers.</p>
+<h2 id="the-benchmark">The benchmark</h2>
+<p>500 questions in ten European languages, asked the way a user would: &quot;Who is X?&quot;, &quot;When was X born?&quot;. There is no answer format and no hint that &quot;I don&#x27;t know&quot; is allowed.</p>
+<ul><li><strong>220 made-up subjects</strong>: people, novels, films, companies, villages, rivers</li><li><strong>120 obscure real people</strong>, with a Wikipedia article in 1 to 3 languages</li><li><strong>80 mid-popularity</strong> and <strong>80 well-known people</strong>, where refusing counts as a failure</li></ul>
+<p>A judge model, gemma-4-31B-it, grades each answer against Wikidata.</p>
+<figure class="bars"><div class="bars-t">Fabrication on made-up subjects, default mode (%)</div><div class="brow"><span class="bar-l">Prelude-9B-SFT-v2</span><span class="bar-track"><i style="width:100.0%"></i></span><span class="bar-v">97.7</span><span class=bar-n>supervised fine-tuning only</span></div><div class="brow"><span class="bar-l">Apertus-8B-Instruct</span><span class="bar-track"><i style="width:85.2%"></i></span><span class="bar-v">83.2</span></div><div class="brow"><span class="bar-l">Qwen3-8B</span><span class="bar-track"><i style="width:75.3%"></i></span><span class="bar-v">73.6</span></div><div class="brow"><span class="bar-l">OpenEuroLLM E10</span><span class="bar-track"><i style="width:65.6%"></i></span><span class="bar-v">64.1</span><span class=bar-n>after earlier calibration RL</span></div></figure>
+<p>Every model of this size invents an answer for most made-up subjects. Prelude is the worst, and it is the one I trained. On the 120 obscure real people it answered every question and got none fully right.</p>
+<h2 id="1-an-unknown-option-does-not-transfer">1. An UNKNOWN option does not transfer</h2>
+<p>Earlier rounds had trained abstention with prompts that end: if you are not sure, write <code>ANSWER: UNKNOWN</code>. In that format a later checkpoint fabricated on 27 of about 600 made-up subjects.</p>
+<p>Asked in plain words, the same model family fabricated on 64%.</p>
+<p>The model had learned to take an exit when the prompt offered one. Users do not offer one. Many hallucination tests do, so they miss this.</p>
+<h2 id="the-training-data">The training data</h2>
+<p>A model&#x27;s &quot;I don&#x27;t know&quot; should depend on what that model knows. So you ask it, an idea taken from R-Tuning and the Idk dataset.</p>
+<ol class="flow"><li><b>Ask</b><span>8,644 natural questions, none from the benchmark</span></li><li><b>Sample</b><span>8 answers each, at temperature 0.7</span></li><li><b>Judge</b><span>Each answer graded against Wikidata</span></li><li><b>Pair</b><span>A preferred answer and a rejected one</span></li></ol>
+<p>Score a right answer +1, a wrong one −1 and &quot;I don&#x27;t know&quot; 0. Answering then pays off when the model is right more than half the time. Below that, the preferred answer is an honest &quot;I&#x27;m not sure&quot; and the rejected one is the model&#x27;s own wrong answer. Where the model is right at least three times in four, the preferred answer is the correct one and the rejected one is a needless refusal.</p>
+<p>A good &quot;I don&#x27;t know&quot; names what was asked. It does not claim the subject does not exist, because the model cannot know that either. It gives no false excuse such as &quot;I have no internet access&quot;. A second judge from another model family, Qwen3.5-27B, audited a sample of pairs and preferred the chosen answer in 98% of them.</p>
+<h2 id="2-the-loss-went-down-and-the-model-did-not-change">2. The loss went down and the model did not change</h2>
+<p>First attempt: one round of <strong>DPO</strong> (direct preference optimisation) on 2,277 pairs. The loss fell from 0.69 to 0.49. On held-out pairs the model ranked the preferred answer higher 79% of the time.</p>
+<p>On the benchmark, fabrication went from 97.7% to 92.7%.</p>
+<p>The model could rank the answers and still did not write them. A model that abstains 2% of the time has almost no good abstentions of its own, so the judge model had to write 81% of the preferred answers. DPO made those answers more likely without making them the model&#x27;s first choice. On an RL-trained OpenEuroLLM model that already abstained a quarter of the time, the same recipe cut fabrication from 63.6% to 38.2%.</p>
+<p>Reward accuracy says the model can rank two answers. It says nothing about which one it will write.</p>
+<h2 id="3-twelve-minutes-of-supervised-training-did-most-of-it">3. Twelve minutes of supervised training did most of it</h2>
+<p>Second attempt: start with plain supervised fine-tuning on the curated answers. The set had 6,123 rows: 1,380 abstentions, 408 real answers, 335 false-premise examples from CoCoNot, 1,000 rows of <a href="/notes/identity-datasets/">identity data</a> and 3,000 general replies to keep other behaviour in place. Two epochs took 12 minutes on eight A100 GPUs.</p>
+<p>Then a second DPO round, on answers sampled from the warm-started model. It already abstained on most of what it did not know, so only 617 pairs were left. 143 of them pulled the other way, preferring a correct answer over the model&#x27;s own refusal.</p>
+<figure class="bars"><div class="bars-t">Fabrication on made-up subjects through the stages (%)</div><div class="brow"><span class="bar-l">Before</span><span class="bar-track"><i style="width:100.0%"></i></span><span class="bar-v">97.7</span></div><div class="brow"><span class="bar-l">DPO round 1 alone</span><span class="bar-track"><i style="width:94.9%"></i></span><span class="bar-v">92.7</span><span class=bar-n>a separate run</span></div><div class="brow"><span class="bar-l">SFT warm start</span><span class="bar-track"><i style="width:3.7%"></i></span><span class="bar-v">3.6</span></div><div class="brow"><span class="bar-l">Warm start + DPO round 2</span><span class="bar-track"><i style="width:2.0%"></i></span><span class="bar-v">1.8</span><span class=bar-n>the released checkpoint</span></div></figure>
+<p>The released model declines 98% of made-up subjects, briefly and in the language of the question. On obscure real people it abstains 97.5% of the time.</p>
+<h2 id="4-most-of-the-over-refusal-is-the-model-being-right">4. Most of the over-refusal is the model being right</h2>
+<p>The model now declines 31 of 80 questions about well-known people. The benchmark calls that over-refusal, and my release gate was under 5%.</p>
+<p>Here is what the untrained model had answered on those 31 questions:</p>
+<div class="tbl"><table><thead><tr><th>Answer before training</th><th class="r">Questions</th></tr></thead><tbody><tr><td>Wrong</td><td class="r">20</td></tr><tr><td>Partly correct</td><td class="r">8</td></tr><tr><td>Fully correct</td><td class="r">3</td></tr></tbody></table></div>
+<p>Most of them ask for a birth date or birthplace. The untrained model stated those with confidence and got them wrong: Giuseppe Conte born on 10 April 1964 (it was 8 August), Mark Carney born in Ottawa (it was Fort Smith). Across all 80 questions, fully correct answers doubled from 16 to 32 and wrong answers fell from 35 to 6.</p>
+<p>A gate that counts every abstention on a famous person punishes the model for admitting what it never knew. A fairer gate counts only abstentions on questions the untrained model got right. By that count 11 answers were lost, 3 of them fully correct. Baudelaire&#x27;s birth date is one.</p>
+<h2 id="5-i-m-not-sure-who-john-paul-ii-is">5. &quot;I&#x27;m not sure who John Paul II is&quot;</h2>
+<p>This one is a real failure.</p>
+<div class="example"><span class="ex-t">Asked in Polish</span><p>Kim jest Jan Paweł II?  (Who is John Paul II?)</p><p>&quot;I&#x27;m not sure who John Paul II is. Could you give more context,</p><p>for example his field or when he lived?&quot;</p></div>
+<p>It says the same about Zlatan Ibrahimović in Swedish and Urho Kekkonen in Finnish. Five of the 40 open questions about well-known people get this reply. It is a false statement about what the model knows, and the judge still graded it as a good abstention.</p>
+<p>No training row taught this. The data had many rows where &quot;Who is <em>an obscure person</em>?&quot; gets &quot;I&#x27;m not sure&quot;, and only 26 answers to open questions about well-known people. The model learned the question, not the person.</p>
+<p>The fix is more answer rows for famous people, and a better target for detail questions: say what you know and decline only the detail. &quot;Giuseppe Conte is an Italian politician and former prime minister. I&#x27;m not sure of his exact birth date.&quot;</p>
+<h2 id="limits">Limits</h2>
+<ul><li><strong>Only this benchmark has been run.</strong> Maths, code, tool use and long context have not been measured after training.</li><li><strong>Thinking mode was not trained</strong> and lost accuracy on known facts: 40.0%, down from 53.8%.</li><li><strong>The judge is a model.</strong> gemma-4-31B-it wrote many of the preferred answers and graded the benchmark.</li><li><strong>One run, one answer per question.</strong> A difference of a few points is noise.</li></ul>
+<h2 id="if-you-try-this">If you try this</h2>
+<ol><li><strong>Test with natural questions.</strong> No answer format, no offered exit.</li><li><strong>Include made-up subjects and famous ones</strong>, so you see fabrication and over-caution in the same run.</li><li><strong>Build the data from the model&#x27;s own answers.</strong> What it should decline depends on what it knows.</li><li><strong>If the model almost never abstains, start with supervised fine-tuning.</strong> Preference pairs work once the behaviour exists.</li><li><strong>Compare question by question with the untrained model, and read the answers.</strong> The John Paul II reply was scored as correct behaviour.</li></ol>
+<h2 id="where-to-go-next">Where to go next</h2>
+<p>The two training stages are covered in <a href="/lessons/supervised-fine-tuning/">Supervised fine-tuning</a> and <a href="/lessons/preference-tuning-and-rl/">Preference tuning and reinforcement learning</a>. <a href="/notes/preference-tuning-and-alignment/">How models learned to prefer</a> follows a much larger DPO run on the same model family.</p>
+<h2 id="sources-and-links">Sources and links</h2>
+<ul><li><a href="https://huggingface.co/birgermoell/prelude-9b-sft-v2-hallucination-r2" target="_blank" rel="noopener">prelude-9b-sft-v2-hallucination-r2</a>, the model card (as it stood on 2026-11-21)</li><li><a href="https://huggingface.co/datasets/birgermoell/prelude-9b-sft-v2-hallucination-r2-data" target="_blank" rel="noopener">Training data and every benchmark output</a></li><li><a href="https://github.com/BirgerMoell/oellm-hallucination" target="_blank" rel="noopener">oellm-hallucination</a>, code, benchmark, results and the paper draft of 18 November 2026</li><li><a href="https://github.com/BirgerMoell/oellm-hallucination/blob/main/results/round2-well-known-people.md" target="_blank" rel="noopener">The 31 declined well-known people, answer by answer</a></li><li><a href="https://arxiv.org/abs/2509.04664" target="_blank" rel="noopener">Why Language Models Hallucinate</a>, Kalai, Nachum, Vempala and Zhang, 2025</li><li><a href="https://arxiv.org/abs/2311.09677" target="_blank" rel="noopener">R-Tuning: Instructing Large Language Models to Say &quot;I Don&#x27;t Know&quot;</a>, Zhang and colleagues, 2024</li><li><a href="https://arxiv.org/abs/2401.13275" target="_blank" rel="noopener">Can AI Assistants Know What They Don&#x27;t Know?</a>, Cheng and colleagues, 2024 (the Idk dataset)</li><li><a href="https://arxiv.org/abs/2405.05904" target="_blank" rel="noopener">Does Fine-Tuning LLMs on New Knowledge Encourage Hallucinations?</a>, Gekhman and colleagues, 2024</li><li><a href="https://arxiv.org/abs/2407.12043" target="_blank" rel="noopener">The Art of Saying No: Contextual Noncompliance in Language Models</a>, Brahman and colleagues, 2024 (CoCoNot)</li><li><a href="https://arxiv.org/abs/2305.18290" target="_blank" rel="noopener">Direct Preference Optimization</a>, Rafailov and colleagues, 2023</li></ul></div>
+  <aside class="toc" aria-label="On this page"><p>On this page</p><ol><li><a href="#why-models-make-things-up">Why models make things up</a></li><li><a href="#the-benchmark">The benchmark</a></li><li><a href="#1-an-unknown-option-does-not-transfer">1. An UNKNOWN option does not transfer</a></li><li><a href="#the-training-data">The training data</a></li><li><a href="#2-the-loss-went-down-and-the-model-did-not-change">2. The loss went down and the model did not change</a></li><li><a href="#3-twelve-minutes-of-supervised-training-did-most-of-it">3. Twelve minutes of supervised training did most of it</a></li><li><a href="#4-most-of-the-over-refusal-is-the-model-being-right">4. Most of the over-refusal is the model being right</a></li><li><a href="#5-i-m-not-sure-who-john-paul-ii-is">5. &quot;I&#x27;m not sure who John Paul II is&quot;</a></li><li><a href="#limits">Limits</a></li><li><a href="#if-you-try-this">If you try this</a></li><li><a href="#where-to-go-next">Where to go next</a></li><li><a href="#sources-and-links">Sources and links</a></li></ol></aside>
+</div>
+<div class="wrap"><section class="relmore"><h2>Related lessons</h2><div class="lgrid"><a class="lcard" href="/lessons/supervised-fine-tuning/" data-lesson="supervised-fine-tuning"><span class="lnum">11</span><span class="lbody"><b>Supervised fine-tuning</b><span>How a raw text predictor becomes an assistant by studying examples of good answers, and why a small, clean dataset can beat a large, messy one.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/preference-tuning-and-rl/" data-lesson="preference-tuning-and-rl"><span class="lnum">12</span><span class="lbody"><b>Preference tuning and reinforcement learning</b><span>How models learn from comparisons and from checkable rewards: RLHF, DPO, verifiable rewards, group-based RL, and the sandboxes and reward hacking that come with it.</span><span class="lmeta">Advanced · 10 min</span></span><span class="tick" hidden>✓</span></a><a class="lcard" href="/lessons/evaluation/" data-lesson="evaluation"><span class="lnum">13</span><span class="lbody"><b>Evaluation</b><span>How we measure what a model can do, and why every measurement has a catch: contamination, saturation, judge bias and scores that cannot be compared across versions.</span><span class="lmeta">Intermediate · 8 min</span></span><span class="tick" hidden>✓</span></a></div></section></div>
+</article>
+</main>
+<footer class="foot wrap">
+  <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
+  <p class="foot-links"><a href="/about/">About and sources</a><a href="https://labs.renaissancelabs.eu/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+</footer>
+<div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
+  <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
+  <ul id="results"></ul></div>
+</div>
+<script src="/app.js?v=2026-11-17" defer></script>
+</body>
+</html>
