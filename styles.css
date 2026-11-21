@@ -586,3 +586,5 @@ a.tag.cap { background: #fff; border-color: var(--c); } a.tag.cap::before { back
 .capnote { max-width: 78ch; margin-top: 22px; } .capnote a { color: inherit; }
 .fxmap { min-width: 1040px; } .fxmap tbody th { max-width: 250px; } .fxmap thead th a { font-size: 12.5px; }
 .sm-col b { font-size: 13.5px; overflow-wrap: anywhere; } @media (max-width: 860px) { .sm-col b { font-size: 15px; } }
+.smeter { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); } .sm-col b { font-size: 14.5px; overflow-wrap: normal; hyphens: manual; } @media (max-width: 860px) { .smeter { grid-template-columns: repeat(3, minmax(0, 1fr)); } .sm-col b { font-size: 14px; } }
+.smeter { grid-template-columns: repeat(3, minmax(0, 1fr)); } .sm-bar { height: 44px; } .sm-bar .w1 { height: 14px; } .sm-bar .w2 { height: 29px; } .sm-bar .w3 { height: 44px; }
