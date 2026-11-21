@@ -1015,5 +1015,19 @@
  "tags": [
   "preference-tuning",
   "multilingual"
- ]
+ ],
+ "effects": {
+  "alignment": [
+   "improved",
+   "EUROPA Alignment 77.3% → 89.3%"
+  ],
+  "multilingual": [
+   "mixed",
+   "Measured in 36 languages. Weakest language pack 21.9%, related to the tokenizer."
+  ],
+  "instructions": [
+   "trained",
+   "General preference pairs were the training data. Not measured separately."
+  ]
+ }
 }

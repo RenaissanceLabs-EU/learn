@@ -33,6 +33,20 @@
 - [Full-weight DPO on 1.4 million preference pairs](https://learn.renaissancelabs.eu/recipes/oellm-9b-threeway-dpo/): Take a supervised fine-tuned 9B model and tune it on pairs of preferred and rejected answers. One epoch, every weight updated, 32 GPUs, under two days.
 - [SFT warm start, then on-policy DPO, against hallucination](https://learn.renaissancelabs.eu/recipes/prelude-9b-hallucination-r2/): Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.
 
+## Capabilities
+- [Fluent text](https://learn.renaissancelabs.eu/capabilities/fluency/): The model writes correct, natural text and predicts what comes next.
+- [World knowledge](https://learn.renaissancelabs.eu/capabilities/knowledge/): The model recalls facts about the world without looking them up.
+- [Many languages](https://learn.renaissancelabs.eu/capabilities/multilingual/): The model reads and writes many languages, and answers in the language it was asked in.
+- [Long context](https://learn.renaissancelabs.eu/capabilities/long-context/): The model finds and uses information from far back in a long input.
+- [Code](https://learn.renaissancelabs.eu/capabilities/code/): The model writes working code and fixes real bugs.
+- [Reasoning](https://learn.renaissancelabs.eu/capabilities/reasoning/): The model works through a problem in steps and reaches the right answer.
+- [Following instructions](https://learn.renaissancelabs.eu/capabilities/instructions/): The model does what was asked, in the format asked for, across a conversation.
+- [Knowing what it doesn't know](https://learn.renaissancelabs.eu/capabilities/abstention/): The model says "I don't know" when it does not know, and answers when it does.
+- [Knowing who it is](https://learn.renaissancelabs.eu/capabilities/identity/): The model states its own name, maker, knowledge cutoff and limits correctly.
+- [Behaving as intended](https://learn.renaissancelabs.eu/capabilities/alignment/): The model is helpful and honest, declines what it should, and respects limits on what it may do.
+- [Using tools](https://learn.renaissancelabs.eu/capabilities/tools/): The model calls tools correctly, reads the results and finishes a multi-step task.
+- [Calibrated decisions](https://learn.renaissancelabs.eu/capabilities/decisions/): The model answers a typed question with a probability that matches how often it is right.
+
 ## Topics
 - [Preference tuning](https://learn.renaissancelabs.eu/tags/preference-tuning/): Training on pairs of better and worse answers, with DPO and its relatives.
 - [Multilingual](https://learn.renaissancelabs.eu/tags/multilingual/): Work across many languages, beyond English.

@@ -1,5 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<url><loc>https://learn.renaissancelabs.eu/capabilities/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/fluency/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/knowledge/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/multilingual/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/long-context/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/code/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/reasoning/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/instructions/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/abstention/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/identity/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/alignment/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/tools/</loc><lastmod>2026-11-17</lastmod></url>
+<url><loc>https://learn.renaissancelabs.eu/capabilities/decisions/</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://learn.renaissancelabs.eu/</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://learn.renaissancelabs.eu/models/</loc><lastmod>2026-11-17</lastmod></url>
 <url><loc>https://learn.renaissancelabs.eu/lessons/</loc><lastmod>2026-11-17</lastmod></url>

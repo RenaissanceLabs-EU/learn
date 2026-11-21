@@ -18,6 +18,9 @@ CFG = json.load(open("data/site.json"))
 MEDIA = CFG.get("media_base", "/media/").rstrip("/") + "/"
 BUILD = CFG.get("built", datetime.date.today().isoformat())
 import hashlib
+sys.path.insert(0, os.path.join(ROOT, "tools")) if "ROOT" in dir() else sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import capabilities_gen as CG
+STAGES, CAPS = [], []
 ASSETV = hashlib.md5(b"".join(open(f, "rb").read() for f in ("styles.css", "app.js", "widgets.js", "widgets2.js", "widgets3.js") if os.path.exists(f))).hexdigest()[:10]  # changes whenever a stylesheet or script does, so browsers never show new pages with old styles
 
 PARTS = ["The basics", "Feeding the model", "The machine room", "After pre-training", "End to end"]
@@ -424,9 +427,9 @@ def head(title, desc, path, body_class="", image="home", extra="", jsonld=None):
       <a href="/lessons/">Lessons</a>
       <a href="/minds/">Minds</a>
       <a href="/films/">Films</a>
+      <a class="sec" href="/capabilities/">Capabilities</a>
       <a class="sec" href="/recipes/">Recipes</a>
       <a class="sec" href="/notes/">Notes</a>
-      <a class="sec" href="/glossary/">Glossary</a>
       <a class="sec ext" href="{ATLAS}/">Atlas</a>
     </nav>
     <button class="search-open" type="button" aria-label="Search" data-search><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><kbd>/</kbd></button>
@@ -440,7 +443,7 @@ def head(title, desc, path, body_class="", image="home", extra="", jsonld=None):
 def foot():
     return f"""<footer class="foot wrap">
   <p class="brand"><img src="/assets/mark.png" alt="" width="22" height="22"> Renaissance Labs · Learn · Made in Europe</p>
-  <p class="foot-links"><a href="/tags/">Topics</a><a href="/about/">About and sources</a><a href="{ATLAS}/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
+  <p class="foot-links"><a href="/glossary/">Glossary</a><a href="/tags/">Topics</a><a href="/about/">About and sources</a><a href="{ATLAS}/">Open Labs Atlas</a><a href="https://renaissancelabs.eu/">Renaissance Labs</a><a href="https://huggingface.co/RenaissanceLabsEU">Hugging Face</a><a href="/llms.txt">llms.txt</a></p>
 </footer>
 <div class="search" id="search" hidden role="dialog" aria-modal="true" aria-label="Search">
   <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
@@ -765,7 +768,7 @@ def note_page(n, lessons, films):
   {'<p class="draftflag"><b>Draft for review.</b> Not yet reviewed by the lab. Not listed on the site and hidden from search engines.</p>' if n.get("status") == "draft" else ""}
   <h1>{esc(n["title"])}</h1><p class="lede">{esc(n["summary"])}</p>
   <p class="meta"><span>{esc(n.get("lab") or "Renaissance Labs")}</span>{f'<span>by {esc(n["author"])}</span>' if n.get("author") else ""}<span>{n["minutes"]} min read</span></p>
-  {tag_row(n["tags"])}
+  {CG.chips(sys.modules[__name__], CAPS, note=n["id"])}{tag_row(n["tags"])}
 </div></header>
 <div class="wrap lesson-grid">
   <div class="prose">{n["html"]}{watch}</div>
@@ -902,7 +905,7 @@ def recipe_page(r):
   <h1>{esc(r["title"])}</h1>
   <p class="lede">{esc(r["lede"])}</p>
   <p class="rby"><span>From <b>{esc(r["lab"])}</b></span><span>Recipe by {esc(r["author"])}</span><span class="rstatus"><i></i>{esc(r["status"])}</span></p>
-  {tag_row(tag_list(r.get("tags")))}
+  {CG.chips(sys.modules[__name__], CAPS, effects=r.get("effects", {}))}{tag_row(tag_list(r.get("tags")))}
   <div class="glance">{glance}</div>
   <div class="rcta"><a class="btn" href="{r["checkpoint"]}">Open the checkpoint</a><a class="btn ghost" href="#method">Jump to the method</a><button type="button" class="btn ghost" onclick="window.print()">Print this card</button></div>
 </div></header>
@@ -987,7 +990,7 @@ recipe_card(r) for r in recipes.values())
 
 
 def machine_files(films, lessons, gloss, notes, recipes=None, tags=()):
-    urls = ["/", "/models/", "/lessons/", "/minds/", "/films/", "/glossary/", "/about/", "/notes/"] + [f"/notes/{i}/" for i in notes] + ["/recipes/"] + [f"/recipes/{i}/" for i in (recipes or {})] + ["/tags/"] + [f"/tags/{t}/" for t in tags] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
+    urls = ["/capabilities/"] + [f"/capabilities/{c['id']}/" for c in CAPS] + ["/", "/models/", "/lessons/", "/minds/", "/films/", "/glossary/", "/about/", "/notes/"] + [f"/notes/{i}/" for i in notes] + ["/recipes/"] + [f"/recipes/{i}/" for i in (recipes or {})] + ["/tags/"] + [f"/tags/{t}/" for t in tags] + [f"/lessons/{i}/" for i in lessons] + [f"/films/{i}/" for i in films]
     write("sitemap.xml", '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
           "".join(f"<url><loc>{SITE}{u}</loc><lastmod>{BUILD}</lastmod></url>\n" for u in urls) + "</urlset>\n")
     write("robots.txt", f"User-agent: *\nAllow: /\nSitemap: {SITE}/sitemap.xml\n")
@@ -997,6 +1000,7 @@ def machine_files(films, lessons, gloss, notes, recipes=None, tags=()):
     lines += [f"- [{l['title']}]({SITE}/lessons/{i}/): {l['summary']}" for i, l in lessons.items()]
     lines += ["", "## Notes"] + [f"- [{n['title']}]({SITE}/notes/{i}/): {n['summary']}" for i, n in notes.items()]
     lines += ["", "## Recipes"] + [f"- [{r['title']}]({SITE}/recipes/{i}/): {r['lede']}" for i, r in (recipes or {}).items()]
+    lines += ["", "## Capabilities"] + [f"- [{c['name']}]({SITE}/capabilities/{c['id']}/): {c['one']}" for c in CAPS]
     lines += ["", "## Topics"] + [f"- [{tag_label(t)}]({SITE}/tags/{t}/): {TAGS.get(t, ('', ''))[1]}" for t in tags]
     lines += ["", "## Films"] + [f"- [{f['title']}]({SITE}/films/{i}/): {f['blurb']}" for i, f in films.items()]
     write("llms.txt", "\n".join(lines) + "\n")
@@ -1007,6 +1011,7 @@ def machine_files(films, lessons, gloss, notes, recipes=None, tags=()):
                     "x": plain(" ".join([f["kicker"], f["description"]] + f["takeaways"] + [c["title"] for c in f["chapters"]])).lower()})
     for i, n in notes.items(): idx.append({"t": "Note", "title": n["title"], "url": f"/notes/{i}/", "s": n["summary"], "x": n["text"][:900].lower()})
     for i, r in (recipes or {}).items(): idx.append({"t": "Recipe", "title": r["title"], "url": f"/recipes/{i}/", "s": r["lede"], "x": (r["title"] + " " + r["lede"] + " " + " ".join(x["name"] for g in (r["data"].get("groups") or [r["data"]]) for x in g["sources"])).lower()})
+    for c in CAPS: idx.append({"t": "Capability", "title": c["name"], "url": f"/capabilities/{c['id']}/", "s": c["one"], "x": (c["name"] + " " + c["one"] + " " + " ".join(m[0] for m in c["measure"])).lower()})
     for t in tags: idx.append({"t": "Topic", "title": tag_label(t), "url": f"/tags/{t}/", "s": TAGS.get(t, ("", ""))[1], "x": tag_label(t).lower()})
     for term, sent, lid in gloss: idx.append({"t": "Term", "title": term, "url": f"/glossary/#{slugify(term)}", "s": sent[:160], "x": sent.lower()})
     write("search.json", json.dumps(idx, ensure_ascii=False, separators=(",", ":")))
@@ -1035,7 +1040,9 @@ def main():
     missing = [x for ids in TRACK_ORDER.values() for x in ids if x not in films and x not in CFG.get("hidden", [])]
     if missing: print("films missing:", missing)
     recipes = load_recipes()
-    for d in ("lessons", "films", "notes", "recipes", "tags"): shutil.rmtree(d, ignore_errors=True)
+    global STAGES, CAPS
+    STAGES, CAPS = CG.load()
+    for d in ("lessons", "films", "notes", "recipes", "tags", "capabilities"): shutil.rmtree(d, ignore_errors=True)
     home(films, lessons, notes); models_page(films, lessons); lessons_page(lessons); minds_page(films); films_page(films)
     for l in lessons.values(): lesson_page(l, lessons, films)
     for f in films.values(): film_page(f, films, lessons)
@@ -1044,6 +1051,9 @@ def main():
     for n in all_notes.values(): note_page(n, lessons, films)
     items = glossary_page(gl, lessons); about_page(films, lessons); not_found()
     tags = tag_pages(lessons, notes, recipes)
+    me = sys.modules[__name__]
+    CG.index(me, STAGES, CAPS, recipes)
+    for c in CAPS: CG.cap_page(me, STAGES, CAPS, c, recipes, notes, lessons)
     machine_files(films, lessons, [(a, b, c) for a, b, c in ((i[0], i[1], i[2]) for i in items)], notes, recipes, tags)
     print(f"built {len(films)} films, {len(notes)} notes, {len(lessons)} lessons, {len(items)} terms")
 

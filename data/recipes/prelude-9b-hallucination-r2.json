@@ -488,5 +488,27 @@
   "supervised-fine-tuning",
   "preference-tuning",
   "multilingual"
- ]
+ ],
+ "effects": {
+  "abstention": [
+   "improved",
+   "Fabrication on made-up subjects 97.7% → 1.8%"
+  ],
+  "knowledge": [
+   "mixed",
+   "Wrong answers on well-known people 35 → 6 of 80, with 11 answers lost"
+  ],
+  "multilingual": [
+   "held",
+   "Answers in the question's language 97.0% → 97.6%"
+  ],
+  "reasoning": [
+   "worse",
+   "Thinking mode, not trained: 53.8% → 40.0% on well-known people"
+  ],
+  "identity": [
+   "trained",
+   "Identity data was in the mix. Not measured afterwards."
+  ]
+ }
 }
