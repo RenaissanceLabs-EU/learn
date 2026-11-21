@@ -1,18 +1,79 @@
 {
  "stages": [
+  "Design",
   "Pre-training",
   "Supervised fine-tuning",
   "Preference tuning",
-  "Reinforcement learning"
+  "Reinforcement learning",
+  "Deployment"
+ ],
+ "stages_short": [
+  "Design",
+  "Pre-training",
+  "Fine-tuning",
+  "Preferences",
+  "RL",
+  "Deployment"
+ ],
+ "families": [
+  {
+   "id": "language",
+   "name": "Language",
+   "about": "Reading and writing text, in one language and across many.",
+   "color": "#5f8a7a"
+  },
+  {
+   "id": "knowledge",
+   "name": "Knowledge",
+   "about": "What the model knows, and how well it sticks to what it is given.",
+   "color": "#3f6f63"
+  },
+  {
+   "id": "thinking",
+   "name": "Thinking",
+   "about": "Working things out: logic, maths, code, and picking up a pattern from examples.",
+   "color": "#5f7396"
+  },
+  {
+   "id": "perception",
+   "name": "Input and memory",
+   "about": "What the model can take in: long documents, images, speech, and text turned into vectors.",
+   "color": "#8f7aa3"
+  },
+  {
+   "id": "conversation",
+   "name": "Conversation",
+   "about": "Being a usable assistant: doing what was asked, in the format asked for.",
+   "color": "#c79a3f"
+  },
+  {
+   "id": "honesty",
+   "name": "Honesty and safety",
+   "about": "Being truthful about what it knows, and safe and fair in what it does.",
+   "color": "#b0763f"
+  },
+  {
+   "id": "acting",
+   "name": "Acting",
+   "about": "Using tools and finishing tasks that take many steps.",
+   "color": "#b5654a"
+  },
+  {
+   "id": "efficiency",
+   "name": "Efficiency",
+   "about": "Properties of the model as a system: how fast it runs and what it needs to run.",
+   "color": "#7d776c"
+  }
  ],
  "capabilities": [
   {
    "id": "fluency",
    "name": "Fluent text",
-   "origin": "pre",
    "stages": [
+    1,
     3,
     1,
+    0,
     0,
     0
    ],
@@ -74,82 +135,18 @@
     "pretraining-data",
     "base-training"
    ],
-   "notes": []
-  },
-  {
-   "id": "knowledge",
-   "name": "World knowledge",
-   "origin": "pre",
-   "stages": [
-    3,
-    1,
-    0,
-    0
-   ],
-   "one": "The model recalls facts about the world without looking them up.",
-   "pre": "Facts are absorbed from the pre-training text. What appears often is learned well, and the long tail is learned poorly.",
-   "post": "Fine-tuning mostly teaches the model to use what it knows. Training it on facts it does not know has been shown to increase hallucination.",
-   "measure": [
-    [
-     "MMLU",
-     "Multiple-choice questions across 57 subjects.",
-     "https://arxiv.org/abs/2009.03300"
-    ],
-    [
-     "SimpleQA",
-     "Short factual questions with one checkable answer.",
-     "https://arxiv.org/abs/2411.04368"
-    ],
-    [
-     "TruthfulQA",
-     "Questions where a common misconception is the tempting answer.",
-     "https://arxiv.org/abs/2109.07958"
-    ]
-   ],
-   "datasets": [
-    [
-     "Wikidata",
-     "Structured facts, useful as a reference for grading answers.",
-     "https://www.wikidata.org/"
-    ]
-   ],
-   "findings": [
-    [
-     "On 80 questions about well-known people, a 9B model gave a fully correct answer to 16.",
-     "OpenEuroLLM",
-     "/notes/hallucination-and-i-dont-know/#4-most-of-the-over-refusal-is-the-model-being-right"
-    ],
-    [
-     "Fine-tuning on facts the model does not know increases hallucination as those facts are learned.",
-     "Gekhman and colleagues",
-     "https://arxiv.org/abs/2405.05904"
-    ]
-   ],
-   "wanted": [
-    "A way to tell, per question, whether a model knows the answer or is guessing, without sampling it eight times."
-   ],
-   "labs": [
-    [
-     "OpenEuroLLM",
-     "https://labs.renaissancelabs.eu/labs/openeurollm/"
-    ]
-   ],
-   "lessons": [
-    "pretraining-data",
-    "scaling-laws"
-   ],
-   "notes": [
-    "hallucination-and-i-dont-know"
-   ]
+   "notes": [],
+   "family": "language"
   },
   {
    "id": "multilingual",
    "name": "Many languages",
-   "origin": "pre",
    "stages": [
+    2,
     3,
     2,
     1,
+    0,
     0
    ],
    "one": "The model reads and writes many languages, and answers in the language it was asked in.",
@@ -157,14 +154,19 @@
    "post": "Post-training data is often English or machine-translated, so each stage needs its own check per language.",
    "measure": [
     [
-     "FLORES-200",
-     "Translation between 200 languages.",
-     "https://arxiv.org/abs/2207.04672"
-    ],
-    [
      "Belebele",
      "Reading comprehension in 122 language variants.",
      "https://arxiv.org/abs/2308.16884"
+    ],
+    [
+     "XTREME",
+     "Cross-lingual tests across many languages and tasks.",
+     "https://arxiv.org/abs/2003.11080"
+    ],
+    [
+     "ScandEval",
+     "A benchmarking platform for the Scandinavian languages.",
+     "https://arxiv.org/abs/2304.00906"
     ],
     [
      "Answers in the question's language",
@@ -218,75 +220,414 @@
    "notes": [
     "preference-tuning-and-alignment",
     "identity-datasets"
-   ]
+   ],
+   "family": "language"
   },
   {
-   "id": "long-context",
-   "name": "Long context",
-   "origin": "pre",
+   "id": "translation",
+   "name": "Translation",
+   "family": "language",
    "stages": [
-    3,
     1,
+    3,
+    2,
+    0,
     0,
     0
    ],
-   "one": "The model finds and uses information from far back in a long input.",
-   "pre": "It depends on the architecture and on training with long sequences. A long context window does not mean the model uses it.",
-   "post": "Fine-tuning on long conversations can help, but the gains are hard to show in generated answers.",
+   "one": "The model carries meaning from one language into another.",
+   "pre": "Parallel text in the pre-training data gives a base model some ability to translate.",
+   "post": "Fine-tuning on translation pairs sharpens it. Much multilingual post-training data is itself machine-translated, so translation quality limits everything built on it.",
    "measure": [
     [
-     "RULER",
-     "Synthetic tasks that test how much of the context window a model really uses.",
-     "https://arxiv.org/abs/2404.06654"
-    ],
-    [
-     "LongBench",
-     "Long-document tasks in English and Chinese.",
-     "https://arxiv.org/abs/2308.14508"
-    ],
-    [
-     "Paired retrieval tests",
-     "Score the same answer with and without the earlier evidence in the prompt.",
-     "https://marin.community/research-notes/mochi-262k-retrieval-loss/"
+     "FLORES-200",
+     "Translation between 200 languages.",
+     "https://arxiv.org/abs/2207.04672"
     ]
    ],
    "datasets": [],
    "findings": [
     [
-     "A change that lowered loss on a 262K retrieval test kept most of its advantage when the evidence was removed.",
-     "Marin",
-     "https://marin.community/research-notes/mochi-262k-retrieval-loss/"
+     "An identity dataset was written by hand in English and machine-translated into 35 languages, with the method recorded on every row.",
+     "OpenEuroLLM",
+     "/notes/identity-datasets/#the-example-openeurollm-model-identity"
     ],
     [
-     "Filtering long replay data showed no clear gain on generated retrieval.",
-     "Marin",
-     "https://marin.community/research-notes/long-replay-filtering/"
+     "An alignment benchmark has one authored language. The other 35 are machine-translated and wait for native review.",
+     "OpenEuroLLM",
+     "/notes/preference-tuning-and-alignment/#what-the-benchmark-measures"
     ]
    ],
    "wanted": [
-    "A long-context test in European languages other than English."
+    "Quality checks for the machine-translated datasets used in post-training."
    ],
    "labs": [
     [
-     "Marin",
-     "https://labs.renaissancelabs.eu/labs/marin/"
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
     ]
    ],
    "lessons": [
-    "attention-and-the-transformer",
-    "base-training"
+    "tokens"
+   ],
+   "notes": []
+  },
+  {
+   "id": "writing",
+   "name": "Writing",
+   "family": "language",
+   "stages": [
+    0,
+    3,
+    2,
+    2,
+    0,
+    0
+   ],
+   "one": "The model writes longer text that is clear, well organised and right for its reader.",
+   "pre": "Style is absorbed from the text the model read, bad habits included.",
+   "post": "Fine-tuning data sets the default voice. Preference tuning can shift it, because writing is easier to compare than to score.",
+   "measure": [
+    [
+     "A rubric with a judge model",
+     "Written criteria, scored by a judge model and checked against human ratings.",
+     ""
+    ],
+    [
+     "FActScore",
+     "Factual precision of long generated text, fact by fact.",
+     "https://arxiv.org/abs/2305.14251"
+    ]
+   ],
+   "datasets": [],
+   "findings": [
+    [
+     "All 421 invented answers in one benchmark run used bold text and 55% used bullet lists. Confident formatting made them read as authoritative.",
+     "OpenEuroLLM",
+     "https://github.com/BirgerMoell/oellm-hallucination/blob/main/results/prelude-9b-sft-v2-analysis.md"
+    ]
+   ],
+   "wanted": [
+    "A public writing benchmark for European languages with scores calibrated against human readers."
+   ],
+   "labs": [
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "supervised-fine-tuning"
+   ],
+   "notes": []
+  },
+  {
+   "id": "knowledge",
+   "name": "World knowledge",
+   "stages": [
+    0,
+    3,
+    1,
+    0,
+    0,
+    0
+   ],
+   "one": "The model recalls facts about the world without looking them up.",
+   "pre": "Facts are absorbed from the pre-training text. What appears often is learned well, and the long tail is learned poorly.",
+   "post": "Fine-tuning mostly teaches the model to use what it knows. Training it on facts it does not know has been shown to increase hallucination.",
+   "measure": [
+    [
+     "MMLU",
+     "Multiple-choice questions across 57 subjects.",
+     "https://arxiv.org/abs/2009.03300"
+    ],
+    [
+     "SimpleQA",
+     "Short factual questions with one checkable answer.",
+     "https://arxiv.org/abs/2411.04368"
+    ],
+    [
+     "TruthfulQA",
+     "Questions where a common misconception is the tempting answer.",
+     "https://arxiv.org/abs/2109.07958"
+    ],
+    [
+     "FActScore",
+     "Splits a long answer into single facts and checks each one.",
+     "https://arxiv.org/abs/2305.14251"
+    ]
+   ],
+   "datasets": [
+    [
+     "Wikidata",
+     "Structured facts, useful as a reference for grading answers.",
+     "https://www.wikidata.org/"
+    ]
+   ],
+   "findings": [
+    [
+     "On 80 questions about well-known people, a 9B model gave a fully correct answer to 16.",
+     "OpenEuroLLM",
+     "/notes/hallucination-and-i-dont-know/#4-most-of-the-over-refusal-is-the-model-being-right"
+    ],
+    [
+     "Fine-tuning on facts the model does not know increases hallucination as those facts are learned.",
+     "Gekhman and colleagues",
+     "https://arxiv.org/abs/2405.05904"
+    ]
+   ],
+   "wanted": [
+    "A way to tell, per question, whether a model knows the answer or is guessing, without sampling it eight times."
+   ],
+   "labs": [
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "pretraining-data",
+    "scaling-laws"
+   ],
+   "notes": [
+    "hallucination-and-i-dont-know"
+   ],
+   "family": "knowledge"
+  },
+  {
+   "id": "grounding",
+   "name": "Sticking to the sources",
+   "family": "knowledge",
+   "stages": [
+    0,
+    2,
+    3,
+    1,
+    1,
+    1
+   ],
+   "one": "Given documents, the model answers from them and adds nothing they do not say.",
+   "pre": "Reading comprehension comes with pre-training.",
+   "post": "Staying inside the given text, and citing it, is taught in fine-tuning. At deployment, retrieval decides what the model gets to read.",
+   "measure": [
+    [
+     "SQuAD",
+     "Questions whose answer is a span of a given Wikipedia passage.",
+     "https://arxiv.org/abs/1606.05250"
+    ],
+    [
+     "Ragas",
+     "Scores a retrieval pipeline without needing reference answers.",
+     "https://arxiv.org/abs/2309.15217"
+    ],
+    [
+     "FinanceBench",
+     "Open-book questions about company filings.",
+     "https://arxiv.org/abs/2311.11944"
+    ]
+   ],
+   "datasets": [],
+   "findings": [
+    [
+     "With a search tool, a model that invented biographies closed-book answered 12 of 12 obscure people correctly.",
+     "OpenEuroLLM",
+     "https://github.com/BirgerMoell/oellm-hallucination"
+    ]
+   ],
+   "wanted": [
+    "A grounding test with source documents in the smaller European languages."
+   ],
+   "labs": [
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "evaluation"
+   ],
+   "notes": []
+  },
+  {
+   "id": "specialist",
+   "name": "Specialist knowledge",
+   "family": "knowledge",
+   "stages": [
+    0,
+    3,
+    2,
+    0,
+    1,
+    0
+   ],
+   "one": "The model answers questions from a profession, such as law, medicine or finance, at the level the field expects.",
+   "pre": "Professional text is in the pre-training data. National law and local practice are thinly covered.",
+   "post": "Fine-tuning on a field's own documents and cases adapts the model to it.",
+   "measure": [
+    [
+     "LegalBench",
+     "Legal reasoning tasks built with legal professionals.",
+     "https://arxiv.org/abs/2308.11462"
+    ],
+    [
+     "MedQA",
+     "Multiple-choice questions from medical licensing exams.",
+     "https://arxiv.org/abs/2009.13081"
+    ],
+    [
+     "FinanceBench",
+     "Financial questions answered from company filings.",
+     "https://arxiv.org/abs/2311.11944"
+    ]
+   ],
+   "datasets": [
+    [
+     "Myndighetsbeslut",
+     "16,632 Swedish authority cases with typed questions.",
+     "/notes/decision-models-jev-kev-sven/#swedish-authority-cases"
+    ]
+   ],
+   "findings": [
+    [
+     "Models trained on authority cases generated from rules learn the rules and score very high. That is not the same as handling real cases.",
+     "Model cards",
+     "/notes/decision-models-jev-kev-sven/#swedish-authority-cases"
+    ]
+   ],
+   "wanted": [
+    "Specialist benchmarks built on national law and practice, not translated from another country's."
+   ],
+   "labs": [],
+   "lessons": [],
+   "notes": [
+    "decision-models-jev-kev-sven"
+   ]
+  },
+  {
+   "id": "reasoning",
+   "name": "Reasoning",
+   "stages": [
+    0,
+    2,
+    1,
+    1,
+    3,
+    0
+   ],
+   "one": "The model works through a problem in steps and reaches the right answer.",
+   "pre": "Some of it comes from pre-training text that contains worked solutions.",
+   "post": "Reinforcement learning on problems with checkable answers is what produced today's thinking modes.",
+   "measure": [
+    [
+     "BIG-Bench Hard",
+     "Tasks picked because earlier models did badly on them.",
+     "https://arxiv.org/abs/2210.09261"
+    ],
+    [
+     "ARC",
+     "Abstract puzzles meant to test new reasoning, not recall.",
+     "https://arxiv.org/abs/1911.01547"
+    ]
+   ],
+   "datasets": [],
+   "findings": [
+    [
+     "Reinforcement learning on rewards can be used to train reasoning.",
+     "DeepSeek-R1",
+     "https://arxiv.org/abs/2501.12948"
+    ],
+    [
+     "Thinking mode lowered fabrication on made-up subjects for Qwen3-8B, from 73.6% to 46.8%.",
+     "OpenEuroLLM",
+     "https://github.com/BirgerMoell/oellm-hallucination"
+    ],
+    [
+     "A model tuned only in default mode lost accuracy in thinking mode, 53.8% to 40.0% on well-known people.",
+     "OpenEuroLLM",
+     "/notes/hallucination-and-i-dont-know/#limits"
+    ]
+   ],
+   "wanted": [
+    "Preference pairs in thinking mode for the hallucination recipe.",
+    "Reasoning tests written in European languages, not translated."
+   ],
+   "labs": [
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "preference-tuning-and-rl",
+    "post-training"
+   ],
+   "notes": [],
+   "family": "thinking"
+  },
+  {
+   "id": "maths",
+   "name": "Mathematics",
+   "family": "thinking",
+   "stages": [
+    0,
+    2,
+    2,
+    0,
+    3,
+    0
+   ],
+   "one": "The model solves problems with numbers and symbols and gets the right answer.",
+   "pre": "Worked solutions in the pre-training text give a starting point.",
+   "post": "Answers can be checked by a program, which makes maths a natural fit for reinforcement learning.",
+   "measure": [
+    [
+     "GSM8K",
+     "Grade-school maths word problems.",
+     "https://arxiv.org/abs/2110.14168"
+    ],
+    [
+     "MATH",
+     "Competition maths problems.",
+     "https://arxiv.org/abs/2103.03874"
+    ]
+   ],
+   "datasets": [],
+   "findings": [
+    [
+     "After preference tuning, a 9B model's own card lists quantitative reasoning as a weak spot at 51.0%.",
+     "OpenEuroLLM",
+     "/notes/preference-tuning-and-alignment/#what-moved"
+    ],
+    [
+     "Group-based reinforcement learning (GRPO) was introduced for mathematical reasoning.",
+     "DeepSeekMath",
+     "https://arxiv.org/abs/2402.03300"
+    ]
+   ],
+   "wanted": [
+    "Maths problems written in European languages, not translated from English."
+   ],
+   "labs": [
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "preference-tuning-and-rl"
    ],
    "notes": []
   },
   {
    "id": "code",
    "name": "Code",
-   "origin": "pre",
    "stages": [
+    0,
     3,
     2,
     0,
-    2
+    2,
+    0
    ],
    "one": "The model writes working code and fixes real bugs.",
    "pre": "Code is in the pre-training text, so a base model can already continue a program.",
@@ -334,75 +675,255 @@
    "lessons": [
     "preference-tuning-and-rl"
    ],
+   "notes": [],
+   "family": "thinking"
+  },
+  {
+   "id": "icl",
+   "name": "Learning from examples",
+   "family": "thinking",
+   "stages": [
+    1,
+    3,
+    1,
+    0,
+    0,
+    0
+   ],
+   "one": "Shown a few examples in the prompt, the model picks up the pattern and continues it.",
+   "pre": "It emerges from pre-training at scale. Nobody trains it directly.",
+   "post": "It is used at deployment through few-shot prompts, and it is how a base model is usually tested.",
+   "measure": [
+    [
+     "Few-shot versions of standard tests",
+     "Run a benchmark with zero, one and five worked examples and compare.",
+     ""
+    ],
+    [
+     "Language Models are Few-Shot Learners",
+     "The paper that showed the effect at scale.",
+     "https://arxiv.org/abs/2005.14165"
+    ]
+   ],
+   "datasets": [],
+   "findings": [],
+   "wanted": [
+    "Few-shot results for base models, published next to their chat versions."
+   ],
+   "labs": [],
+   "lessons": [
+    "what-is-a-language-model",
+    "base-training"
+   ],
    "notes": []
   },
   {
-   "id": "reasoning",
-   "name": "Reasoning",
-   "origin": "pre",
+   "id": "long-context",
+   "name": "Long context",
    "stages": [
-    2,
+    3,
+    3,
     1,
-    1,
-    3
+    0,
+    0,
+    1
    ],
-   "one": "The model works through a problem in steps and reaches the right answer.",
-   "pre": "Some of it comes from pre-training text that contains worked solutions.",
-   "post": "Reinforcement learning on problems with checkable answers is what produced today's thinking modes.",
+   "one": "The model finds and uses information from far back in a long input.",
+   "pre": "It depends on the architecture and on training with long sequences. A long context window does not mean the model uses it.",
+   "post": "Fine-tuning on long conversations can help, but the gains are hard to show in generated answers.",
    "measure": [
     [
-     "GSM8K",
-     "Grade-school maths word problems.",
-     "https://arxiv.org/abs/2110.14168"
+     "RULER",
+     "Synthetic tasks that test how much of the context window a model really uses.",
+     "https://arxiv.org/abs/2404.06654"
     ],
     [
-     "MATH",
-     "Competition maths problems.",
-     "https://arxiv.org/abs/2103.03874"
+     "LongBench",
+     "Long-document tasks in English and Chinese.",
+     "https://arxiv.org/abs/2308.14508"
+    ],
+    [
+     "Lost in the Middle",
+     "Shows that models use the start and end of a long input better than the middle.",
+     "https://arxiv.org/abs/2307.03172"
+    ],
+    [
+     "Paired retrieval tests",
+     "Score the same answer with and without the earlier evidence in the prompt.",
+     "https://marin.community/research-notes/mochi-262k-retrieval-loss/"
     ]
    ],
    "datasets": [],
    "findings": [
     [
-     "Reinforcement learning on rewards can be used to train reasoning.",
-     "DeepSeek-R1",
-     "https://arxiv.org/abs/2501.12948"
+     "A change that lowered loss on a 262K retrieval test kept most of its advantage when the evidence was removed.",
+     "Marin",
+     "https://marin.community/research-notes/mochi-262k-retrieval-loss/"
     ],
     [
-     "Thinking mode lowered fabrication on made-up subjects for Qwen3-8B, from 73.6% to 46.8%.",
-     "OpenEuroLLM",
-     "https://github.com/BirgerMoell/oellm-hallucination"
-    ],
-    [
-     "A model tuned only in default mode lost accuracy in thinking mode, 53.8% to 40.0% on well-known people.",
-     "OpenEuroLLM",
-     "/notes/hallucination-and-i-dont-know/#limits"
+     "Filtering long replay data showed no clear gain on generated retrieval.",
+     "Marin",
+     "https://marin.community/research-notes/long-replay-filtering/"
     ]
    ],
    "wanted": [
-    "Preference pairs in thinking mode for the hallucination recipe."
+    "A long-context test in European languages other than English."
    ],
    "labs": [
     [
-     "OpenEuroLLM",
-     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+     "Marin",
+     "https://labs.renaissancelabs.eu/labs/marin/"
     ]
    ],
    "lessons": [
-    "preference-tuning-and-rl",
-    "post-training"
+    "attention-and-the-transformer",
+    "base-training"
    ],
+   "notes": [],
+   "family": "perception"
+  },
+  {
+   "id": "vision",
+   "name": "Seeing images",
+   "family": "perception",
+   "stages": [
+    3,
+    2,
+    2,
+    0,
+    0,
+    0
+   ],
+   "one": "The model reads images, charts and scanned documents together with text.",
+   "pre": "It needs a vision encoder in the design. Pairs of images and text teach the two to share one space.",
+   "post": "Instruction tuning on image tasks turns that into answering questions about a picture.",
+   "measure": [
+    [
+     "MMMU",
+     "College-level questions that need both an image and subject knowledge.",
+     "https://arxiv.org/abs/2311.16502"
+    ],
+    [
+     "DocVQA",
+     "Questions about scanned document images.",
+     "https://arxiv.org/abs/2007.00398"
+    ]
+   ],
+   "datasets": [
+    [
+     "CLIP",
+     "The method of learning image features from captions.",
+     "https://arxiv.org/abs/2103.00020"
+    ],
+    [
+     "LLaVA",
+     "Visual instruction tuning with machine-generated data.",
+     "https://arxiv.org/abs/2304.08485"
+    ]
+   ],
+   "findings": [],
+   "wanted": [
+    "Document tests on European forms, letters and tables."
+   ],
+   "labs": [],
+   "lessons": [
+    "attention-and-the-transformer"
+   ],
+   "notes": []
+  },
+  {
+   "id": "speech",
+   "name": "Hearing and speaking",
+   "family": "perception",
+   "stages": [
+    3,
+    3,
+    2,
+    0,
+    0,
+    0
+   ],
+   "one": "The model turns speech into text and text into speech.",
+   "pre": "Speech models are pre-trained on very large amounts of transcribed audio.",
+   "post": "Fine-tuning on one language or domain lowers the error rate there. General speech needs checking again afterwards.",
+   "measure": [
+    [
+     "Word error rate",
+     "The share of words the transcript gets wrong. Lower is better.",
+     ""
+    ],
+    [
+     "FLEURS",
+     "Parallel speech in 102 languages.",
+     "https://arxiv.org/abs/2205.12446"
+    ]
+   ],
+   "datasets": [
+    [
+     "Common Voice",
+     "Transcribed speech in many languages, collected from volunteers.",
+     "https://arxiv.org/abs/1912.06670"
+    ],
+    [
+     "Whisper",
+     "Speech recognition trained on 680,000 hours of weakly labelled audio.",
+     "https://arxiv.org/abs/2212.04356"
+    ]
+   ],
+   "findings": [],
+   "wanted": [
+    "Test sets with regional accents and spontaneous speech."
+   ],
+   "labs": [],
+   "lessons": [],
+   "notes": []
+  },
+  {
+   "id": "embeddings",
+   "name": "Search and embeddings",
+   "family": "perception",
+   "stages": [
+    2,
+    3,
+    3,
+    0,
+    0,
+    0
+   ],
+   "one": "The model turns text into vectors so that texts with similar meaning land close together.",
+   "pre": "An embedding model starts from a pre-trained language model.",
+   "post": "Contrastive fine-tuning on pairs of matching texts is what makes it good at search.",
+   "measure": [
+    [
+     "MTEB",
+     "Text embeddings tested across many tasks.",
+     "https://arxiv.org/abs/2210.07316"
+    ],
+    [
+     "BEIR",
+     "Retrieval on datasets the model was not trained on.",
+     "https://arxiv.org/abs/2104.08663"
+    ]
+   ],
+   "datasets": [],
+   "findings": [],
+   "wanted": [
+    "Retrieval benchmarks for the smaller European languages."
+   ],
+   "labs": [],
+   "lessons": [],
    "notes": []
   },
   {
    "id": "instructions",
    "name": "Following instructions",
-   "origin": "post",
    "stages": [
+    0,
     1,
     3,
     2,
-    1
+    1,
+    0
    ],
    "one": "The model does what was asked, in the format asked for, across a conversation.",
    "pre": "A base model continues text. It has no notion of a request or a turn.",
@@ -460,17 +981,153 @@
     "supervised-fine-tuning",
     "post-training"
    ],
+   "notes": [],
+   "family": "conversation"
+  },
+  {
+   "id": "structured",
+   "name": "Structured output",
+   "family": "conversation",
+   "stages": [
+    0,
+    1,
+    3,
+    0,
+    1,
+    3
+   ],
+   "one": "The model returns valid JSON, or any fixed format, every time.",
+   "pre": "A base model has seen plenty of JSON and code.",
+   "post": "Fine-tuning teaches the format. Constrained decoding at serving time can enforce it.",
+   "measure": [
+    [
+     "JSONSchemaBench",
+     "Structured outputs tested against real JSON schemas.",
+     "https://arxiv.org/abs/2501.10868"
+    ],
+    [
+     "Format validity rate",
+     "The share of answers a parser accepts. Report it next to accuracy.",
+     ""
+    ]
+   ],
+   "datasets": [
+    [
+     "Efficient Guided Generation",
+     "Guiding generation with a finite-state machine so the output always fits a pattern.",
+     "https://arxiv.org/abs/2307.09702"
+    ]
+   ],
+   "findings": [
+    [
+     "A right answer in the wrong format earns half credit on one alignment benchmark, and does not pass.",
+     "OpenEuroLLM",
+     "/notes/preference-tuning-and-alignment/#what-the-benchmark-measures"
+    ],
+    [
+     "After preference tuning, one model card lists five malformed-format responses and six prompt echoes.",
+     "OpenEuroLLM",
+     "/notes/preference-tuning-and-alignment/#what-moved"
+    ],
+    [
+     "Well-formed tool-call JSON ended up inside the reasoning span and never reached the agent.",
+     "Marin",
+     "https://marin.community/research-notes/terminus-tool-call-parsing/"
+    ]
+   ],
+   "wanted": [
+    "Format validity reported next to accuracy on public leaderboards."
+   ],
+   "labs": [
+    [
+     "Marin",
+     "https://labs.renaissancelabs.eu/labs/marin/"
+    ],
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "inference-and-sampling"
+   ],
    "notes": []
+  },
+  {
+   "id": "identity",
+   "name": "Knowing who it is",
+   "stages": [
+    0,
+    0,
+    3,
+    1,
+    0,
+    1
+   ],
+   "one": "The model states its own name, maker, knowledge cutoff and limits correctly.",
+   "pre": "A base model has read about other models, so asked who it is, it often names one of them.",
+   "post": "A small identity dataset mixed into supervised fine-tuning teaches a fixed set of true statements about the model.",
+   "measure": [
+    [
+     "Held-out identity set with gates",
+     "Correct at least 90%, wrong at most 3%, worst category at least 75%, right language at least 95%, overtrigger at most 4%.",
+     "/notes/identity-datasets/#how-to-check-it-worked"
+    ]
+   ],
+   "datasets": [
+    [
+     "OpenEuroLLM Model Identity",
+     "5,508 training and 923 validation conversations in 36 languages.",
+     "https://huggingface.co/datasets/birgermoell/openeurollm-model-identity"
+    ]
+   ],
+   "costs": [
+    "A model can overtrigger and talk about itself when nobody asked. The gates include a limit for that."
+   ],
+   "findings": [
+    [
+     "Before identity training, the model was correct about itself 52.8% of the time and wrong 38.6%.",
+     "OpenEuroLLM",
+     "/notes/identity-datasets/#how-to-check-it-worked"
+    ],
+    [
+     "About 0.5% of the fine-tuning mix is enough, mixed in once without upsampling.",
+     "OpenEuroLLM",
+     "/notes/identity-datasets/#how-to-use-it-without-damaging-the-model"
+    ],
+    [
+     "Identity is a property of the whole data mix. Rows elsewhere that claim another name can outvote the identity set.",
+     "OpenEuroLLM",
+     "/notes/identity-datasets/#when-it-fails"
+    ]
+   ],
+   "wanted": [
+    "Results on the held-out set after each later training stage."
+   ],
+   "labs": [
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "supervised-fine-tuning"
+   ],
+   "notes": [
+    "identity-datasets"
+   ],
+   "family": "conversation"
   },
   {
    "id": "abstention",
    "name": "Knowing what it doesn't know",
-   "origin": "post",
    "stages": [
+    0,
     0,
     3,
     3,
-    2
+    2,
+    0
    ],
    "one": "The model says \"I don't know\" when it does not know, and answers when it does.",
    "example": {
@@ -570,80 +1227,85 @@
    ],
    "notes": [
     "hallucination-and-i-dont-know"
-   ]
+   ],
+   "family": "honesty"
   },
   {
-   "id": "identity",
-   "name": "Knowing who it is",
-   "origin": "post",
+   "id": "decisions",
+   "name": "Calibrated decisions",
    "stages": [
-    0,
+    1,
+    1,
     3,
+    0,
     1,
     0
    ],
-   "one": "The model states its own name, maker, knowledge cutoff and limits correctly.",
-   "pre": "A base model has read about other models, so asked who it is, it often names one of them.",
-   "post": "A small identity dataset mixed into supervised fine-tuning teaches a fixed set of true statements about the model.",
+   "one": "The model answers a typed question with a probability that matches how often it is right.",
+   "pre": "The base model supplies the reading ability. The decision itself is not there.",
+   "post": "A small adapter and a decision head are trained on labelled cases, then calibrated.",
    "measure": [
     [
-     "Held-out identity set with gates",
-     "Correct at least 90%, wrong at most 3%, worst category at least 75%, right language at least 95%, overtrigger at most 4%.",
-     "/notes/identity-datasets/#how-to-check-it-worked"
+     "Accuracy and Brier score",
+     "Brier scores the whole probability distribution. Lower is better.",
+     "/notes/decision-models-jev-kev-sven/#sven-teaching-kev-swedish"
+    ],
+    [
+     "Expected calibration error",
+     "The average gap between stated confidence and how often the model is right.",
+     "https://arxiv.org/abs/1706.04599"
     ]
    ],
    "datasets": [
     [
-     "OpenEuroLLM Model Identity",
-     "5,508 training and 923 validation conversations in 36 languages.",
-     "https://huggingface.co/datasets/birgermoell/openeurollm-model-identity"
+     "Myndighetsbeslut",
+     "16,632 Swedish authority cases with typed questions and a split by date.",
+     "/notes/decision-models-jev-kev-sven/#swedish-authority-cases"
     ]
-   ],
-   "costs": [
-    "A model can overtrigger and talk about itself when nobody asked. The gates include a limit for that."
    ],
    "findings": [
     [
-     "Before identity training, the model was correct about itself 52.8% of the time and wrong 38.6%.",
-     "OpenEuroLLM",
-     "/notes/identity-datasets/#how-to-check-it-worked"
+     "Sven-0.6B reaches 0.745 accuracy on held-out Swedish questions, with a calibration error of 0.079.",
+     "Sven model card",
+     "/notes/decision-models-jev-kev-sven/#sven-teaching-kev-swedish"
     ],
     [
-     "About 0.5% of the fine-tuning mix is enough, mixed in once without upsampling.",
-     "OpenEuroLLM",
-     "/notes/identity-datasets/#how-to-use-it-without-damaging-the-model"
-    ],
-    [
-     "Identity is a property of the whole data mix. Rows elsewhere that claim another name can outvote the identity set.",
-     "OpenEuroLLM",
-     "/notes/identity-datasets/#when-it-fails"
+     "A score equal to the majority class is not a result. One authority's decisions were not learned at all.",
+     "Model cards",
+     "/notes/decision-models-jev-kev-sven/#swedish-authority-cases"
     ]
    ],
    "wanted": [
-    "Results on the held-out set after each later training stage."
+    "Decision data from real case files, not generated from rules."
    ],
    "labs": [
     [
-     "OpenEuroLLM",
-     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+     "TypeSafe (Jev)",
+     ""
+    ],
+    [
+     "Jared Palmer (Kev)",
+     ""
     ]
    ],
    "lessons": [
-    "supervised-fine-tuning"
+    "evaluation"
    ],
    "notes": [
-    "identity-datasets"
-   ]
+    "decision-models-jev-kev-sven"
+   ],
+   "family": "honesty"
   },
   {
    "id": "alignment",
    "name": "Behaving as intended",
-   "origin": "post",
    "stages": [
+    0,
     0,
     2,
     3,
-    2
+    2,
+    1
    ],
    "one": "The model is helpful and honest, declines what it should, and respects limits on what it may do.",
    "pre": "A base model imitates whatever text it saw, good and bad.",
@@ -713,17 +1375,186 @@
    ],
    "notes": [
     "preference-tuning-and-alignment"
+   ],
+   "family": "honesty"
+  },
+  {
+   "id": "misuse",
+   "name": "Resisting misuse",
+   "family": "honesty",
+   "stages": [
+    0,
+    0,
+    2,
+    3,
+    2,
+    2
+   ],
+   "one": "The model declines harmful requests, holds that line under pressure, and does not refuse harmless ones.",
+   "pre": "A base model has no notion of a request it should decline.",
+   "post": "Fine-tuning and preference tuning teach refusals. Filters and monitoring at deployment add a second layer.",
+   "measure": [
+    [
+     "HarmBench",
+     "A standard setup for automated red teaming and robust refusal.",
+     "https://arxiv.org/abs/2402.04249"
+    ],
+    [
+     "JailbreakBench",
+     "An open benchmark of jailbreak attacks.",
+     "https://arxiv.org/abs/2404.01318"
+    ],
+    [
+     "XSTest",
+     "Safe prompts that an over-cautious model refuses.",
+     "https://arxiv.org/abs/2308.01263"
+    ],
+    [
+     "AgentDojo",
+     "Prompt injection attacks against agents that use tools.",
+     "https://arxiv.org/abs/2406.13352"
+    ]
+   ],
+   "datasets": [
+    [
+     "CoCoNot",
+     "Requests a model should not comply with, and contrast cases it should.",
+     "https://arxiv.org/abs/2407.12043"
+    ]
+   ],
+   "costs": [
+    "Direct fine-tuning for refusals can cause over-refusal and a drop in general ability. Low-rank adapters gave a better balance in one study."
+   ],
+   "findings": [
+    [
+     "Safety-critical gate failures fell from 71 to 39 after one epoch of preference tuning.",
+     "OpenEuroLLM",
+     "/notes/preference-tuning-and-alignment/#what-moved"
+    ],
+    [
+     "Models complied wrongly with up to 30% of requests in categories that had been studied little.",
+     "Brahman and colleagues",
+     "https://arxiv.org/abs/2407.12043"
+    ]
+   ],
+   "wanted": [
+    "Jailbreak and over-refusal tests in European languages."
+   ],
+   "labs": [
+    [
+     "OpenEuroLLM",
+     "https://labs.renaissancelabs.eu/labs/openeurollm/"
+    ]
+   ],
+   "lessons": [
+    "preference-tuning-and-rl"
+   ],
+   "notes": [
+    "preference-tuning-and-alignment"
    ]
+  },
+  {
+   "id": "fairness",
+   "name": "Fairness",
+   "family": "honesty",
+   "stages": [
+    0,
+    2,
+    2,
+    2,
+    0,
+    1
+   ],
+   "one": "The model treats people and groups even-handedly and does not repeat stereotypes.",
+   "pre": "Bias in the pre-training text is learned along with everything else.",
+   "post": "Curated fine-tuning data and preference pairs can reduce it. It has to be measured per language and culture.",
+   "measure": [
+    [
+     "BBQ",
+     "Hand-built questions that test social bias in answers.",
+     "https://arxiv.org/abs/2110.08193"
+    ],
+    [
+     "StereoSet",
+     "Stereotyped associations in pre-trained language models.",
+     "https://arxiv.org/abs/2004.09456"
+    ],
+    [
+     "HELM",
+     "Reports fairness and bias next to accuracy for every scenario.",
+     "https://arxiv.org/abs/2211.09110"
+    ]
+   ],
+   "datasets": [],
+   "findings": [],
+   "wanted": [
+    "Bias benchmarks written for European languages and societies."
+   ],
+   "labs": [],
+   "lessons": [
+    "evaluation"
+   ],
+   "notes": []
+  },
+  {
+   "id": "privacy",
+   "name": "Keeping data private",
+   "family": "honesty",
+   "stages": [
+    0,
+    3,
+    1,
+    0,
+    0,
+    2
+   ],
+   "one": "The model does not reveal personal data or repeat its training text word for word.",
+   "pre": "Memorisation happens in pre-training, most of all for text that appears many times.",
+   "post": "Deduplication and filtering before training are the main levers. Output filters at deployment are the backstop.",
+   "measure": [
+    [
+     "Extraction attacks",
+     "Prompt the model and check how much training text can be recovered.",
+     "https://arxiv.org/abs/2012.07805"
+    ],
+    [
+     "Quantifying memorisation",
+     "How memorisation grows with model size and with repeated data.",
+     "https://arxiv.org/abs/2202.07646"
+    ]
+   ],
+   "datasets": [],
+   "findings": [
+    [
+     "Getting better at finding duplicates does not tell you which copy to keep.",
+     "Marin",
+     "https://marin.community/research-notes/dedup-survivor-quality/"
+    ]
+   ],
+   "wanted": [
+    "Memorisation tests for models trained on public-sector text."
+   ],
+   "labs": [
+    [
+     "Marin",
+     "https://labs.renaissancelabs.eu/labs/marin/"
+    ]
+   ],
+   "lessons": [
+    "pretraining-data"
+   ],
+   "notes": []
   },
   {
    "id": "tools",
    "name": "Using tools",
-   "origin": "post",
    "stages": [
+    0,
     0,
     2,
     1,
-    3
+    3,
+    1
    ],
    "one": "The model calls tools correctly, reads the results and finishes a multi-step task.",
    "pre": "A base model has seen code and logs, and no tool-call format.",
@@ -735,9 +1566,9 @@
      "https://arxiv.org/abs/2406.12045"
     ],
     [
-     "SWE-bench",
-     "Fixing real issues requires many tool calls in a row.",
-     "https://arxiv.org/abs/2310.06770"
+     "ToolLLM",
+     "Tool use across more than 16,000 real-world APIs.",
+     "https://arxiv.org/abs/2307.16789"
     ]
    ],
    "datasets": [],
@@ -776,71 +1607,185 @@
     "preference-tuning-and-rl",
     "post-training"
    ],
-   "notes": []
+   "notes": [],
+   "family": "acting"
   },
   {
-   "id": "decisions",
-   "name": "Calibrated decisions",
-   "origin": "post",
+   "id": "agents",
+   "name": "Finishing long tasks",
+   "family": "acting",
    "stages": [
+    0,
+    1,
+    2,
     1,
     3,
-    0,
-    1
+    2
    ],
-   "one": "The model answers a typed question with a probability that matches how often it is right.",
-   "pre": "The base model supplies the reading ability. The decision itself is not there.",
-   "post": "A small adapter and a decision head are trained on labelled cases, then calibrated.",
+   "one": "The model plans, acts over many steps, recovers from its mistakes and finishes the job.",
+   "pre": "A base model can continue a plan. It cannot carry one out.",
+   "post": "Reinforcement learning in sandboxed environments rewards finishing. The harness around the model at deployment matters as much as the weights.",
    "measure": [
     [
-     "Accuracy and Brier score",
-     "Brier scores the whole probability distribution. Lower is better.",
-     "/notes/decision-models-jev-kev-sven/#sven-teaching-kev-swedish"
+     "Task-completion time horizon",
+     "The length of task, in human time, that a model finishes half the time.",
+     "https://arxiv.org/abs/2503.14499"
     ],
     [
-     "Expected calibration error",
-     "The average gap between stated confidence and how often the model is right.",
-     "https://arxiv.org/abs/1706.04599"
-    ]
-   ],
-   "datasets": [
+     "GAIA",
+     "Real-world questions that need reasoning, browsing and tools.",
+     "https://arxiv.org/abs/2311.12983"
+    ],
     [
-     "Myndighetsbeslut",
-     "16,632 Swedish authority cases with typed questions and a split by date.",
-     "/notes/decision-models-jev-kev-sven/#swedish-authority-cases"
+     "OSWorld",
+     "Open-ended tasks in real computer environments.",
+     "https://arxiv.org/abs/2404.07972"
+    ],
+    [
+     "SWE-bench",
+     "Real GitHub issues, resolved when the tests pass.",
+     "https://arxiv.org/abs/2310.06770"
     ]
    ],
+   "datasets": [],
    "findings": [
     [
-     "Sven-0.6B reaches 0.745 accuracy on held-out Swedish questions, with a calibration error of 0.079.",
-     "Sven model card",
-     "/notes/decision-models-jev-kev-sven/#sven-teaching-kev-swedish"
+     "Reinforcement learning on software tasks spent most of its extra time waiting on the environment.",
+     "Marin",
+     "https://marin.community/research-notes/software-rl-environment-wait/"
     ],
     [
-     "A score equal to the majority class is not a result. One authority's decisions were not learned at all.",
-     "Model cards",
-     "/notes/decision-models-jev-kev-sven/#swedish-authority-cases"
+     "Training only on solved tasks showed no clear gain over a matched sample.",
+     "Marin",
+     "https://marin.community/research-notes/open-swe-outcome-filtering/"
     ]
    ],
    "wanted": [
-    "Decision data from real case files, not generated from rules."
+    "Agent environments that run safely on shared academic clusters.",
+    "A recipe card for an agentic reinforcement learning run on an open model."
    ],
    "labs": [
     [
-     "TypeSafe (Jev)",
-     ""
-    ],
-    [
-     "Jared Palmer (Kev)",
-     ""
+     "Marin",
+     "https://labs.renaissancelabs.eu/labs/marin/"
     ]
    ],
    "lessons": [
-    "evaluation"
+    "preference-tuning-and-rl",
+    "post-training"
    ],
-   "notes": [
-    "decision-models-jev-kev-sven"
-   ]
+   "notes": []
+  },
+  {
+   "id": "speed",
+   "name": "Inference speed",
+   "family": "efficiency",
+   "stages": [
+    3,
+    0,
+    0,
+    0,
+    0,
+    3
+   ],
+   "one": "The model answers quickly: a short wait for the first token, then many tokens per second.",
+   "pre": "Speed is mostly decided in the design: the model's size, its attention variant and how many parameters are active per token.",
+   "post": "Training does not change it. Quantisation, batching and the serving engine decide the rest.",
+   "measure": [
+    [
+     "Time to first token and tokens per second",
+     "Measured on named hardware, at a stated batch size and context length.",
+     ""
+    ],
+    [
+     "HELM",
+     "Reports efficiency next to accuracy.",
+     "https://arxiv.org/abs/2211.09110"
+    ]
+   ],
+   "datasets": [],
+   "findings": [
+    [
+     "Speculative decoding samples faster without changing the outputs.",
+     "Leviathan and colleagues",
+     "https://arxiv.org/abs/2211.17192"
+    ],
+    [
+     "Paged memory for the attention cache raises serving throughput.",
+     "vLLM",
+     "https://arxiv.org/abs/2309.06180"
+    ],
+    [
+     "FlashAttention makes attention faster and lighter on memory without approximating it.",
+     "Dao and colleagues",
+     "https://arxiv.org/abs/2205.14135"
+    ]
+   ],
+   "wanted": [
+    "Speed numbers for open European models on common hardware, with the settings stated."
+   ],
+   "labs": [],
+   "lessons": [
+    "inference-and-sampling",
+    "mixture-of-experts",
+    "gpus-and-parallelism"
+   ],
+   "notes": []
+  },
+  {
+   "id": "memory",
+   "name": "Memory footprint",
+   "family": "efficiency",
+   "stages": [
+    3,
+    0,
+    0,
+    0,
+    0,
+    3
+   ],
+   "one": "The model fits on the hardware you have.",
+   "pre": "Parameter count and number format set the size. Both are design choices.",
+   "post": "Quantisation after training shrinks the model. Distillation moves the ability into a smaller one.",
+   "measure": [
+    [
+     "Size in memory",
+     "Parameters times bytes per parameter, plus the cache for the context. State the precision and the context length.",
+     ""
+    ],
+    [
+     "Accuracy after quantisation",
+     "The same benchmarks, before and after.",
+     ""
+    ]
+   ],
+   "datasets": [],
+   "findings": [
+    [
+     "Weights can be quantised to 3 or 4 bits after training, one layer at a time.",
+     "GPTQ",
+     "https://arxiv.org/abs/2210.17323"
+    ],
+    [
+     "Looking at activations shows which weights matter most when quantising.",
+     "AWQ",
+     "https://arxiv.org/abs/2306.00978"
+    ],
+    [
+     "A small model can be trained to match a larger one's outputs.",
+     "Hinton and colleagues",
+     "https://arxiv.org/abs/1503.02531"
+    ]
+   ],
+   "wanted": [
+    "Before and after scores for 4-bit versions of open European models."
+   ],
+   "labs": [],
+   "lessons": [
+    "parameters-precision-and-memory",
+    "distillation-and-quantization"
+   ],
+   "notes": []
   }
  ]
 }

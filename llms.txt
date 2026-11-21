@@ -35,17 +35,33 @@
 
 ## Capabilities
 - [Fluent text](https://learn.renaissancelabs.eu/capabilities/fluency/): The model writes correct, natural text and predicts what comes next.
-- [World knowledge](https://learn.renaissancelabs.eu/capabilities/knowledge/): The model recalls facts about the world without looking them up.
 - [Many languages](https://learn.renaissancelabs.eu/capabilities/multilingual/): The model reads and writes many languages, and answers in the language it was asked in.
-- [Long context](https://learn.renaissancelabs.eu/capabilities/long-context/): The model finds and uses information from far back in a long input.
-- [Code](https://learn.renaissancelabs.eu/capabilities/code/): The model writes working code and fixes real bugs.
+- [Translation](https://learn.renaissancelabs.eu/capabilities/translation/): The model carries meaning from one language into another.
+- [Writing](https://learn.renaissancelabs.eu/capabilities/writing/): The model writes longer text that is clear, well organised and right for its reader.
+- [World knowledge](https://learn.renaissancelabs.eu/capabilities/knowledge/): The model recalls facts about the world without looking them up.
+- [Sticking to the sources](https://learn.renaissancelabs.eu/capabilities/grounding/): Given documents, the model answers from them and adds nothing they do not say.
+- [Specialist knowledge](https://learn.renaissancelabs.eu/capabilities/specialist/): The model answers questions from a profession, such as law, medicine or finance, at the level the field expects.
 - [Reasoning](https://learn.renaissancelabs.eu/capabilities/reasoning/): The model works through a problem in steps and reaches the right answer.
+- [Mathematics](https://learn.renaissancelabs.eu/capabilities/maths/): The model solves problems with numbers and symbols and gets the right answer.
+- [Code](https://learn.renaissancelabs.eu/capabilities/code/): The model writes working code and fixes real bugs.
+- [Learning from examples](https://learn.renaissancelabs.eu/capabilities/icl/): Shown a few examples in the prompt, the model picks up the pattern and continues it.
+- [Long context](https://learn.renaissancelabs.eu/capabilities/long-context/): The model finds and uses information from far back in a long input.
+- [Seeing images](https://learn.renaissancelabs.eu/capabilities/vision/): The model reads images, charts and scanned documents together with text.
+- [Hearing and speaking](https://learn.renaissancelabs.eu/capabilities/speech/): The model turns speech into text and text into speech.
+- [Search and embeddings](https://learn.renaissancelabs.eu/capabilities/embeddings/): The model turns text into vectors so that texts with similar meaning land close together.
 - [Following instructions](https://learn.renaissancelabs.eu/capabilities/instructions/): The model does what was asked, in the format asked for, across a conversation.
-- [Knowing what it doesn't know](https://learn.renaissancelabs.eu/capabilities/abstention/): The model says "I don't know" when it does not know, and answers when it does.
+- [Structured output](https://learn.renaissancelabs.eu/capabilities/structured/): The model returns valid JSON, or any fixed format, every time.
 - [Knowing who it is](https://learn.renaissancelabs.eu/capabilities/identity/): The model states its own name, maker, knowledge cutoff and limits correctly.
-- [Behaving as intended](https://learn.renaissancelabs.eu/capabilities/alignment/): The model is helpful and honest, declines what it should, and respects limits on what it may do.
-- [Using tools](https://learn.renaissancelabs.eu/capabilities/tools/): The model calls tools correctly, reads the results and finishes a multi-step task.
+- [Knowing what it doesn't know](https://learn.renaissancelabs.eu/capabilities/abstention/): The model says "I don't know" when it does not know, and answers when it does.
 - [Calibrated decisions](https://learn.renaissancelabs.eu/capabilities/decisions/): The model answers a typed question with a probability that matches how often it is right.
+- [Behaving as intended](https://learn.renaissancelabs.eu/capabilities/alignment/): The model is helpful and honest, declines what it should, and respects limits on what it may do.
+- [Resisting misuse](https://learn.renaissancelabs.eu/capabilities/misuse/): The model declines harmful requests, holds that line under pressure, and does not refuse harmless ones.
+- [Fairness](https://learn.renaissancelabs.eu/capabilities/fairness/): The model treats people and groups even-handedly and does not repeat stereotypes.
+- [Keeping data private](https://learn.renaissancelabs.eu/capabilities/privacy/): The model does not reveal personal data or repeat its training text word for word.
+- [Using tools](https://learn.renaissancelabs.eu/capabilities/tools/): The model calls tools correctly, reads the results and finishes a multi-step task.
+- [Finishing long tasks](https://learn.renaissancelabs.eu/capabilities/agents/): The model plans, acts over many steps, recovers from its mistakes and finishes the job.
+- [Inference speed](https://learn.renaissancelabs.eu/capabilities/speed/): The model answers quickly: a short wait for the first token, then many tokens per second.
+- [Memory footprint](https://learn.renaissancelabs.eu/capabilities/memory/): The model fits on the hardware you have.
 
 ## Topics
 - [Preference tuning](https://learn.renaissancelabs.eu/tags/preference-tuning/): Training on pairs of better and worse answers, with DPO and its relatives.

@@ -22,7 +22,7 @@
 <meta name="theme-color" content="#fdfaf3">
 <link rel="icon" href="/assets/favicon.png">
 <link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=fd29bae280">
+<link rel="stylesheet" href="/styles.css?v=c8f448aad4">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "HowTo", "name": "SFT warm start, then on-policy DPO, against hallucination", "description": "Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.", "step": [{"@type": "HowToStep", "name": "Get the code and the data", "text": "The dataset holds the exact training rows for both stages, so you do not need to rebuild them."}, {"@type": "HowToStep", "name": "Get the base model", "text": "Download the base model at the revision the run started from."}, {"@type": "HowToStep", "name": "Tokenize the SFT set", "text": "Each assistant turn becomes one example: the generation prompt as the model sees it in default mode, then the reply and the end-of-turn token. Only the reply is supervised."}, {"@type": "HowToStep", "name": "Train the warm start", "text": "Supervised fine-tuning on the tokenized set. Use your own trainer with these settings."}, {"@type": "HowToStep", "name": "Check before going on", "text": "Run the benchmark on the warm-started model (step 8). Fabrication should already be near 4%. Expect it to decline about a quarter of the questions about well-known people. The next stage is meant to correct that."}, {"@type": "HowToStep", "name": "Tokenize the DPO pairs", "text": "Tokenize the released round-2 mix with the model's own chat template. Concat mode builds each answer the way the model produces it at inference."}, {"@type": "HowToStep", "name": "Train DPO round 2", "text": "One short epoch of DPO on the warm-started model, with an SFT term on the preferred answer."}, {"@type": "HowToStep", "name": "Run the benchmark", "text": "500 questions in default and thinking mode, graded by gemma-4-31B-it. One node with 2 GPUs."}], "author": {"@type": "Person", "name": "Birger Moell"}, "datePublished": "2026-11-21"}</script>
 </head>
 <body class="">
@@ -53,7 +53,7 @@
   <h1>SFT warm start, then on-policy DPO, against hallucination</h1>
   <p class="lede">Take a 9B model that invents an answer for 98% of made-up names. Fine-tune it on honest answers for 12 minutes, then run a short DPO round on its own mistakes. Fabrication falls to 2%.</p>
   <p class="rby"><span>From <b>OpenEuroLLM</b></span><span>Recipe by Birger Moell</span><span class="rstatus"><i></i>Run once by its author. Not yet reproduced by anyone else.</span></p>
-  <p class="tags caps"><span>Capability</span><a class="tag cap" href="/capabilities/abstention/" style="--c:#b0893f">Knowing what it doesn&#x27;t know</a></p><p class="tags"><a class="tag" href="/tags/hallucination/">Hallucination</a><a class="tag" href="/tags/supervised-fine-tuning/">Supervised fine-tuning</a><a class="tag" href="/tags/preference-tuning/">Preference tuning</a><a class="tag" href="/tags/multilingual/">Multilingual</a></p>
+  <p class="tags caps"><span>Capability</span><a class="tag cap" href="/capabilities/abstention/" style="--c:#b0763f">Knowing what it doesn&#x27;t know</a></p><p class="tags"><a class="tag" href="/tags/hallucination/">Hallucination</a><a class="tag" href="/tags/supervised-fine-tuning/">Supervised fine-tuning</a><a class="tag" href="/tags/preference-tuning/">Preference tuning</a><a class="tag" href="/tags/multilingual/">Multilingual</a></p>
   <div class="glance"><div class="gl"><span>Makes</span><b>1</b><em>9B checkpoint</em></div><div class="gl"><span>Stages</span><b>2</b><em>SFT, then DPO</em></div><div class="gl"><span>Equipment</span><b>8</b><em>A100 GPUs, 2 nodes</em></div><div class="gl"><span>Ingredients</span><b>6,123</b><em>SFT rows, then 1,918 pairs</em></div></div>
   <div class="rcta"><a class="btn" href="https://huggingface.co/birgermoell/prelude-9b-sft-v2-hallucination-r2">Open the checkpoint</a><a class="btn ghost" href="#method">Jump to the method</a><button type="button" class="btn ghost" onclick="window.print()">Print this card</button></div>
 </div></header>
@@ -169,6 +169,6 @@ echo &quot;== done $(date)&quot;
   <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
   <ul id="results"></ul></div>
 </div>
-<script src="/app.js?v=fd29bae280" defer></script>
+<script src="/app.js?v=c8f448aad4" defer></script>
 </body>
 </html>

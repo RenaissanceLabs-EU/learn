@@ -7,18 +7,23 @@ import json
 
 PRE = ["#3f6f63", "#4f7d70", "#5f8a7a", "#6f9a8a", "#7ba596", "#86ad9f"]
 POST = ["#9a7a48", "#b0893f", "#c79a3f", "#c2824a", "#b5654a", "#a8573f"]
-HALF = {0: 0.8, 1: 4, 2: 9, 3: 15}          # ribbon half-width per stage weight
+HALF = {0: 0.7, 1: 3, 2: 7, 3: 12}          # ribbon half-width per stage weight
 STATE = {"improved": "Improved", "mixed": "Mixed", "held": "Held steady", "worse": "Got worse", "trained": "Trained, not measured"}
-GROUP = {"pre": "Learned from text", "post": "Taught afterwards"}
+GROUP = {}   # family id -> name, filled by load()
+FAMS = []
+SHORT = []
 ISSUE = "https://github.com/RenaissanceLabs-EU/learn/issues/new?title="
 
 
 def load():
     d = json.load(open("data/capabilities.json", encoding="utf-8"))
     caps = d["capabilities"]
-    for g in ("pre", "post"):
-        for i, c in enumerate([c for c in caps if c["origin"] == g]):
-            c["color"] = (PRE if g == "pre" else POST)[i % 6]
+    FAMS[:] = d["families"]; SHORT[:] = d.get("stages_short", d["stages"])
+    GROUP.clear(); GROUP.update({f["id"]: f["name"] for f in FAMS})
+    col = {f["id"]: f["color"] for f in FAMS}
+    for c in caps: c["color"] = col[c["family"]]
+    order = [f["id"] for f in FAMS]
+    caps.sort(key=lambda c: order.index(c["family"]))   # stable: keeps the file's order inside a family
     return d["stages"], caps
 
 
@@ -27,40 +32,38 @@ def recipes_for(c, recipes):
 
 
 def meter(c, stages, big=False):
-    bars = "".join(f'<i class="w{w}" style="--c:{c["color"]}" title="{stages[i]}: {["none", "a little", "some", "a lot"][w]}"></i>' for i, w in enumerate(c["stages"]))
+    bars = "".join(f'<i class="w{w}" style="--c:{c["color"]}" title="{stages[i]}: {["not shaped here", "a little", "some", "a lot"][w]}"></i>' for i, w in enumerate(c["stages"]))
     if not big: return f'<span class="cmeter" aria-hidden="true">{bars}</span>'
-    cols = "".join(f'<div class="sm-col"><div class="sm-bar"><i class="w{w}" style="--c:{c["color"]}"></i></div><b>{stages[i]}</b><span>{["Not shaped here", "Shaped a little", "Shaped here", "Mostly shaped here"][w]}</span></div>' for i, w in enumerate(c["stages"]))
+    cols = "".join(f'<div class="sm-col"><div class="sm-bar"><i class="w{w}" style="--c:{c["color"]}"></i></div><b>{SHORT[i]}</b><span>{["Not here", "A little", "Some", "Most"][w]}</span></div>' for i, w in enumerate(c["stages"]))
     return f'<div class="smeter">{cols}</div>'
 
 
 def ribbons(caps, stages, esc):
     """The hero figure: one ribbon per capability, flowing through the four training stages. Width = how much a stage shapes it."""
-    W, X0, XS, X1, ROW, TOP, GAP = 1120, 322, [392, 612, 832, 1052], 1100, 40, 104, 46
-    H = TOP + ROW * len(caps) + GAP + 26
-    out = [f'<svg class="capviz" viewBox="0 0 {W} {H}" role="img" aria-label="Twelve capabilities as ribbons across four training stages. A wider ribbon means the stage shapes the capability more.">']
+    W, X0, XS, X1, ROW, TOP, GAP = 1120, 318, [366, 510, 654, 798, 942, 1076], 1108, 31, 96, 42
+    H = TOP + ROW * len(caps) + GAP * (len(FAMS) - 1) + 20
+    out = [f'<svg class="capviz" viewBox="0 0 {W} {H}" role="img" aria-label="Capabilities as ribbons across the stages of building a model. A wider ribbon means the stage shapes the capability more.">']
     for i, s in enumerate(stages):
         out.append(f'<line class="cv-guide" x1="{XS[i]}" y1="{TOP - 30}" x2="{XS[i]}" y2="{H - 12}"/>')
-        out.append(f'<text class="cv-num" x="{XS[i]}" y="26" text-anchor="middle">0{i + 1}</text><text class="cv-stage" x="{XS[i]}" y="48" text-anchor="middle">{esc(s)}</text>')
-    out.append(f'<line class="cv-split" x1="{(XS[0] + XS[1]) / 2}" y1="62" x2="{(XS[0] + XS[1]) / 2}" y2="{H - 12}"/>')
-    out.append(f'<text class="cv-era" x="{XS[0]}" y="74" text-anchor="middle">before</text><text class="cv-era" x="{(XS[1] + XS[3]) / 2}" y="74" text-anchor="middle">post-training</text>')
+        out.append(f'<text class="cv-num" x="{XS[i]}" y="26" text-anchor="middle">0{i + 1}</text><text class="cv-stage" x="{XS[i]}" y="48" text-anchor="middle">{esc(SHORT[i])}</text>')
     y, last = TOP, None
     for n, c in enumerate(caps):
-        if c["origin"] != last:
+        if c["family"] != last:
             if last is not None: y += GAP
-            out.append(f'<text class="cv-group" x="0" y="{y - 14}">{GROUP[c["origin"]]}</text>')
-            last = c["origin"]
+            out.append(f'<text class="cv-group" x="0" y="{y - 14}">{GROUP[c["family"]]}</text>')
+            last = c["family"]
         cy = y + ROW / 2
         hw = [HALF[w] for w in c["stages"]]
         top = f'M{X0},{cy - hw[0]:.1f} L{XS[0]},{cy - hw[0]:.1f}'
-        bot = f'L{X1},{cy + hw[3]:.1f} L{XS[3]},{cy + hw[3]:.1f}'
-        for i in range(3):
+        bot = f'L{X1},{cy + hw[-1]:.1f} L{XS[-1]},{cy + hw[-1]:.1f}'
+        for i in range(len(XS) - 1):
             mx = (XS[i] + XS[i + 1]) / 2
             top += f' C{mx},{cy - hw[i]:.1f} {mx},{cy - hw[i + 1]:.1f} {XS[i + 1]},{cy - hw[i + 1]:.1f}'
-        for i in range(2, -1, -1):
+        for i in range(len(XS) - 2, -1, -1):
             mx = (XS[i] + XS[i + 1]) / 2
             bot += f' C{mx},{cy + hw[i + 1]:.1f} {mx},{cy + hw[i]:.1f} {XS[i]},{cy + hw[i]:.1f}'
-        d = f'{top} L{X1},{cy - hw[3]:.1f} {bot} L{X0},{cy + hw[0]:.1f} Z'
-        dots = "".join(f'<circle cx="{XS[i]}" cy="{cy}" r="{2.2 + w * 0.9:.1f}"/>' for i, w in enumerate(c["stages"]) if w)
+        d = f'{top} L{X1},{cy - hw[-1]:.1f} {bot} L{X0},{cy + hw[0]:.1f} Z'
+        dots = "".join(f'<circle cx="{XS[i]}" cy="{cy}" r="{1.8 + w * 0.75:.1f}"/>' for i, w in enumerate(c["stages"]) if w)
         out.append(f'<a href="/capabilities/{c["id"]}/" class="cv-row" style="--c:{c["color"]};--d:{n * 55}ms"><title>{esc(c["name"])}: {esc(c["one"])}</title>'
                    f'<rect class="cv-hit" x="0" y="{y}" width="{W}" height="{ROW}"/><text class="cv-name" x="0" y="{cy + 6}">{esc(c["name"])}</text>'
                    f'<path class="cv-rib" d="{d}"/><g class="cv-dots">{dots}</g></a>')
@@ -95,21 +98,22 @@ def index(B, stages, caps, recipes):
         return (f'<a class="ccard" href="/capabilities/{c["id"]}/" style="--c:{c["color"]}"><span class="ccard-top">{meter(c, stages)}</span><b>{esc(c["name"])}</b>'
                 f'<span>{esc(c["one"])}</span><span class="chip">{counts(c, recipes)}</span></a>')
     groups = "".join(
-        f'<section class="cgroup"><header><p class="eyebrow">{GROUP[g]}</p><h2>{t}</h2><p>{d}</p></header><div class="cgrid">' + "".join(card(c) for c in caps if c["origin"] == g) + "</div></section>"
-        for g, t, d in (("pre", "What pre-training gives you", "These come from reading a very large amount of text. Later stages can sharpen them, and they cannot add what the text never held."),
-                        ("post", "What post-training adds", "These do not appear on their own. Each one is taught on purpose, with its own data and its own test.")))
+        f'<section class="cgroup" id="{f["id"]}" style="--c:{f["color"]}"><header><p class="eyebrow">{esc(f["name"])}</p><p>{esc(f["about"])}</p></header><div class="cgrid">' +
+        "".join(card(c) for c in caps if c["family"] == f["id"]) + "</div></section>" for f in FAMS)
     wanted = "".join(f'<li><a href="/capabilities/{c["id"]}/#wanted" style="--c:{c["color"]}">{esc(c["name"])}</a><span>{esc(w)}</span></li>' for c in caps for w in c.get("wanted", []))
     body = f"""
 <section class="head-band caphead"><div class="wrap"><p class="eyebrow">Capabilities</p><h1>What goes into a model</h1>
-  <p class="lede">A language model is a bundle of separate abilities. Some are learned from raw text in pre-training. Others are taught afterwards, one at a time. For each one: how it is measured, what data it needs, which recipes improve it, and what is still missing.</p></div></section>
+  <p class="lede">A language model is a bundle of separate abilities. Some are fixed when the model is designed. Some are learned from raw text in pre-training. Others are taught afterwards, one at a time, or decided when the model is served. For each one: how it is measured, what data it needs, which recipes improve it, and what is still missing.</p>
+  <p class="capcount"><b>{len(caps)}</b> capabilities in <b>{len(FAMS)}</b> families{"".join(f'<a href="#{f["id"]}" style="--c:{f["color"]}">{esc(f["name"])}</a>' for f in FAMS)}</p></div></section>
 <section class="wrap block capfig"><figure>{ribbons(caps, stages, esc)}
-  <figcaption>Each ribbon is one capability, flowing left to right through the stages of training. Where a ribbon is wide, that stage does most of the shaping. This is an editorial sketch, not a measurement. Select a ribbon to open the capability.</figcaption></figure></section>
+  <figcaption>Each ribbon is one capability, flowing left to right from the design of the model, through pre-training and the three kinds of post-training, to deployment. Where a ribbon is wide, that stage does most of the shaping. This is an editorial sketch, not a measurement. Select a ribbon to open the capability.</figcaption></figure></section>
 <div class="wrap block">{groups}</div>
 <section class="wrap block capsec"><header><p class="eyebrow">Capability map</p><h2>What each recipe changed</h2>
   <p>A recipe is aimed at one capability, and it moves others too. Most cells are empty because nobody measured them, and that is worth knowing before you reuse a recipe.</p></header>{effect_map(caps, recipes, esc)}</section>
 <section class="wrap block capsec"><header><p class="eyebrow">Wanted</p><h2>What nobody has published yet</h2>
   <p>Open requests, one capability at a time. If your lab has one of these, a recipe, a dataset or a short finding answers it.</p></header>
   <ul class="wantlist">{wanted}</ul>
+  <p class="fine capnote">The list follows how the field already splits things up: benchmark suites such as <a href="https://arxiv.org/abs/2211.09110">HELM</a> report accuracy next to calibration, robustness, fairness, bias, toxicity and efficiency, and model cards list languages, context length, modalities and tool use. It is not complete, and the family a capability sits in is a judgement.</p>
   <p class="capcta"><a class="btn" href="{ISSUE}Capability%3A%20">Add a capability, a finding or a recipe</a><a class="btn ghost" href="/data/capabilities.json">This map as JSON</a></p></section>"""
     B.page("/capabilities/", "Capabilities · What goes into a language model · Renaissance Labs",
            "The abilities that make up a language model, from pre-training to post-training: how each is measured, what data it needs and which recipes improve it.", body, image="home")
@@ -127,9 +131,9 @@ def cap_page(B, stages, caps, c, recipes, notes, lessons):
     if c.get("example"):
         e = c["example"]
         secs.append(("practice", "In practice", f'<p class="rsub">{esc(e["q"])}</p><div class="cex"><div class="bad"><span>Without it</span><p>{esc(e["bad"])}</p></div><div class="good"><span>With it</span><p>{esc(e["good"])}</p></div></div>'))
-    secs.append(("origin", "Where it comes from", f'{meter(c, stages, big=True)}<div class="cwhere"><div><span>Pre-training</span><p>{esc(c["pre"])}</p></div><div><span>Post-training</span><p>{esc(c["post"])}</p></div></div>'))
+    secs.append(("origin", "Where it comes from", f'{meter(c, stages, big=True)}<div class="cwhere"><div><span>Design and pre-training</span><p>{esc(c["pre"])}</p></div><div><span>Post-training and deployment</span><p>{esc(c["post"])}</p></div></div>'))
     secs.append(("measure", "How to measure it", rows(c["measure"])))
-    secs.append(("datasets", "Common datasets", rows(c["datasets"]) if c.get("datasets") else empty("datasets listed", "a dataset for this")))
+    secs.append(("datasets", "Common datasets and methods", rows(c["datasets"]) if c.get("datasets") else empty("datasets listed", "a dataset for this")))
     rf = recipes_for(c, recipes)
     rhtml = "".join(f'<a class="crecipe" href="/recipes/{r["id"]}/"><span class="fxtag {e[0]}">{STATE[e[0]]}</span><b>{esc(r["title"])}</b><span>{esc(e[1])}</span><em>{esc(r["lab"])} · {esc(r["status"])}</em></a>' for r, e in rf)
     secs.append(("recipes", "Recipes", rhtml if rf else empty("recipes", "a training run that improves this")))
@@ -152,7 +156,7 @@ def cap_page(B, stages, caps, c, recipes, notes, lessons):
     html = f"""
 <article class="recipe cap" style="--c:{c["color"]}">
 <header class="rhead"><div class="wrap">
-  <p class="crumb"><a href="/capabilities/">Capabilities</a> · {GROUP[c["origin"]]}</p>
+  <p class="crumb"><a href="/capabilities/">Capabilities</a> · {GROUP[c["family"]]}</p>
   <h1>{esc(c["name"])}</h1>
   <p class="lede">{esc(c["one"])}</p>
 </div></header>

@@ -518,11 +518,11 @@ a.tag.all { background: none; border-style: dashed; box-shadow: none; color: var
 .capfig figcaption { font-size: 14px; color: var(--ink-soft); margin-top: 16px; max-width: 78ch; line-height: 1.55; }
 .capviz { display: block; width: 100%; height: auto; overflow: visible; }
 .cv-guide { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 2 5; } .cv-split { stroke: #d9cfb8; stroke-width: 1; }
-.cv-num { font: 600 11px var(--sans); letter-spacing: .16em; fill: var(--gold); } .cv-stage { font: 500 17px var(--serif); fill: var(--ink); }
+.cv-num { font: 600 11px var(--sans); letter-spacing: .16em; fill: var(--gold); } .cv-stage { font: 500 16px var(--serif); fill: var(--ink); }
 .cv-era { font: 600 10.5px var(--sans); letter-spacing: .16em; text-transform: uppercase; fill: var(--ink-faint); }
-.cv-group { font: 600 11px var(--sans); letter-spacing: .16em; text-transform: uppercase; fill: var(--gold); }
+.cv-group { font: 600 10.5px var(--sans); letter-spacing: .16em; text-transform: uppercase; fill: var(--ink-faint); }
 .cv-row { cursor: pointer; text-decoration: none; transition: opacity .2s; } .cv-hit { fill: transparent; }
-.cv-name { font: 400 17.5px var(--serif); fill: var(--ink); transition: fill .2s; }
+.cv-name { font: 400 16.5px var(--serif); fill: var(--ink); transition: fill .2s; }
 .cv-rib { fill: var(--c); opacity: .86; transition: opacity .2s; }
 .cv-dots circle { fill: #fffdf8; stroke: var(--c); stroke-width: 1.6; }
 .capviz:hover .cv-row:not(:hover) { opacity: .28; } .cv-row:hover .cv-rib, .cv-row:focus-visible .cv-rib { opacity: 1; } .cv-row:hover .cv-name { fill: var(--c); }
@@ -552,10 +552,10 @@ a.tag.all { background: none; border-style: dashed; box-shadow: none; color: var
 .wantlist a { align-self: flex-start; text-decoration: none; font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; font-weight: 600; color: var(--c); }
 .capcta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
 .cap .rhead h1 { max-width: 18ch; } .cap .rhead { border-top: 4px solid var(--c); }
-.smeter { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; } .sm-col { background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
+.smeter { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px; } .sm-col { background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; }
 .sm-bar { height: 64px; display: flex; align-items: flex-end; margin-bottom: 10px; } .sm-bar i { display: block; width: 100%; border-radius: 6px; background: var(--c); }
 .sm-bar .w0 { height: 4px; opacity: .22; } .sm-bar .w1 { height: 20px; opacity: .5; } .sm-bar .w2 { height: 42px; opacity: .78; } .sm-bar .w3 { height: 64px; }
-.sm-col b { font-family: var(--serif); font-weight: 500; font-size: 16px; line-height: 1.2; } .sm-col span { font-size: 12.5px; color: var(--ink-soft); }
+.sm-col { padding: 12px 12px 14px; } .sm-col b { font-family: var(--serif); font-weight: 500; font-size: 14.5px; line-height: 1.2; hyphens: auto; } .sm-col span { font-size: 12.5px; color: var(--ink-soft); }
 .cwhere { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 10px; } .cwhere div { background: var(--paper-deep); border-radius: 14px; padding: 16px 18px; } .cwhere span, .cex span { font-size: 11.5px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600; color: var(--gold); } .cwhere p { margin-top: 6px; font-size: 15.5px; }
 .cex { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .cex div { border-radius: 14px; padding: 16px 18px; border: 1px solid var(--rule); background: #fff; } .cex p { margin-top: 6px; font-family: var(--serif); font-size: 17px; line-height: 1.45; }
 .cex .bad { border-left: 4px solid #b5654a; } .cex .bad span { color: #a04f37; } .cex .good { border-left: 4px solid #4f7d70; } .cex .good span { color: #3f6f63; }
@@ -574,8 +574,15 @@ a.tag.all { background: none; border-style: dashed; box-shadow: none; color: var
 .tags.caps { margin-top: 20px; } .tags.caps + .tags { margin-top: 8px; } .tags.caps > span { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; font-weight: 600; color: var(--ink-soft); margin-right: 4px; }
 a.tag.cap { background: #fff; border-color: var(--c); } a.tag.cap::before { background: var(--c); opacity: 1; }
 @media (max-width: 860px) {
-  .capfig { display: none; } .wantlist, .cwhere, .cex { grid-template-columns: 1fr; } .smeter { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .capfig { display: none; } .wantlist, .cwhere, .cex { grid-template-columns: 1fr; } .smeter { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .clist li { grid-template-columns: 1fr; gap: 2px; } .cfind li, .cwant li { flex-direction: column; align-items: flex-start; gap: 6px; } .cfind span { text-align: left; } .cap .pn { margin-left: 0; }
 }
 @media print { .capcta, .cwant a { display: none; } }
 .clist a { text-decoration-color: var(--gold-bright); text-underline-offset: 3px; } .clist a:hover { color: var(--gold); }
+.cgroup { margin-bottom: clamp(34px, 5vw, 56px); scroll-margin-top: 90px; } .cgroup header { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; max-width: none; padding-bottom: 10px; border-bottom: 1px solid var(--rule); }
+.cgroup header .eyebrow { margin: 0; color: var(--c); font-size: 13px; } .cgroup header p:not(.eyebrow) { margin: 0; font-size: 15px; }
+.capcount { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin-top: 22px; font-size: 15px; color: var(--ink-soft); } .capcount b { color: var(--ink); font-family: var(--serif); font-size: 22px; font-weight: 500; }
+.capcount a { text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 999px; border: 1px solid var(--rule); background: #fff; color: var(--ink); display: inline-flex; align-items: center; gap: 7px; } .capcount a::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--c); } .capcount a:first-of-type { margin-left: 10px; } .capcount a:hover { border-color: var(--c); }
+.capnote { max-width: 78ch; margin-top: 22px; } .capnote a { color: inherit; }
+.fxmap { min-width: 1040px; } .fxmap tbody th { max-width: 250px; } .fxmap thead th a { font-size: 12.5px; }
+.sm-col b { font-size: 13.5px; overflow-wrap: anywhere; } @media (max-width: 860px) { .sm-col b { font-size: 15px; } }
