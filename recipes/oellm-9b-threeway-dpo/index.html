@@ -22,7 +22,7 @@
 <meta name="theme-color" content="#fdfaf3">
 <link rel="icon" href="/assets/favicon.png">
 <link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v=2026-11-17">
+<link rel="stylesheet" href="/styles.css?v=4e4d75e59e">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "HowTo", "name": "Full-weight DPO on 1.4 million preference pairs", "description": "Take a supervised fine-tuned 9B model and tune it on pairs of preferred and rejected answers. One epoch, every weight updated, 32 GPUs, under two days.", "step": [{"@type": "HowToStep", "name": "Get the code", "text": "Check out the exact training code."}, {"@type": "HowToStep", "name": "Prepare the base model", "text": "Download the base model at the pinned revision. Then fix its tokenizer. The run used a repaired tokenizer configuration, and loading the original may not reproduce the training startup. Use the two files from the release."}, {"@type": "HowToStep", "name": "Stage the data", "text": "The staging script builds the six training and validation files. It reads HelpSteer3 from files you must prepare first (preference-train.jsonl.gz and preference-validation.jsonl.gz), and it does not download them. Set the two path constants at the top of the script, then run it and check the fingerprints."}, {"@type": "HowToStep", "name": "Set the paths", "text": "Copy the frozen config from the release. Change the model path and the six data paths to your own."}, {"@type": "HowToStep", "name": "Launch", "text": "Submit from the checked-out training repository. The script uses its src folder, scripts/train.py and configs/accelerate/fsdp_lumi.yaml."}], "author": {"@type": "Person", "name": "Birger Moell"}, "datePublished": "2026-11-19"}</script>
 </head>
 <body class="">
@@ -146,6 +146,6 @@ srun --label --export=ALL --wait=60 --kill-on-bad-exit=1 singularity exec -B &qu
   <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
   <ul id="results"></ul></div>
 </div>
-<script src="/app.js?v=2026-11-17" defer></script>
+<script src="/app.js?v=4e4d75e59e" defer></script>
 </body>
 </html>

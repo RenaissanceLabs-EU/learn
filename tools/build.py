@@ -17,6 +17,8 @@ ATLAS = "https://labs.renaissancelabs.eu"
 CFG = json.load(open("data/site.json"))
 MEDIA = CFG.get("media_base", "/media/").rstrip("/") + "/"
 BUILD = CFG.get("built", datetime.date.today().isoformat())
+import hashlib
+ASSETV = hashlib.md5(b"".join(open(f, "rb").read() for f in ("styles.css", "app.js", "widgets.js", "widgets2.js", "widgets3.js") if os.path.exists(f))).hexdigest()[:10]  # changes whenever a stylesheet or script does, so browsers never show new pages with old styles
 
 PARTS = ["The basics", "Feeding the model", "The machine room", "After pre-training", "End to end"]
 PART_BLURB = {
@@ -397,7 +399,7 @@ def head(title, desc, path, body_class="", image="home", extra="", jsonld=None):
 <meta name="theme-color" content="#fdfaf3">
 <link rel="icon" href="/assets/favicon.png">
 <link rel="preload" href="/assets/fonts/fraunces-latin-opsz-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css?v={BUILD}">
+<link rel="stylesheet" href="/styles.css?v={ASSETV}">
 {extra}{ld}</head>
 <body class="{body_class}">
 <a class="skip" href="#main">Skip to content</a>
@@ -431,7 +433,7 @@ def foot():
   <div class="search-box"><input id="q" type="search" placeholder="Search lessons, films and terms" autocomplete="off" spellcheck="false"><button type="button" data-search-close aria-label="Close">Esc</button>
   <ul id="results"></ul></div>
 </div>
-<script src="/app.js?v={BUILD}" defer></script>
+<script src="/app.js?v={ASSETV}" defer></script>
 </body>
 </html>
 """
@@ -646,7 +648,7 @@ def lesson_page(l, lessons, films):
           "isPartOf": {"@type": "Course", "name": "How language models learn", "url": SITE + "/models/"},
           "publisher": {"@type": "Organization", "name": "Renaissance Labs"}, "dateModified": BUILD}
     page(f"/lessons/{l['id']}/", f"{l['title']} · Learn · Renaissance Labs", l["summary"], c, jsonld=ld, image="models",
-         extra='<script src="/widgets.js?v=' + BUILD + '" defer></script>\n<script src="/widgets2.js?v=' + BUILD + '" defer></script>\n')
+         extra='<script src="/widgets.js?v=' + ASSETV + '" defer></script>\n<script src="/widgets2.js?v=' + ASSETV + '" defer></script>\n')
 
 
 def film_page(f, films, lessons):
@@ -763,7 +765,7 @@ def note_page(n, lessons, films):
           "publisher": {"@type": "Organization", "name": "Renaissance Labs", "url": "https://renaissancelabs.eu/"},
           "image": f"{SITE}/assets/og/note-{n['id']}.jpg"}
     page(f"/notes/{n['id']}/", f"{n['title']} · Notes · Renaissance Labs", n["summary"], c, jsonld=ld, image=f"note-{n['id']}",
-         extra=('<meta name="robots" content="noindex">\n' if n.get("status") == "draft" else "") + ("".join(f'<script src="/{x}.js?v=' + BUILD + '" defer></script>\n' for x in ("widgets", "widgets2", "widgets3")) if '<div class="widget"' in n["html"] else ""))
+         extra=('<meta name="robots" content="noindex">\n' if n.get("status") == "draft" else "") + ("".join(f'<script src="/{x}.js?v=' + ASSETV + '" defer></script>\n' for x in ("widgets", "widgets2", "widgets3")) if '<div class="widget"' in n["html"] else ""))
 
 
 def notes_page(notes):
