@@ -88,14 +88,22 @@ Second attempt: start with plain supervised fine-tuning on the curated answers. 
 
 Then a second DPO round, on answers sampled from the warm-started model. It already abstained on most of what it did not know, so only 617 pairs were left. 151 of them pulled the other way, preferring a correct answer over the model's own refusal.
 
-:::bars Fabrication on made-up subjects through the stages (%)
-Before | 97.7 |
-DPO round 1 alone | 92.7 | a separate run
-SFT warm start | 3.6 |
-Warm start + DPO round 2 | 1.8 | the released checkpoint
+:::figure /assets/img/prelude-hallucination-stages.png | Bar chart of the hallucination benchmark through four stages: the starting model, DPO round 1 alone, the SFT warm start, and the warm start plus DPO round 2.
+The benchmark through the stages, default mode. DPO round 1 was a separate run. The released model is the last group.
 :::
 
 The released model declines 98% of made-up subjects, briefly and in the language of the question. On obscure real people it abstains 97.5% of the time.
+
+| Default mode, 500 questions | Before | Released model |
+| --- | ---: | ---: |
+| Fabrication on made-up subjects | 97.7% | 1.8% |
+| Good “I don't know” on made-up subjects | 2.3% | 98.2% |
+| Obscure real people: answered wrongly | 100% | 2.5% |
+| Well-known people: correct (incl. partly correct) | 53.8% | 53.8% |
+| Well-known people: wrong answers (of 80) | 35 | 6 |
+| Well-known people: abstains | 0% | 38.8% |
+| Answers in the question's language | 97.0% | 97.6% |
+| Truthfulness (correct − wrong − fabricated) | −85.2 | +3.8 |
 
 ## 4. Most of the over-refusal is the model being right
 

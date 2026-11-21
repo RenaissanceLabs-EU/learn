@@ -215,7 +215,20 @@ def render_body(body, glossary_sink=None, lesson=None):
     return "\n".join(out), toc
 
 
+def img_dims(src):
+    """width/height attributes for a local PNG, so the page does not jump when the image loads."""
+    try:
+        import struct
+        with open(src.lstrip("/"), "rb") as f: h = f.read(24)
+        w, ht = struct.unpack(">II", h[16:24]); return f' width="{w}" height="{ht}"'
+    except Exception: return ""
+
+
 def block(name, arg, inner, gsink, lesson):
+    if name == "figure":  # :::figure /assets/img/x.png | alt text   (inner lines = caption)
+        src, _, alt = arg.partition("|")
+        cap = " ".join(x.strip() for x in inner if x.strip())
+        return f'<figure class="fig"><a href="{esc(src.strip())}"><img src="{esc(src.strip())}" alt="{esc(alt.strip())}"{img_dims(src.strip())} loading="lazy"></a>' + (f"<figcaption>{inline(cap)}</figcaption>" if cap else "") + "</figure>"
     rows = [x.strip() for x in inner if x.strip()]
     if name == "callout":
         return f'<aside class="callout"><span class="callout-t">{esc(arg or "Key idea")}</span><p>{inline(" ".join(rows))}</p></aside>'
@@ -868,6 +881,14 @@ def recipe_page(r):
     if ve.get("curve"):
         charts = '<div class="charts">' + (_chart(ve["curve"], 1, 0.2, 0.7, "Training loss", (1000, 9000, 11263), lambda v: f"{v:.2f}") +
                   _chart(ve["curve"], 2, 0.5, 0.9, "Batch accuracy", (1000, 9000, 11263), lambda v: f"{v*100:.0f}%")) + '</div>'
+    vfig = vtab = ""
+    if ve.get("figure"):
+        fg = ve["figure"]
+        vfig = f'<figure class="fig"><a href="{esc(fg["src"])}"><img src="{esc(fg["src"])}" alt="{esc(fg["alt"])}"{img_dims(fg["src"])} loading="lazy"></a><figcaption>{esc(fg["caption"])}</figcaption></figure>'
+    if ve.get("table"):
+        tb = ve["table"]
+        vtab = ('<div class="rtable"><table><thead><tr>' + "".join(f"<th>{esc(h)}</th>" for h in tb["head"]) + "</tr></thead><tbody>" +
+                "".join("<tr>" + "".join(f"<td>{esc(c)}</td>" for c in row) + "</tr>" for row in tb["rows"]) + "</tbody></table></div>")
     gaps = "".join(f"<li>{esc(g)}</li>" for g in r["gaps"])
     files = "".join(f'<a href="{r["repo_files"]}{esc(f)}"><b>{esc(f)}</b><span>{esc(dsc)}</span></a>' for f, dsc in r["files"])
     glance = "".join(f'<div class="gl"><span>{esc(g["k"])}</span><b>{esc(g["v"])}</b><em>{esc(g["u"])}</em></div>' for g in r["glance"])
@@ -899,7 +920,7 @@ def recipe_page(r):
 </section>
 <section id="settings" class="rsec"><h2><span>5</span>Settings</h2>{settings}</section>
 <section id="check" class="rsec"><h2><span>6</span>What you should see</h2><p class="rsub">Numbers from the original run, so you can tell early whether yours is on track.</p>
-  <ul class="checks">{checks}</ul>{charts}<div class="mets">{metrics}</div><p class="fine">{esc(ve["note"])}</p></section>
+  <ul class="checks">{checks}</ul>{charts}{vfig}{vtab}<div class="mets">{metrics}</div><p class="fine">{esc(ve["note"])}</p></section>
 <section id="gaps" class="rsec"><h2><span>7</span>Known gaps</h2><p class="rsub">What stands between this card and an exact copy of the run.</p><ul class="gaps">{gaps}</ul></section>
 <section id="variants" class="rsec"><h2><span>8</span>Variants</h2>
   <div class="empty"><b>No variants yet.</b><p>Reproduced it? Changed something? Fixed a problem or added a capability? Report it and it appears here, linked to this recipe.</p>

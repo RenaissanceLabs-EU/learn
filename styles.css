@@ -503,3 +503,12 @@ a.tag.all { background: none; border-style: dashed; box-shadow: none; color: var
 .tcard .chip { margin-top: auto; padding-top: 6px; } .tsec { margin-bottom: 44px; } .tsec h2 { font-size: clamp(24px, 2.4vw, 29px); margin-bottom: 16px; }
 .head-band .eyebrow a { color: inherit; text-decoration: none; }
 @media print { .tags, .topics { display: none; } }
+/* figures and result tables */
+.fig { margin: 28px 0; } .fig a { display: block; background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 14px; } .fig img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.fig figcaption { font-size: 14px; color: var(--ink-soft); margin-top: 10px; line-height: 1.5; }
+.rsec .fig { margin: 18px 0 0 46px; }
+.rtable { margin-top: 18px; background: #fff; border: 1px solid var(--rule); border-radius: 14px; padding: 4px 18px; overflow-x: auto; }
+.rtable table { border-collapse: collapse; width: 100%; font-size: 15px; font-variant-numeric: tabular-nums; }
+.rtable th, .rtable td { text-align: left; padding: 11px 0; border-top: 1px solid var(--rule); } .rtable thead th { border-top: 0; font-size: 12.5px; color: var(--ink-soft); font-weight: 600; }
+.rtable th:nth-child(n+2), .rtable td:nth-child(n+2) { text-align: right; padding-left: 16px; white-space: nowrap; } .rtable td:last-child { font-weight: 600; }
+@media (max-width: 860px) { .rsec .fig { margin-left: 0; } }

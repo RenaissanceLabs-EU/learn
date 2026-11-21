@@ -373,7 +373,61 @@
     "+3.8"
    ]
   ],
-  "note": "Benchmark numbers in default mode from the original run: one greedy answer per question, graded by an LLM judge. A difference of a few points is noise. No training loss curve is published for this run."
+  "note": "Benchmark numbers in default mode from the original run: one greedy answer per question, graded by an LLM judge. A difference of a few points is noise. No training loss curve is published for this run.",
+  "figure": {
+   "src": "/assets/img/prelude-hallucination-stages.png",
+   "alt": "Bar chart of the hallucination benchmark through four stages: the starting model, DPO round 1 alone, the SFT warm start, and the warm start plus DPO round 2.",
+   "caption": "The benchmark through the stages, default mode. DPO round 1 was a separate run. The released model is the last group. Figure from the model card."
+  },
+  "table": {
+   "head": [
+    "Default mode, 500 questions, 10 languages",
+    "Prelude-9B-SFT-v2",
+    "After both stages"
+   ],
+   "rows": [
+    [
+     "Fabrication on made-up subjects",
+     "97.7%",
+     "1.8%"
+    ],
+    [
+     "Good “I don't know” on made-up subjects",
+     "2.3%",
+     "98.2%"
+    ],
+    [
+     "Obscure real people: answered wrongly",
+     "100%",
+     "2.5%"
+    ],
+    [
+     "Well-known people: correct (incl. partly correct)",
+     "53.8%",
+     "53.8%"
+    ],
+    [
+     "Well-known people: wrong answers (of 80)",
+     "35",
+     "6"
+    ],
+    [
+     "Well-known people: abstains",
+     "0%",
+     "38.8%"
+    ],
+    [
+     "Answers in the question's language",
+     "97.0%",
+     "97.6%"
+    ],
+    [
+     "Truthfulness (correct − wrong − fabricated)",
+     "−85.2",
+     "+3.8"
+    ]
+   ]
+  }
  },
  "gaps": [
   "The launch scripts and trainer configs for the two training stages are not published. Their settings come from the model card.",
