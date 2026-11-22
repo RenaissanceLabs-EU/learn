@@ -588,3 +588,6 @@ a.tag.cap { background: #fff; border-color: var(--c); } a.tag.cap::before { back
 .sm-col b { font-size: 13.5px; overflow-wrap: anywhere; } @media (max-width: 860px) { .sm-col b { font-size: 15px; } }
 .smeter { grid-template-columns: repeat(auto-fit, minmax(104px, 1fr)); } .sm-col b { font-size: 14.5px; overflow-wrap: normal; hyphens: manual; } @media (max-width: 860px) { .smeter { grid-template-columns: repeat(3, minmax(0, 1fr)); } .sm-col b { font-size: 14px; } }
 .smeter { grid-template-columns: repeat(3, minmax(0, 1fr)); } .sm-bar { height: 44px; } .sm-bar .w1 { height: 14px; } .sm-bar .w2 { height: 29px; } .sm-bar .w3 { height: 44px; }
+.capguide { font-size: 16.5px; line-height: 1.68; max-width: none; } .capguide > :first-child { margin-top: 0; } .capguide h3 { font-size: 21px; margin-top: 1.7em; }
+.capguide table { font-size: 14.5px; } .capguide .example { margin: 18px 0; }
+.capguide .example p { white-space: pre-wrap; }

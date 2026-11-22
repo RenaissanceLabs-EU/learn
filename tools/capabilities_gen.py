@@ -3,7 +3,7 @@
 Imported by build.py, which passes itself in as `B` so this module can use its helpers (esc, page, cards).
 Data: data/capabilities.json. Recipes point at capabilities through their `effects` field.
 """
-import json
+import json, os
 
 PRE = ["#3f6f63", "#4f7d70", "#5f8a7a", "#6f9a8a", "#7ba596", "#86ad9f"]
 POST = ["#9a7a48", "#b0893f", "#c79a3f", "#c2824a", "#b5654a", "#a8573f"]
@@ -132,6 +132,11 @@ def cap_page(B, stages, caps, c, recipes, notes, lessons):
         e = c["example"]
         secs.append(("practice", "In practice", f'<p class="rsub">{esc(e["q"])}</p><div class="cex"><div class="bad"><span>Without it</span><p>{esc(e["bad"])}</p></div><div class="good"><span>With it</span><p>{esc(e["good"])}</p></div></div>'))
     secs.append(("origin", "Where it comes from", f'{meter(c, stages, big=True)}<div class="cwhere"><div><span>Design and pre-training</span><p>{esc(c["pre"])}</p></div><div><span>Post-training and deployment</span><p>{esc(c["post"])}</p></div></div>'))
+    gp = f'content/capabilities/{c["id"]}.md'
+    if os.path.exists(gp):          # optional long-form guide: front matter `title:` + the same Markdown as notes (use ### headings)
+        meta, gbody = B.split_front(open(gp, encoding="utf-8").read())
+        ghtml, _ = B.render_body(gbody, None, c["id"])
+        secs.append(("guide", meta.get("title", "Understanding it"), f'<div class="prose capguide">{ghtml}</div>'))
     secs.append(("measure", "How to measure it", rows(c["measure"])))
     secs.append(("datasets", "Common datasets and methods", rows(c["datasets"]) if c.get("datasets") else empty("datasets listed", "a dataset for this")))
     rf = recipes_for(c, recipes)
